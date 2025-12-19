@@ -35,31 +35,51 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (gameError || !game) {
+      console.error('Game not found:', gameError);
       return NextResponse.json(
         { error: 'Game not found' },
         { status: 404 }
       );
     }
 
+    // Get all servers for this game to map string IDs to UUIDs
+    const { data: servers } = await supabase
+      .from('game_servers')
+      .select('id, location')
+      .eq('game_id', game.id);
+
+    // Create a map of location to server UUID
+    const serverMap = new Map<string, string>();
+    servers?.forEach(server => {
+      serverMap.set(server.location.toLowerCase(), server.id);
+    });
+
     // Insert all test results
-    const resultsToInsert = body.results.map(result => ({
-      game_id: game.id,
-      server_id: result.server_id,
-      ping_avg: result.ping_avg,
-      ping_min: result.ping_min,
-      ping_max: result.ping_max,
-      jitter: result.jitter,
-      packet_loss: result.packet_loss,
-      isp: body.isp,
-      country: body.country,
-      city: body.city,
-      ip_hash: body.ip_hash,
-      client_version: body.client_version,
-      raw_data: {
-        raw_times: result.raw_times,
-        anonymous_id: body.anonymous_id,
-      },
-    }));
+    const resultsToInsert = body.results.map(result => {
+      // Try to find server UUID by location name
+      const serverUuid = serverMap.get(result.server_location.toLowerCase());
+
+      return {
+        game_id: game.id,
+        server_id: serverUuid || null, // Use UUID if found, otherwise null
+        ping_avg: result.ping_avg,
+        ping_min: result.ping_min,
+        ping_max: result.ping_max,
+        jitter: result.jitter,
+        packet_loss: result.packet_loss,
+        isp: body.isp,
+        country: body.country,
+        city: body.city,
+        ip_hash: body.ip_hash,
+        client_version: body.client_version,
+        raw_data: {
+          raw_times: result.raw_times,
+          anonymous_id: body.anonymous_id,
+          server_string_id: result.server_id,
+          server_location: result.server_location,
+        },
+      };
+    });
 
     const { data: insertedResults, error: insertError } = await supabase
       .from('test_results')
@@ -69,7 +89,7 @@ export async function POST(request: NextRequest) {
     if (insertError) {
       console.error('Error inserting results:', insertError);
       return NextResponse.json(
-        { error: 'Failed to save results' },
+        { error: 'Failed to save results', details: insertError.message },
         { status: 500 }
       );
     }
@@ -86,7 +106,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error processing results:', error);
     return NextResponse.json(
-      { error: 'Invalid request' },
+      { error: 'Invalid request', details: String(error) },
       { status: 400 }
     );
   }

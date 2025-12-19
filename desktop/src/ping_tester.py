@@ -1,14 +1,27 @@
 """
 PingDiff Ping Tester
 Core ping testing logic with packet loss and jitter calculation
+Optimized for speed with parallel testing and hidden console
 """
 
 import subprocess
 import platform
 import re
 import statistics
-from typing import Dict, List, Optional
+import sys
+from typing import Dict, List, Optional, Callable
 from dataclasses import dataclass
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+# Windows-specific: hide console window for subprocesses
+if sys.platform == 'win32':
+    STARTUPINFO = subprocess.STARTUPINFO()
+    STARTUPINFO.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    STARTUPINFO.wShowWindow = subprocess.SW_HIDE
+    CREATE_NO_WINDOW = subprocess.CREATE_NO_WINDOW
+else:
+    STARTUPINFO = None
+    CREATE_NO_WINDOW = 0
 
 
 @dataclass
@@ -28,10 +41,11 @@ class PingResult:
     error: Optional[str] = None
 
 
-def ping_server(ip: str, count: int = 20, timeout: int = 2) -> Dict:
+def ping_server(ip: str, count: int = 10, timeout: int = 1) -> Dict:
     """
     Ping a server and return detailed statistics.
     Uses system ping command for reliability.
+    Console window is hidden on Windows.
 
     Returns:
         Dict with ping_times, packet_loss, and any error
@@ -41,18 +55,25 @@ def ping_server(ip: str, count: int = 20, timeout: int = 2) -> Dict:
 
     try:
         if system == "windows":
-            # Windows ping command
+            # Windows ping command - reduced timeout for speed
             cmd = ["ping", "-n", str(count), "-w", str(timeout * 1000), ip]
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=count * timeout + 5,
+                startupinfo=STARTUPINFO,
+                creationflags=CREATE_NO_WINDOW
+            )
         else:
             # Linux/Mac ping command
             cmd = ["ping", "-c", str(count), "-W", str(timeout), ip]
-
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=count * timeout + 10  # Allow extra time
-        )
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=count * timeout + 5
+            )
 
         output = result.stdout
 
@@ -114,7 +135,7 @@ def calculate_jitter(ping_times: List[float]) -> float:
     return round(statistics.mean(differences), 2)
 
 
-def test_server(server: Dict, ping_count: int = 20, timeout: int = 2) -> PingResult:
+def test_server(server: Dict, ping_count: int = 10, timeout: int = 1) -> PingResult:
     """
     Run a complete ping test on a server.
 
@@ -158,16 +179,18 @@ def test_server(server: Dict, ping_count: int = 20, timeout: int = 2) -> PingRes
     )
 
 
-def test_all_servers(servers: List[Dict], ping_count: int = 20,
-                     timeout: int = 2, callback=None) -> List[PingResult]:
+def test_all_servers(servers: List[Dict], ping_count: int = 10,
+                     timeout: int = 1, callback: Optional[Callable] = None,
+                     parallel: bool = True) -> List[PingResult]:
     """
-    Test all servers in a list.
+    Test all servers in a list. Uses parallel testing for speed.
 
     Args:
         servers: List of server dicts
         ping_count: Pings per server
         timeout: Timeout per ping
         callback: Optional callback(server_index, total_servers, result) for progress
+        parallel: Whether to test servers in parallel (much faster)
 
     Returns:
         List of PingResult objects
@@ -175,12 +198,30 @@ def test_all_servers(servers: List[Dict], ping_count: int = 20,
     results = []
     total = len(servers)
 
-    for i, server in enumerate(servers):
-        result = test_server(server, ping_count, timeout)
-        results.append(result)
+    if parallel and total > 1:
+        # Test servers in parallel for speed
+        completed = 0
+        with ThreadPoolExecutor(max_workers=min(total, 4)) as executor:
+            future_to_server = {
+                executor.submit(test_server, server, ping_count, timeout): server
+                for server in servers
+            }
 
-        if callback:
-            callback(i + 1, total, result)
+            for future in as_completed(future_to_server):
+                result = future.result()
+                results.append(result)
+                completed += 1
+
+                if callback:
+                    callback(completed, total, result)
+    else:
+        # Sequential testing
+        for i, server in enumerate(servers):
+            result = test_server(server, ping_count, timeout)
+            results.append(result)
+
+            if callback:
+                callback(i + 1, total, result)
 
     return results
 

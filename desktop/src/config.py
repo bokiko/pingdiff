@@ -12,11 +12,11 @@ API_ENDPOINTS = {
 }
 
 # App Version
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.2.0"
 
 # Ping Configuration
-PING_COUNT = 20  # Number of pings per server
-PING_TIMEOUT = 2  # Seconds
+PING_COUNT = 10  # Number of pings per server (reduced for speed)
+PING_TIMEOUT = 1  # Seconds (reduced for speed)
 
 # UI Colors (matching website theme)
 COLORS = {
