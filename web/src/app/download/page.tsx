@@ -27,7 +27,7 @@ export default function DownloadPage() {
         if (asset) {
           const isInstaller = asset.name.includes('Setup');
           setRelease({
-            version: data.tag_name || "v1.6.0",
+            version: data.tag_name || "v1.7.0",
             downloadUrl: asset.browser_download_url,
             size: `${(asset.size / (1024 * 1024)).toFixed(1)}MB`,
             date: new Date(data.published_at).toLocaleDateString(),
@@ -39,8 +39,8 @@ export default function DownloadPage() {
       .catch(() => {
         // Fallback
         setRelease({
-          version: "v1.6.0",
-          downloadUrl: "https://github.com/bokiko/pingdiff/releases/latest/download/PingDiff-Setup-1.6.0.exe",
+          version: "v1.7.0",
+          downloadUrl: "https://github.com/bokiko/pingdiff/releases/latest/download/PingDiff-Setup-1.7.0.exe",
           size: "~20MB",
           date: "",
           isInstaller: true
@@ -276,8 +276,15 @@ export default function DownloadPage() {
           <div className="flex items-center gap-2">
             <Activity className="w-5 h-5 text-blue-500" />
             <span className="font-semibold">PingDiff</span>
+            <span className="text-zinc-500 text-sm">© 2025</span>
           </div>
           <div className="flex gap-6 text-zinc-400 text-sm">
+            <Link href="/privacy" className="hover:text-white transition">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-white transition">
+              Terms
+            </Link>
             <a
               href="https://github.com/bokiko/pingdiff"
               target="_blank"
@@ -285,14 +292,6 @@ export default function DownloadPage() {
               className="hover:text-white transition"
             >
               GitHub
-            </a>
-            <a
-              href="https://github.com/bokiko/pingdiff/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition"
-            >
-              Report Issue
             </a>
           </div>
         </div>
