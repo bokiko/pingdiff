@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     const parseResult = SubmitRequestSchema.safeParse(rawBody);
     if (!parseResult.success) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: parseResult.error.errors },
+        { error: 'Invalid request data', details: parseResult.error.issues },
         { status: 400 }
       );
     }
