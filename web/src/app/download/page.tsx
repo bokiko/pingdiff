@@ -45,7 +45,7 @@ export default function DownloadPage() {
             <div className="flex-1 text-center md:text-left">
               <h2 className="text-2xl font-bold mb-2">PingDiff for Windows</h2>
               <p className="text-zinc-400 mb-4">
-                Version 1.0.0 • ~15MB • Windows 10/11
+                Version 1.1.0 • ~15MB • Windows 10/11
               </p>
 
               <a
