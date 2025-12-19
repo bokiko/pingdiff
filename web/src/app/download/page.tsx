@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Activity, Download, Shield, Cpu, Settings, CheckCircle, Loader2, FolderOpen } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Activity, Download, Shield, Settings, CheckCircle, Loader2, FolderOpen, Menu, X } from "lucide-react";
+import { useEffect } from "react";
 
 interface ReleaseInfo {
   version: string;
@@ -15,6 +16,7 @@ interface ReleaseInfo {
 export default function DownloadPage() {
   const [release, setRelease] = useState<ReleaseInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Fetch latest release from GitHub API
@@ -58,19 +60,44 @@ export default function DownloadPage() {
       {/* Navigation */}
       <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <Activity className="w-8 h-8 text-blue-500" />
-            <span className="text-xl font-bold">PingDiff</span>
+          <Link href="/" className="flex items-center gap-2 focus-ring rounded-lg">
+            <Activity className="w-7 h-7 md:w-8 md:h-8 text-blue-500" />
+            <span className="text-lg md:text-xl font-bold">PingDiff</span>
           </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/dashboard" className="text-zinc-400 hover:text-white transition">
+
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-zinc-400 hover:text-white transition focus-ring rounded-lg"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+
+          {/* Desktop menu */}
+          <div className="hidden md:flex items-center gap-6">
+            <Link href="/dashboard" className="text-zinc-400 hover:text-white transition focus-ring rounded-lg px-2 py-1">
               Dashboard
             </Link>
-            <Link href="/community" className="text-zinc-400 hover:text-white transition">
+            <Link href="/community" className="text-zinc-400 hover:text-white transition focus-ring rounded-lg px-2 py-1">
               Community
             </Link>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-zinc-800 bg-zinc-950 fade-in">
+            <div className="px-4 py-4 flex flex-col gap-4">
+              <Link href="/dashboard" className="text-zinc-400 hover:text-white transition py-2" onClick={() => setMobileMenuOpen(false)}>
+                Dashboard
+              </Link>
+              <Link href="/community" className="text-zinc-400 hover:text-white transition py-2" onClick={() => setMobileMenuOpen(false)}>
+                Community
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Main Content */}
@@ -105,7 +132,7 @@ export default function DownloadPage() {
 
               <a
                 href={release?.downloadUrl || "#"}
-                className={`inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg font-semibold text-lg transition ${loading ? 'opacity-50 pointer-events-none' : ''}`}
+                className={`inline-flex items-center gap-2 btn-primary px-8 py-4 rounded-xl font-semibold text-lg focus-ring ${loading ? 'opacity-50 pointer-events-none' : ''}`}
               >
                 <Download className="w-5 h-5" />
                 {loading ? "Loading..." : `Download ${getFileName()}`}
@@ -116,26 +143,32 @@ export default function DownloadPage() {
 
         {/* Features */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-            <Shield className="w-8 h-8 text-green-500 mb-4" />
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 card-hover">
+            <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mb-4">
+              <Shield className="w-6 h-6 text-green-500" />
+            </div>
             <h3 className="font-semibold mb-2">Safe & Open Source</h3>
-            <p className="text-zinc-400 text-sm">
+            <p className="text-zinc-400 text-sm leading-relaxed">
               100% open source. No malware, no tracking, no ads. Check the code yourself on GitHub.
             </p>
           </div>
 
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-            <Settings className="w-8 h-8 text-blue-500 mb-4" />
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 card-hover">
+            <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-4">
+              <Settings className="w-6 h-6 text-blue-500" />
+            </div>
             <h3 className="font-semibold mb-2">Your Privacy, Your Choice</h3>
-            <p className="text-zinc-400 text-sm">
+            <p className="text-zinc-400 text-sm leading-relaxed">
               Toggle result sharing on or off. Your settings are saved locally and persist across updates.
             </p>
           </div>
 
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-            <FolderOpen className="w-8 h-8 text-purple-500 mb-4" />
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 card-hover">
+            <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-4">
+              <FolderOpen className="w-6 h-6 text-purple-500" />
+            </div>
             <h3 className="font-semibold mb-2">Clean Install & Updates</h3>
-            <p className="text-zinc-400 text-sm">
+            <p className="text-zinc-400 text-sm leading-relaxed">
               Proper Windows installer. Updates automatically clean up old versions while preserving your data.
             </p>
           </div>
