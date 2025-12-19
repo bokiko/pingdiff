@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -92,6 +93,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased bg-zinc-950 text-white min-h-screen`}>
         {children}
+        <Analytics />
         <SpeedInsights />
       </body>
     </html>
