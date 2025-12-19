@@ -4,7 +4,7 @@ Server IPs and API endpoints
 """
 
 # API Configuration
-API_BASE_URL = "https://pingdiff.vercel.app"  # Will be updated after deployment
+API_BASE_URL = "https://pingdiff.com"
 API_ENDPOINTS = {
     "servers": "/api/servers",
     "results": "/api/results",
