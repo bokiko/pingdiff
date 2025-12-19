@@ -12,32 +12,50 @@ API_ENDPOINTS = {
 }
 
 # App Version
-APP_VERSION = "1.6.0"
+APP_VERSION = "1.7.0"
 
 # Ping Configuration
 PING_COUNT = 10  # Number of pings per server
 PING_TIMEOUT = 1  # Seconds
 
-# Modern UI Colors (dark theme with gradients)
+# Apple-inspired UI Colors (macOS dark mode aesthetic)
 COLORS = {
-    "bg": "#0f0f0f",
-    "bg_secondary": "#161616",
-    "card": "#1c1c1e",
-    "card_hover": "#252528",
-    "border": "#2c2c2e",
-    "accent": "#3b82f6",
-    "accent_hover": "#2563eb",
-    "accent_light": "#60a5fa",
-    "success": "#10b981",
-    "success_light": "#34d399",
-    "warning": "#f59e0b",
-    "warning_light": "#fbbf24",
-    "error": "#ef4444",
-    "error_light": "#f87171",
+    # Backgrounds
+    "bg": "#1c1c1e",
+    "bg_secondary": "#2c2c2e",
+    "bg_tertiary": "#3a3a3c",
+
+    # Cards & Surfaces
+    "card": "#2c2c2e",
+    "card_hover": "#3a3a3c",
+    "card_elevated": "#48484a",
+
+    # Borders
+    "border": "#3a3a3c",
+    "border_light": "#48484a",
+
+    # Accent (Apple Blue)
+    "accent": "#0a84ff",
+    "accent_hover": "#409cff",
+    "accent_dim": "#0066cc",
+
+    # Semantic Colors
+    "success": "#30d158",
+    "success_dim": "#248a3d",
+    "warning": "#ff9f0a",
+    "warning_dim": "#c77c00",
+    "error": "#ff453a",
+    "error_dim": "#d70015",
+
+    # Text
     "text": "#ffffff",
-    "text_secondary": "#e5e5e5",
-    "text_muted": "#a1a1aa",
-    "text_dim": "#71717a"
+    "text_secondary": "#ebebf5",
+    "text_muted": "#8e8e93",
+    "text_dim": "#636366",
+
+    # Special
+    "separator": "#38383a",
+    "overlay": "#000000"
 }
 
 # Game server regions
