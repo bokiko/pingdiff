@@ -681,7 +681,12 @@ class PingDiffApp:
     def _open_dashboard(self):
         """Open the dashboard in browser"""
         if self.dashboard_url:
-            webbrowser.open(self.dashboard_url)
+            # Ensure full URL (API returns relative path like /dashboard?result=...)
+            if self.dashboard_url.startswith('/'):
+                url = f"{self.api.base_url}{self.dashboard_url}"
+            else:
+                url = self.dashboard_url
+            webbrowser.open(url)
         else:
             webbrowser.open(f"{self.api.base_url}/dashboard")
 
