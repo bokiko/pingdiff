@@ -1,0 +1,86 @@
+name: Bug Report
+description: Report a bug or issue with PingDiff
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the information below.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which part of PingDiff is affected?
+      options:
+        - Desktop App
+        - Website
+        - Dashboard
+        - API
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: PingDiff Version
+      description: What version of PingDiff are you using? (shown in the app)
+      placeholder: "v1.7.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - Windows 11
+        - Windows 10
+        - Windows 8
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What happened? What did you expect to happen?
+      placeholder: Describe the bug in detail...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Open PingDiff
+        2. Click on...
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs
+      description: |
+        If applicable, paste any error messages or logs here.
+        Logs are located at: %APPDATA%\PingDiff\pingdiff.log
+      render: shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain the problem.
+
+  - type: input
+    id: isp
+    attributes:
+      label: ISP & Region
+      description: Your ISP and region (optional, helps diagnose connection issues)
+      placeholder: "e.g., Vodafone - Germany"

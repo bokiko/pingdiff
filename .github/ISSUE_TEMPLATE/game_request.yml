@@ -1,0 +1,57 @@
+name: Game Support Request
+description: Request support for a new game
+title: "[Game]: "
+labels: ["game-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Want PingDiff to support a new game? Let us know!
+
+  - type: input
+    id: game_name
+    attributes:
+      label: Game Name
+      placeholder: "e.g., Valorant, Counter-Strike 2, Apex Legends"
+    validations:
+      required: true
+
+  - type: input
+    id: game_developer
+    attributes:
+      label: Game Developer/Publisher
+      placeholder: "e.g., Riot Games, Valve, EA"
+
+  - type: textarea
+    id: server_info
+    attributes:
+      label: Server Information
+      description: |
+        Do you have any information about the game's server IPs or locations?
+        This helps us add support faster!
+      placeholder: |
+        - Server regions: NA, EU, ASIA
+        - Known server IPs (if any): ...
+        - Server locations: ...
+
+  - type: dropdown
+    id: region
+    attributes:
+      label: Your Region
+      description: Which region do you primarily play in?
+      options:
+        - Europe
+        - North America
+        - Asia
+        - South America
+        - Middle East
+        - Oceania
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why This Game?
+      description: Why would you like to see this game supported?
+      placeholder: "I play this game daily and..."

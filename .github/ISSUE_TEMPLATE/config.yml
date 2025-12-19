@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Community Discussions
+    url: https://github.com/bokiko/pingdiff/discussions
+    about: Ask questions and share tips with the community
+  - name: Website
+    url: https://pingdiff.com
+    about: Visit the official PingDiff website

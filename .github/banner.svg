@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" fill="none">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#18181b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="blueGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="300" fill="url(#bgGradient)"/>
+
+  <!-- Grid pattern -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#27272a" stroke-width="0.5"/>
+  </pattern>
+  <rect width="1200" height="300" fill="url(#grid)" opacity="0.5"/>
+
+  <!-- Decorative circles -->
+  <circle cx="100" cy="150" r="200" fill="#3b82f6" opacity="0.03"/>
+  <circle cx="1100" cy="150" r="250" fill="#3b82f6" opacity="0.03"/>
+
+  <!-- Main content group -->
+  <g transform="translate(600, 150)">
+    <!-- Icon -->
+    <g transform="translate(-180, 0)">
+      <circle cx="0" cy="0" r="45" fill="#3b82f6" opacity="0.15"/>
+      <path d="M-25 0 L-10 0 L-2 -25 L10 25 L18 0 L25 0"
+            stroke="url(#blueGlow)"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+            filter="url(#glow)"/>
+    </g>
+
+    <!-- Text -->
+    <text x="-100" y="15" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="64" font-weight="800" fill="#ffffff">
+      Ping<tspan fill="#3b82f6">Diff</tspan>
+    </text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="600" y="220" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" fill="#71717a">
+    Know Your Connection Before You Queue
+  </text>
+
+  <!-- Bottom accent line -->
+  <rect x="400" y="280" width="400" height="3" rx="1.5" fill="url(#blueGlow)" opacity="0.5"/>
+</svg>

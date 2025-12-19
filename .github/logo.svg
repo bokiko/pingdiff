@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+  <defs>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Icon background circle -->
+  <circle cx="25" cy="30" r="22" fill="url(#iconGradient)" opacity="0.15"/>
+
+  <!-- Ping/Activity icon (pulse line) -->
+  <path d="M10 30 L18 30 L22 18 L28 42 L32 30 L40 30"
+        stroke="url(#blueGradient)"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"/>
+
+  <!-- Text: PingDiff -->
+  <text x="52" y="38" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="26" font-weight="700" fill="#ffffff">
+    Ping<tspan fill="url(#blueGradient)">Diff</tspan>
+  </text>
+</svg>
