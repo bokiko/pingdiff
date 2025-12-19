@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Activity, Download, Shield, Cpu, HardDrive, CheckCircle, Loader2 } from "lucide-react";
+import { Activity, Download, Shield, Cpu, Settings, CheckCircle, Loader2, FolderOpen } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface ReleaseInfo {
@@ -9,6 +9,7 @@ interface ReleaseInfo {
   downloadUrl: string;
   size: string;
   date: string;
+  isInstaller: boolean;
 }
 
 export default function DownloadPage() {
@@ -22,11 +23,13 @@ export default function DownloadPage() {
       .then(data => {
         const asset = data.assets?.find((a: { name: string }) => a.name.endsWith('.exe'));
         if (asset) {
+          const isInstaller = asset.name.includes('Setup');
           setRelease({
-            version: data.tag_name || "v1.2.0",
+            version: data.tag_name || "v1.6.0",
             downloadUrl: asset.browser_download_url,
             size: `${(asset.size / (1024 * 1024)).toFixed(1)}MB`,
-            date: new Date(data.published_at).toLocaleDateString()
+            date: new Date(data.published_at).toLocaleDateString(),
+            isInstaller
           });
         }
         setLoading(false);
@@ -34,14 +37,21 @@ export default function DownloadPage() {
       .catch(() => {
         // Fallback
         setRelease({
-          version: "v1.2.0",
-          downloadUrl: "https://github.com/bokiko/pingdiff/releases/latest/download/PingDiff-v1.2.0.exe",
-          size: "~15MB",
-          date: ""
+          version: "v1.6.0",
+          downloadUrl: "https://github.com/bokiko/pingdiff/releases/latest/download/PingDiff-Setup-1.6.0.exe",
+          size: "~20MB",
+          date: "",
+          isInstaller: true
         });
         setLoading(false);
       });
   }, []);
+
+  const getFileName = () => {
+    if (!release) return "PingDiff";
+    const version = release.version.replace('v', '');
+    return release.isInstaller ? `PingDiff-Setup-${version}.exe` : `PingDiff-${release.version}.exe`;
+  };
 
   return (
     <div className="min-h-screen">
@@ -98,7 +108,7 @@ export default function DownloadPage() {
                 className={`inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg font-semibold text-lg transition ${loading ? 'opacity-50 pointer-events-none' : ''}`}
               >
                 <Download className="w-5 h-5" />
-                {loading ? "Loading..." : `Download PingDiff-${release?.version}.exe`}
+                {loading ? "Loading..." : `Download ${getFileName()}`}
               </a>
             </div>
           </div>
@@ -115,18 +125,18 @@ export default function DownloadPage() {
           </div>
 
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-            <Cpu className="w-8 h-8 text-blue-500 mb-4" />
-            <h3 className="font-semibold mb-2">Lightweight</h3>
+            <Settings className="w-8 h-8 text-blue-500 mb-4" />
+            <h3 className="font-semibold mb-2">Your Privacy, Your Choice</h3>
             <p className="text-zinc-400 text-sm">
-              Under 20MB download. Minimal resource usage. No installation required - just run it.
+              Toggle result sharing on or off. Your settings are saved locally and persist across updates.
             </p>
           </div>
 
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-            <HardDrive className="w-8 h-8 text-purple-500 mb-4" />
-            <h3 className="font-semibold mb-2">Portable</h3>
+            <FolderOpen className="w-8 h-8 text-purple-500 mb-4" />
+            <h3 className="font-semibold mb-2">Clean Install & Updates</h3>
             <p className="text-zinc-400 text-sm">
-              No installation needed. Run from anywhere - USB, desktop, anywhere you want.
+              Proper Windows installer. Updates automatically clean up old versions while preserving your data.
             </p>
           </div>
         </div>
@@ -149,8 +159,21 @@ export default function DownloadPage() {
             </div>
             <div className="flex items-center gap-3">
               <CheckCircle className="w-5 h-5 text-green-500" />
-              <span className="text-zinc-300">Administrator not required</span>
+              <span className="text-zinc-300">Admin rights for installation</span>
             </div>
+          </div>
+        </div>
+
+        {/* Data Storage Info */}
+        <div className="bg-blue-950/30 border border-blue-800/50 rounded-xl p-6 mb-12">
+          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+            <FolderOpen className="w-5 h-5 text-blue-400" />
+            Where is my data stored?
+          </h3>
+          <div className="text-zinc-300 text-sm space-y-2">
+            <p><span className="text-zinc-400">Program files:</span> <code className="bg-zinc-800 px-2 py-0.5 rounded">C:\Program Files\PingDiff</code></p>
+            <p><span className="text-zinc-400">Settings & logs:</span> <code className="bg-zinc-800 px-2 py-0.5 rounded">%APPDATA%\PingDiff</code></p>
+            <p className="text-zinc-500 mt-3">Your settings and logs are preserved when you update to a new version.</p>
           </div>
         </div>
 
@@ -178,13 +201,13 @@ export default function DownloadPage() {
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-3">
                 1
               </div>
-              <p className="text-sm text-zinc-400">Download PingDiff</p>
+              <p className="text-sm text-zinc-400">Download & run the installer</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-3">
                 2
               </div>
-              <p className="text-sm text-zinc-400">Double-click to run</p>
+              <p className="text-sm text-zinc-400">Launch PingDiff from Start Menu</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-3">
