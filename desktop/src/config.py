@@ -12,7 +12,7 @@ API_ENDPOINTS = {
 }
 
 # App Version
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.1.0"
 
 # Ping Configuration
 PING_COUNT = 20  # Number of pings per server

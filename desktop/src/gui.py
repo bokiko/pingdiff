@@ -20,7 +20,7 @@ class PingDiffApp:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title(f"PingDiff v{APP_VERSION}")
-        self.root.geometry("500x650")
+        self.root.geometry("550x750")
         self.root.resizable(False, False)
         self.root.configure(bg=COLORS["bg"])
 
@@ -83,14 +83,14 @@ class PingDiffApp:
 
         # Header
         header_frame = ttk.Frame(main_frame)
-        header_frame.pack(fill=tk.X, pady=(0, 20))
+        header_frame.pack(fill=tk.X, pady=(0, 15))
 
         title_label = ttk.Label(header_frame, text="PingDiff",
                                font=("Segoe UI", 24, "bold"))
         title_label.pack(side=tk.LEFT)
 
         subtitle = ttk.Label(header_frame,
-                            text="Test your game connection",
+                            text="Overwatch 2 Connection Tester",
                             style="Muted.TLabel",
                             font=("Segoe UI", 10))
         subtitle.pack(side=tk.LEFT, padx=(10, 0), pady=(10, 0))
@@ -145,7 +145,7 @@ class PingDiffApp:
 
         self.progress_bar = ttk.Progressbar(self.progress_frame,
                                             mode="determinate",
-                                            length=460)
+                                            length=510)
         self.progress_bar.pack(fill=tk.X, pady=(5, 0))
         self.progress_bar.pack_forget()  # Hide initially
 
@@ -237,8 +237,9 @@ class PingDiffApp:
     def _update_progress(self, current: int, total: int, result: PingResult):
         """Update progress bar and label"""
         self.progress_bar["value"] = (current / total) * 100
+        status = f"{result.ping_avg}ms" if result.packet_loss < 100 else "Failed"
         self.progress_label.config(
-            text=f"Testing {current}/{total}: {result.server_location} - {result.ping_avg}ms"
+            text=f"Testing {current}/{total}: {result.server_location} - {status}"
         )
 
     def _show_results(self):
@@ -274,26 +275,50 @@ class PingDiffApp:
             }.get(quality, "Card.TLabel")
 
             ttk.Label(best_frame,
-                     text=f"Best Server: {best.server_location}",
+                     text=f"RECOMMENDED: {best.server_location}",
                      style="Success.TLabel",
-                     font=("Segoe UI", 10, "bold")).pack(anchor=tk.W)
+                     font=("Segoe UI", 11, "bold")).pack(anchor=tk.W)
 
-            ttk.Label(best_frame,
-                     text=f"{best.ping_avg}ms avg | {best.packet_loss}% loss | {quality}",
-                     style=quality_color).pack(anchor=tk.W)
+            # Detailed stats for best server
+            stats_text = f"Ping: {best.ping_avg}ms (min: {best.ping_min}ms, max: {best.ping_max}ms)"
+            ttk.Label(best_frame, text=stats_text,
+                     style="Card.TLabel",
+                     font=("Segoe UI", 9)).pack(anchor=tk.W, pady=(2, 0))
+
+            stats_text2 = f"Jitter: {best.jitter}ms | Packet Loss: {best.packet_loss}% | Quality: {quality}"
+            ttk.Label(best_frame, text=stats_text2,
+                     style=quality_color,
+                     font=("Segoe UI", 9)).pack(anchor=tk.W)
 
         # Separator
         ttk.Separator(self.results_container, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=10)
 
-        # All results
-        ttk.Label(self.results_container,
-                 text="All Servers:",
+        # All results header
+        header_frame = ttk.Frame(self.results_container, style="Card.TFrame")
+        header_frame.pack(fill=tk.X)
+
+        ttk.Label(header_frame, text="All Servers:",
                  style="Card.TLabel",
                  font=("Segoe UI", 10, "bold")).pack(anchor=tk.W)
 
+        # Column headers
+        col_header = ttk.Frame(self.results_container, style="Card.TFrame")
+        col_header.pack(fill=tk.X, pady=(5, 2))
+
+        tk.Label(col_header, text="Server", bg=COLORS["card"], fg=COLORS["text_muted"],
+                font=("Segoe UI", 8), anchor=tk.W, width=18).pack(side=tk.LEFT)
+        tk.Label(col_header, text="Ping", bg=COLORS["card"], fg=COLORS["text_muted"],
+                font=("Segoe UI", 8), width=8).pack(side=tk.LEFT)
+        tk.Label(col_header, text="Jitter", bg=COLORS["card"], fg=COLORS["text_muted"],
+                font=("Segoe UI", 8), width=8).pack(side=tk.LEFT)
+        tk.Label(col_header, text="Loss", bg=COLORS["card"], fg=COLORS["text_muted"],
+                font=("Segoe UI", 8), width=8).pack(side=tk.LEFT)
+        tk.Label(col_header, text="Status", bg=COLORS["card"], fg=COLORS["text_muted"],
+                font=("Segoe UI", 8), width=10).pack(side=tk.LEFT)
+
         # Create scrollable frame for results
         canvas = tk.Canvas(self.results_container, bg=COLORS["card"],
-                          highlightthickness=0, height=200)
+                          highlightthickness=0, height=250)
         scrollbar = ttk.Scrollbar(self.results_container, orient=tk.VERTICAL,
                                   command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas, style="Card.TFrame")
@@ -306,40 +331,78 @@ class PingDiffApp:
         canvas.create_window((0, 0), window=scrollable_frame, anchor=tk.NW)
         canvas.configure(yscrollcommand=scrollbar.set)
 
-        for result in sorted(self.results, key=lambda r: r.ping_avg):
+        # Sort by ping (failed servers last)
+        sorted_results = sorted(self.results,
+                               key=lambda r: (r.packet_loss >= 100, r.ping_avg))
+
+        for result in sorted_results:
             row = ttk.Frame(scrollable_frame, style="Card.TFrame")
-            row.pack(fill=tk.X, pady=2)
+            row.pack(fill=tk.X, pady=3)
+
+            # Check if server failed
+            is_failed = result.packet_loss >= 100
 
             # Color based on quality
-            quality = get_connection_quality(result)
-            if quality in ["Excellent", "Good"]:
-                color = COLORS["success"]
-            elif quality == "Fair":
-                color = COLORS["warning"]
-            else:
+            if is_failed:
                 color = COLORS["error"]
+                quality = "FAILED"
+            else:
+                quality = get_connection_quality(result)
+                if quality in ["Excellent", "Good"]:
+                    color = COLORS["success"]
+                elif quality == "Fair":
+                    color = COLORS["warning"]
+                else:
+                    color = COLORS["error"]
 
             # Server name
             name_label = tk.Label(row, text=result.server_location,
                                  bg=COLORS["card"], fg=COLORS["text"],
-                                 font=("Segoe UI", 9), anchor=tk.W, width=25)
+                                 font=("Segoe UI", 9), anchor=tk.W, width=18)
             name_label.pack(side=tk.LEFT)
 
             # Ping
-            ping_label = tk.Label(row, text=f"{result.ping_avg}ms",
+            ping_text = f"{result.ping_avg}ms" if not is_failed else "---"
+            ping_label = tk.Label(row, text=ping_text,
                                  bg=COLORS["card"], fg=color,
                                  font=("Segoe UI", 9, "bold"), width=8)
             ping_label.pack(side=tk.LEFT)
 
+            # Jitter
+            jitter_text = f"{result.jitter}ms" if not is_failed else "---"
+            jitter_label = tk.Label(row, text=jitter_text,
+                                   bg=COLORS["card"], fg=COLORS["text_muted"],
+                                   font=("Segoe UI", 9), width=8)
+            jitter_label.pack(side=tk.LEFT)
+
             # Packet loss
+            loss_text = f"{result.packet_loss}%"
             loss_color = COLORS["success"] if result.packet_loss == 0 else COLORS["error"]
-            loss_label = tk.Label(row, text=f"{result.packet_loss}% loss",
+            loss_label = tk.Label(row, text=loss_text,
                                  bg=COLORS["card"], fg=loss_color,
-                                 font=("Segoe UI", 9), width=10)
+                                 font=("Segoe UI", 9), width=8)
             loss_label.pack(side=tk.LEFT)
+
+            # Status/Quality
+            status_label = tk.Label(row, text=quality,
+                                   bg=COLORS["card"], fg=color,
+                                   font=("Segoe UI", 9, "bold"), width=10)
+            status_label.pack(side=tk.LEFT)
 
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Summary stats
+        summary_frame = ttk.Frame(self.results_container, style="Card.TFrame")
+        summary_frame.pack(fill=tk.X, pady=(10, 0))
+
+        working_servers = [r for r in self.results if r.packet_loss < 100]
+        failed_servers = [r for r in self.results if r.packet_loss >= 100]
+
+        summary_text = f"Tested {len(self.results)} servers: {len(working_servers)} OK, {len(failed_servers)} failed"
+        ttk.Label(summary_frame, text=summary_text,
+                 style="Muted.TLabel",
+                 font=("Segoe UI", 9)).pack(anchor=tk.W)
 
         # Submit results to API
         self._submit_results()
