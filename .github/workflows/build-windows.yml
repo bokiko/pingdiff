@@ -1,0 +1,46 @@
+name: Build Windows App
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          cd desktop
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build executable
+        run: |
+          cd desktop
+          pyinstaller --onefile --windowed --name=PingDiff --icon=assets/icon.ico src/main.py --add-data "src/config.py;." --add-data "src/ping_tester.py;." --add-data "src/api_client.py;." --add-data "src/gui.py;."
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PingDiff-Windows
+          path: desktop/dist/PingDiff.exe
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: desktop/dist/PingDiff.exe
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
