@@ -28,7 +28,7 @@ jobs:
       - name: Build executable
         run: |
           cd desktop
-          pyinstaller --onefile --windowed --name=PingDiff --icon=assets/icon.ico src/main.py --add-data "src/config.py;." --add-data "src/ping_tester.py;." --add-data "src/api_client.py;." --add-data "src/gui.py;."
+          pyinstaller --onefile --windowed --name=PingDiff src/main.py --add-data "src/config.py;." --add-data "src/ping_tester.py;." --add-data "src/api_client.py;." --add-data "src/gui.py;."
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
