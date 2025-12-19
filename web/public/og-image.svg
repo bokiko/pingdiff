@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="50%" style="stop-color:#18181b"/>
+      <stop offset="100%" style="stop-color:#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="blueGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa"/>
+      <stop offset="100%" style="stop-color:#3b82f6"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+
+  <!-- Grid pattern -->
+  <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+    <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#27272a" stroke-width="0.5"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles -->
+  <circle cx="150" cy="315" r="300" fill="#3b82f6" opacity="0.03"/>
+  <circle cx="1050" cy="315" r="350" fill="#3b82f6" opacity="0.03"/>
+
+  <!-- Main content -->
+  <g transform="translate(600, 280)">
+    <!-- Icon -->
+    <g transform="translate(-220, 0)">
+      <circle cx="0" cy="0" r="60" fill="#3b82f6" opacity="0.15"/>
+      <path d="M-35 0 L-15 0 L-5 -35 L15 35 L25 0 L35 0"
+            stroke="url(#blueGlow)"
+            stroke-width="6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+            filter="url(#glow)"/>
+    </g>
+
+    <!-- Text -->
+    <text x="-100" y="20" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="800" fill="#ffffff">
+      Ping<tspan fill="#3b82f6">Diff</tspan>
+    </text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="600" y="400" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#a1a1aa">
+    Know Your Connection Before You Queue
+  </text>
+
+  <!-- Features -->
+  <g transform="translate(600, 500)" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#71717a">
+    <text x="-300" y="0" text-anchor="middle">Real Ping Tests</text>
+    <circle cx="-150" cy="-6" r="3" fill="#3b82f6"/>
+    <text x="0" y="0" text-anchor="middle">ISP Intelligence</text>
+    <circle cx="150" cy="-6" r="3" fill="#3b82f6"/>
+    <text x="300" y="0" text-anchor="middle">Free &amp; Open Source</text>
+  </g>
+
+  <!-- URL -->
+  <text x="600" y="580" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#3b82f6">
+    pingdiff.com
+  </text>
+</svg>

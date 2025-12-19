@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Activity, Download, Shield, Settings, CheckCircle, Loader2, FolderOpen, Menu, X } from "lucide-react";
+import { Activity, Download, Shield, Settings, CheckCircle, Loader2, FolderOpen, Menu, X, AlertCircle } from "lucide-react";
 import { useEffect } from "react";
 
 interface ReleaseInfo {
@@ -17,11 +17,15 @@ export default function DownloadPage() {
   const [release, setRelease] = useState<ReleaseInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
     // Fetch latest release from GitHub API
     fetch("https://api.github.com/repos/bokiko/pingdiff/releases/latest")
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error("API error");
+        return res.json();
+      })
       .then(data => {
         const asset = data.assets?.find((a: { name: string }) => a.name.endsWith('.exe'));
         if (asset) {
@@ -33,11 +37,13 @@ export default function DownloadPage() {
             date: new Date(data.published_at).toLocaleDateString(),
             isInstaller
           });
+        } else {
+          throw new Error("No exe found");
         }
         setLoading(false);
       })
       .catch(() => {
-        // Fallback
+        // Fallback - still provide download link
         setRelease({
           version: "v1.7.0",
           downloadUrl: "https://github.com/bokiko/pingdiff/releases/latest/download/PingDiff-Setup-1.7.0.exe",
@@ -45,6 +51,7 @@ export default function DownloadPage() {
           date: "",
           isInstaller: true
         });
+        setUsingFallback(true);
         setLoading(false);
       });
   }, []);
@@ -108,6 +115,17 @@ export default function DownloadPage() {
             Get the desktop app to test your connection to game servers
           </p>
         </div>
+
+        {/* Fallback Notice */}
+        {usingFallback && (
+          <div className="bg-yellow-900/20 border border-yellow-700/50 rounded-xl p-4 mb-6 flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-yellow-500 flex-shrink-0" />
+            <p className="text-yellow-200 text-sm">
+              Couldn&apos;t fetch latest version info. Showing fallback download link.
+              Check <a href="https://github.com/bokiko/pingdiff/releases" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">GitHub Releases</a> for the latest version.
+            </p>
+          </div>
+        )}
 
         {/* Download Card */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 mb-8">

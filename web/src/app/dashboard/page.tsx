@@ -12,6 +12,8 @@ import {
   AlertTriangle,
   Menu,
   X,
+  RefreshCw,
+  AlertCircle,
 } from "lucide-react";
 import {
   LineChart,
@@ -45,6 +47,7 @@ interface TestResult {
 export default function DashboardPage() {
   const [results, setResults] = useState<TestResult[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -53,14 +56,18 @@ export default function DashboardPage() {
   }, []);
 
   const fetchResults = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await fetch("/api/results?limit=100");
-      if (response.ok) {
-        const data = await response.json();
-        setResults(data);
+      if (!response.ok) {
+        throw new Error(`Failed to load results (${response.status})`);
       }
-    } catch (error) {
-      console.error("Failed to fetch results:", error);
+      const data = await response.json();
+      setResults(data);
+    } catch (err) {
+      console.error("Failed to fetch results:", err);
+      setError(err instanceof Error ? err.message : "Failed to load results. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -202,24 +209,44 @@ export default function DashboardPage() {
           </div>
 
           {/* Region Filter */}
-          <select
-            value={selectedRegion}
-            onChange={(e) => setSelectedRegion(e.target.value)}
-            className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2"
-          >
-            <option value="all">All Regions</option>
-            {regions.map((region) => (
-              <option key={region} value={region}>
-                {region}
-              </option>
-            ))}
-          </select>
+          <div className="flex items-center gap-2">
+            <label htmlFor="region-filter" className="text-zinc-400 text-sm sr-only md:not-sr-only">
+              Filter by:
+            </label>
+            <select
+              id="region-filter"
+              value={selectedRegion}
+              onChange={(e) => setSelectedRegion(e.target.value)}
+              className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus-ring"
+              aria-label="Filter results by region"
+            >
+              <option value="all">All Regions</option>
+              {regions.map((region) => (
+                <option key={region} value={region}>
+                  {region}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {loading ? (
           <div className="text-center py-20">
             <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
             <p className="text-zinc-400">Loading results...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-20">
+            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold mb-2">Failed to Load Results</h2>
+            <p className="text-zinc-400 mb-6">{error}</p>
+            <button
+              onClick={fetchResults}
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition"
+            >
+              <RefreshCw className="w-5 h-5" />
+              Try Again
+            </button>
           </div>
         ) : results.length === 0 ? (
           <div className="text-center py-20">
