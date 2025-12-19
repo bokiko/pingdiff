@@ -38,3 +38,5 @@ coverage/
 # Misc
 *.bak
 *.tmp
+.vercel
+.env*.local

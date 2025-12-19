@@ -1,41 +1,92 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { supabase } from '@/lib/supabase';
 
-interface PingResultData {
-  server_id: string;
-  server_location: string;
-  ping_avg: number;
-  ping_min: number;
-  ping_max: number;
-  jitter: number;
-  packet_loss: number;
-  raw_times: number[];
+// Input validation schemas
+const PingResultSchema = z.object({
+  server_id: z.string().min(1).max(100),
+  server_location: z.string().min(1).max(100),
+  ping_avg: z.number().min(0).max(10000),
+  ping_min: z.number().min(0).max(10000),
+  ping_max: z.number().min(0).max(10000),
+  jitter: z.number().min(0).max(1000),
+  packet_loss: z.number().min(0).max(100),
+  raw_times: z.array(z.number().min(0).max(10000)).max(100),
+});
+
+const SubmitRequestSchema = z.object({
+  game: z.string().min(1).max(50).default('overwatch-2'),
+  results: z.array(PingResultSchema).min(1).max(50),
+  isp: z.string().max(200).default('Unknown'),
+  country: z.string().max(100).default('Unknown'),
+  city: z.string().max(100).default('Unknown'),
+  ip_hash: z.string().max(64).default(''),
+  client_version: z.string().max(20).default('unknown'),
+  anonymous_id: z.string().max(100).default('anonymous'),
+});
+
+// Simple in-memory rate limiting
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT = 30; // requests per window
+const RATE_WINDOW = 60 * 1000; // 1 minute
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_WINDOW });
+    return true;
+  }
+
+  if (record.count >= RATE_LIMIT) {
+    return false;
+  }
+
+  record.count++;
+  return true;
 }
 
-interface SubmitRequest {
-  game: string;
-  results: PingResultData[];
-  isp: string;
-  country: string;
-  city: string;
-  ip_hash: string;
-  client_version: string;
-  anonymous_id: string;
+function getClientIP(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  const realIP = request.headers.get('x-real-ip');
+  return forwarded?.split(',')[0]?.trim() || realIP || '127.0.0.1';
 }
 
 export async function POST(request: NextRequest) {
+  const clientIP = getClientIP(request);
+
+  // Rate limiting
+  if (!checkRateLimit(clientIP)) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded. Please try again later.' },
+      { status: 429 }
+    );
+  }
+
   try {
-    const body: SubmitRequest = await request.json();
+    const rawBody = await request.json();
+
+    // Validate input
+    const parseResult = SubmitRequestSchema.safeParse(rawBody);
+    if (!parseResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid request data', details: parseResult.error.errors },
+        { status: 400 }
+      );
+    }
+
+    const body = parseResult.data;
 
     // Get game by slug
     const { data: game, error: gameError } = await supabase
       .from('games')
       .select('id')
-      .eq('slug', body.game || 'overwatch-2')
+      .eq('slug', body.game)
       .single();
 
     if (gameError || !game) {
-      console.error('Game not found:', gameError);
+      console.error('Game not found:', body.game);
       return NextResponse.json(
         { error: 'Game not found' },
         { status: 404 }
@@ -56,12 +107,11 @@ export async function POST(request: NextRequest) {
 
     // Insert all test results
     const resultsToInsert = body.results.map(result => {
-      // Try to find server UUID by location name
       const serverUuid = serverMap.get(result.server_location.toLowerCase());
 
       return {
         game_id: game.id,
-        server_id: serverUuid || null, // Use UUID if found, otherwise null
+        server_id: serverUuid || null,
         ping_avg: result.ping_avg,
         ping_min: result.ping_min,
         ping_max: result.ping_max,
@@ -87,14 +137,13 @@ export async function POST(request: NextRequest) {
       .select('id');
 
     if (insertError) {
-      console.error('Error inserting results:', insertError);
+      console.error('Database error:', insertError.message);
       return NextResponse.json(
-        { error: 'Failed to save results', details: insertError.message },
+        { error: 'Failed to save results' },
         { status: 500 }
       );
     }
 
-    // Return the first result ID for dashboard link
     const resultId = insertedResults?.[0]?.id;
 
     return NextResponse.json({
@@ -104,19 +153,41 @@ export async function POST(request: NextRequest) {
       count: insertedResults?.length || 0,
     });
   } catch (error) {
-    console.error('Error processing results:', error);
+    console.error('Request error:', error);
     return NextResponse.json(
-      { error: 'Invalid request', details: String(error) },
+      { error: 'Invalid request' },
       { status: 400 }
     );
   }
 }
 
+// UUID validation regex
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function GET(request: NextRequest) {
+  const clientIP = getClientIP(request);
+
+  // Rate limiting
+  if (!checkRateLimit(clientIP)) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded' },
+      { status: 429 }
+    );
+  }
+
   const searchParams = request.nextUrl.searchParams;
   const resultId = searchParams.get('id');
   const anonymousId = searchParams.get('anonymous_id');
-  const limit = parseInt(searchParams.get('limit') || '50');
+  const limitParam = searchParams.get('limit');
+  const limit = Math.min(Math.max(parseInt(limitParam || '50'), 1), 100);
+
+  // Validate UUID format if provided
+  if (resultId && !uuidRegex.test(resultId)) {
+    return NextResponse.json(
+      { error: 'Invalid result ID format' },
+      { status: 400 }
+    );
+  }
 
   try {
     let query = supabase
@@ -134,18 +205,25 @@ export async function GET(request: NextRequest) {
     if (resultId) {
       query = query.eq('id', resultId);
     } else if (anonymousId) {
-      query = query.contains('raw_data', { anonymous_id: anonymousId });
+      // Sanitize anonymous_id
+      const sanitizedId = anonymousId.slice(0, 100);
+      query = query.contains('raw_data', { anonymous_id: sanitizedId });
     }
 
     const { data: results, error } = await query;
 
     if (error) {
+      console.error('Database error:', error.message);
       throw error;
     }
 
-    return NextResponse.json(results);
+    return NextResponse.json(results, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300'
+      }
+    });
   } catch (error) {
-    console.error('Error fetching results:', error);
+    console.error('Fetch error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch results' },
       { status: 500 }

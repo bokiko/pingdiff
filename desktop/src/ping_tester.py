@@ -9,9 +9,33 @@ import platform
 import re
 import statistics
 import sys
+import ipaddress
+import logging
 from typing import Dict, List, Optional, Callable
 from dataclasses import dataclass
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+logger = logging.getLogger('PingDiff')
+
+
+def validate_ip(ip: str) -> bool:
+    """
+    Validate that a string is a valid IPv4 or IPv6 address.
+    Prevents command injection by ensuring only valid IPs are passed to ping.
+    """
+    if not ip or not isinstance(ip, str):
+        return False
+
+    try:
+        # This will raise ValueError if ip is not valid
+        ip_obj = ipaddress.ip_address(ip.strip())
+        # Reject private/loopback for safety (optional, but good practice)
+        # We allow these since game servers could be on various networks
+        return True
+    except ValueError:
+        logger.warning(f"Invalid IP address rejected: {ip}")
+        return False
+
 
 # Windows-specific: hide console window for subprocesses
 if sys.platform == 'win32':
@@ -50,6 +74,17 @@ def ping_server(ip: str, count: int = 10, timeout: int = 1) -> Dict:
     Returns:
         Dict with ping_times, packet_loss, and any error
     """
+    # Validate IP address to prevent command injection
+    if not validate_ip(ip):
+        logger.error(f"Rejected invalid IP: {ip}")
+        return {
+            "ping_times": [],
+            "packet_loss": 100.0,
+            "packets_sent": count,
+            "packets_received": 0,
+            "error": "Invalid IP address"
+        }
+
     system = platform.system().lower()
     ping_times = []
 

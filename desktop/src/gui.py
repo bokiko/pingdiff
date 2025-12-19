@@ -7,7 +7,6 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import threading
 import webbrowser
-import math
 from typing import List, Optional
 
 from config import COLORS, REGIONS, APP_VERSION
@@ -18,7 +17,7 @@ from api_client import APIClient
 class CircularProgress(tk.Canvas):
     """Circular progress gauge widget"""
 
-    def __init__(self, parent, size=200, **kwargs):
+    def __init__(self, parent, size=180, **kwargs):
         super().__init__(parent, width=size, height=size,
                         bg=COLORS["bg"], highlightthickness=0, **kwargs)
         self.size = size
@@ -32,7 +31,7 @@ class CircularProgress(tk.Canvas):
 
         center = self.size // 2
         radius = (self.size - 20) // 2
-        thickness = 12
+        thickness = 10
 
         # Background circle (dark)
         self.create_oval(
@@ -60,19 +59,19 @@ class CircularProgress(tk.Canvas):
 
         # Center text - status
         self.create_text(
-            center, center - 15,
+            center, center - 12,
             text=self.status_text,
             fill=COLORS["text"],
-            font=("Segoe UI", 14, "bold")
+            font=("Segoe UI", 13, "bold")
         )
 
         # Sub text
         if self.sub_text:
             self.create_text(
-                center, center + 15,
+                center, center + 12,
                 text=self.sub_text,
                 fill=COLORS["text_muted"],
-                font=("Segoe UI", 10)
+                font=("Segoe UI", 9)
             )
 
     def set_progress(self, value: float, status: str = "", sub_text: str = ""):
@@ -86,7 +85,7 @@ class CircularProgress(tk.Canvas):
     def reset(self):
         self.progress = 0
         self.status_text = "Ready"
-        self.sub_text = "Click Run Test to start"
+        self.sub_text = "Click Run Test"
         self._draw()
 
 
@@ -96,8 +95,11 @@ class PingDiffApp:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title(f"PingDiff v{APP_VERSION}")
-        self.root.geometry("480x700")
-        self.root.resizable(False, False)
+
+        # Window settings - RESIZABLE and larger
+        self.root.geometry("520x720")
+        self.root.minsize(450, 600)  # Minimum size
+        self.root.resizable(True, True)  # Allow resizing
         self.root.configure(bg=COLORS["bg"])
 
         # Try to set icon
@@ -130,8 +132,8 @@ class PingDiffApp:
         style.configure("TButton",
                        background=COLORS["accent"],
                        foreground="white",
-                       padding=(20, 12),
-                       font=("Segoe UI", 11, "bold"))
+                       padding=(16, 10),
+                       font=("Segoe UI", 10, "bold"))
         style.map("TButton",
                  background=[("active", "#2563eb"), ("disabled", "#4b5563")])
 
@@ -148,44 +150,66 @@ class PingDiffApp:
 
     def _create_widgets(self):
         """Create all UI widgets"""
-        # Main container
-        main_frame = ttk.Frame(self.root, padding=24)
-        main_frame.pack(fill=tk.BOTH, expand=True)
+        # Main scrollable container
+        main_canvas = tk.Canvas(self.root, bg=COLORS["bg"], highlightthickness=0)
+        scrollbar = ttk.Scrollbar(self.root, orient="vertical", command=main_canvas.yview)
+
+        self.scrollable_frame = ttk.Frame(main_canvas)
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: main_canvas.configure(scrollregion=main_canvas.bbox("all"))
+        )
+
+        main_canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        main_canvas.configure(yscrollcommand=scrollbar.set)
+
+        # Pack scrollbar and canvas
+        scrollbar.pack(side="right", fill="y")
+        main_canvas.pack(side="left", fill="both", expand=True)
+
+        # Bind mouse wheel
+        def _on_mousewheel(event):
+            main_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        main_canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+        # Content frame with padding
+        content = ttk.Frame(self.scrollable_frame, padding=20)
+        content.pack(fill=tk.BOTH, expand=True)
 
         # Header
-        header = ttk.Frame(main_frame)
-        header.pack(fill=tk.X, pady=(0, 20))
+        header = ttk.Frame(content)
+        header.pack(fill=tk.X, pady=(0, 16))
 
         title = tk.Label(header, text="PingDiff",
-                        font=("Segoe UI", 28, "bold"),
+                        font=("Segoe UI", 24, "bold"),
                         bg=COLORS["bg"], fg=COLORS["text"])
         title.pack(side=tk.LEFT)
 
         subtitle = tk.Label(header, text="Overwatch 2",
-                           font=("Segoe UI", 12),
+                           font=("Segoe UI", 11),
                            bg=COLORS["bg"], fg=COLORS["text_muted"])
-        subtitle.pack(side=tk.LEFT, padx=(12, 0), pady=(12, 0))
+        subtitle.pack(side=tk.LEFT, padx=(10, 0), pady=(8, 0))
 
         # ISP Info Card
-        isp_card = tk.Frame(main_frame, bg=COLORS["card"], padx=16, pady=12)
-        isp_card.pack(fill=tk.X, pady=(0, 16))
+        isp_card = tk.Frame(content, bg=COLORS["card"], padx=14, pady=10)
+        isp_card.pack(fill=tk.X, pady=(0, 12))
 
         self.isp_label = tk.Label(isp_card, text="Detecting ISP...",
-                                  font=("Segoe UI", 11),
+                                  font=("Segoe UI", 10),
                                   bg=COLORS["card"], fg=COLORS["text"])
         self.isp_label.pack(anchor=tk.W)
 
         self.location_label = tk.Label(isp_card, text="",
-                                       font=("Segoe UI", 10),
+                                       font=("Segoe UI", 9),
                                        bg=COLORS["card"], fg=COLORS["text_muted"])
         self.location_label.pack(anchor=tk.W)
 
         # Region Selection
-        region_frame = ttk.Frame(main_frame)
-        region_frame.pack(fill=tk.X, pady=(0, 16))
+        region_frame = ttk.Frame(content)
+        region_frame.pack(fill=tk.X, pady=(0, 12))
 
         tk.Label(region_frame, text="Region:",
-                font=("Segoe UI", 11),
+                font=("Segoe UI", 10),
                 bg=COLORS["bg"], fg=COLORS["text"]).pack(side=tk.LEFT)
 
         self.region_var = tk.StringVar(value="EU")
@@ -193,58 +217,64 @@ class PingDiffApp:
                                          textvariable=self.region_var,
                                          values=REGIONS,
                                          state="readonly",
-                                         width=12,
-                                         font=("Segoe UI", 10))
-        self.region_combo.pack(side=tk.LEFT, padx=(10, 0))
+                                         width=10,
+                                         font=("Segoe UI", 9))
+        self.region_combo.pack(side=tk.LEFT, padx=(8, 0))
 
-        # Progress Gauge
-        gauge_frame = ttk.Frame(main_frame)
-        gauge_frame.pack(pady=16)
+        # Progress Gauge (centered)
+        gauge_frame = ttk.Frame(content)
+        gauge_frame.pack(pady=12)
 
-        self.progress_gauge = CircularProgress(gauge_frame, size=180)
+        self.progress_gauge = CircularProgress(gauge_frame, size=160)
         self.progress_gauge.pack()
         self.progress_gauge.reset()
 
         # Test Button
-        self.test_button = ttk.Button(main_frame,
+        self.test_button = ttk.Button(content,
                                       text="Run Test",
                                       command=self._start_test)
-        self.test_button.pack(fill=tk.X, pady=(16, 0))
+        self.test_button.pack(fill=tk.X, pady=(12, 0))
 
         # Results Frame
-        self.results_frame = tk.Frame(main_frame, bg=COLORS["card"])
-        self.results_frame.pack(fill=tk.BOTH, expand=True, pady=(16, 0))
+        self.results_frame = tk.Frame(content, bg=COLORS["card"])
+        self.results_frame.pack(fill=tk.BOTH, expand=True, pady=(12, 0))
 
         # Results header
-        results_header = tk.Frame(self.results_frame, bg=COLORS["card"], padx=12, pady=8)
+        results_header = tk.Frame(self.results_frame, bg=COLORS["card"], padx=10, pady=6)
         results_header.pack(fill=tk.X)
 
         tk.Label(results_header, text="Results",
-                font=("Segoe UI", 12, "bold"),
+                font=("Segoe UI", 11, "bold"),
                 bg=COLORS["card"], fg=COLORS["text"]).pack(anchor=tk.W)
 
-        # Results container (scrollable)
-        self.results_container = tk.Frame(self.results_frame, bg=COLORS["card"], padx=12, pady=8)
+        # Results container
+        self.results_container = tk.Frame(self.results_frame, bg=COLORS["card"], padx=10, pady=6)
         self.results_container.pack(fill=tk.BOTH, expand=True)
 
         self.no_results_label = tk.Label(self.results_container,
                                          text="Results will appear here",
-                                         font=("Segoe UI", 10),
+                                         font=("Segoe UI", 9),
                                          bg=COLORS["card"], fg=COLORS["text_muted"])
-        self.no_results_label.pack(pady=20)
+        self.no_results_label.pack(pady=16)
 
-        # Footer
-        footer = ttk.Frame(main_frame)
-        footer.pack(fill=tk.X, pady=(16, 0))
+        # Footer with buttons
+        footer = ttk.Frame(content)
+        footer.pack(fill=tk.X, pady=(12, 0))
 
+        # Dashboard button - always visible
         self.dashboard_button = ttk.Button(footer,
                                            text="Open Dashboard",
                                            command=self._open_dashboard)
         self.dashboard_button.pack(side=tk.LEFT)
-        self.dashboard_button.configure(state=tk.DISABLED)
+
+        # GitHub button
+        github_btn = ttk.Button(footer,
+                               text="GitHub",
+                               command=lambda: webbrowser.open("https://github.com/bokiko/pingdiff"))
+        github_btn.pack(side=tk.LEFT, padx=(8, 0))
 
         version_label = tk.Label(footer, text=f"v{APP_VERSION}",
-                                font=("Segoe UI", 9),
+                                font=("Segoe UI", 8),
                                 bg=COLORS["bg"], fg=COLORS["text_muted"])
         version_label.pack(side=tk.RIGHT)
 
@@ -311,7 +341,7 @@ class PingDiffApp:
         best = get_best_server(self.results)
         if best:
             quality = get_connection_quality(best)
-            self.progress_gauge.set_progress(100, f"{best.ping_avg}ms", f"{best.server_location} • {quality}")
+            self.progress_gauge.set_progress(100, f"{best.ping_avg}ms", f"{best.server_location}")
         else:
             self.progress_gauge.set_progress(100, "No Result", "All servers failed")
 
@@ -322,9 +352,22 @@ class PingDiffApp:
         if not self.results:
             tk.Label(self.results_container,
                     text="No results available",
-                    font=("Segoe UI", 10),
-                    bg=COLORS["card"], fg=COLORS["text_muted"]).pack(pady=20)
+                    font=("Segoe UI", 9),
+                    bg=COLORS["card"], fg=COLORS["text_muted"]).pack(pady=16)
             return
+
+        # Best server highlight
+        if best:
+            best_frame = tk.Frame(self.results_container, bg="#1e3a5f", padx=10, pady=8)
+            best_frame.pack(fill=tk.X, pady=(0, 8))
+
+            quality = get_connection_quality(best)
+            tk.Label(best_frame, text=f"Best: {best.server_location}",
+                    font=("Segoe UI", 10, "bold"),
+                    bg="#1e3a5f", fg=COLORS["success"]).pack(anchor=tk.W)
+            tk.Label(best_frame, text=f"{best.ping_avg}ms • {best.jitter}ms jitter • {quality}",
+                    font=("Segoe UI", 9),
+                    bg="#1e3a5f", fg=COLORS["text"]).pack(anchor=tk.W)
 
         # Sort results (successful first, then by ping)
         sorted_results = sorted(self.results,
@@ -342,14 +385,14 @@ class PingDiffApp:
         is_failed = result.packet_loss >= 100
 
         row = tk.Frame(self.results_container, bg=COLORS["card"])
-        row.pack(fill=tk.X, pady=4)
+        row.pack(fill=tk.X, pady=3)
 
         # Server name
         name_color = COLORS["error"] if is_failed else COLORS["text"]
         tk.Label(row, text=result.server_location,
-                font=("Segoe UI", 10),
+                font=("Segoe UI", 9),
                 bg=COLORS["card"], fg=name_color,
-                anchor=tk.W, width=20).pack(side=tk.LEFT)
+                anchor=tk.W, width=18).pack(side=tk.LEFT)
 
         # Stats
         if is_failed:
@@ -364,7 +407,7 @@ class PingDiffApp:
             else:
                 stats_color = COLORS["error"]
 
-            stats_text = f"{result.ping_avg}ms  •  {result.jitter}ms jitter  •  {result.packet_loss}% loss"
+            stats_text = f"{result.ping_avg}ms • {result.jitter}ms • {result.packet_loss}%"
 
         tk.Label(row, text=stats_text,
                 font=("Segoe UI", 9),
@@ -391,7 +434,6 @@ class PingDiffApp:
 
             if response.get("success"):
                 self.dashboard_url = response.get("dashboard_url")
-                self.root.after(0, lambda: self.dashboard_button.config(state=tk.NORMAL))
 
         thread = threading.Thread(target=submit, daemon=True)
         thread.start()
