@@ -45,8 +45,8 @@ export default function DownloadPage() {
       .catch(() => {
         // Fallback - still provide download link
         setRelease({
-          version: "v1.7.0",
-          downloadUrl: "https://github.com/bokiko/pingdiff/releases/latest/download/PingDiff-Setup-1.7.0.exe",
+          version: "v1.10.0",
+          downloadUrl: "https://github.com/bokiko/pingdiff/releases/latest/download/PingDiff-Setup-1.10.0.exe",
           size: "~20MB",
           date: "",
           isInstaller: true

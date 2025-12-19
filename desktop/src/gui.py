@@ -11,7 +11,7 @@ import os
 import math
 from typing import List, Optional
 
-from config import COLORS, REGIONS, REGION_NAMES, APP_VERSION
+from config import COLORS, REGIONS, REGION_NAMES, APP_VERSION, GAMES
 from ping_tester import test_all_servers, get_best_server, get_connection_quality, PingResult
 from api_client import APIClient, Settings, get_app_data_dir
 
@@ -366,8 +366,8 @@ class PingDiffApp:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("PingDiff")
-        self.root.geometry("440x820")
-        self.root.minsize(400, 750)
+        self.root.geometry("440x880")
+        self.root.minsize(400, 820)
         self.root.configure(bg=COLORS["bg"])
 
         # Try to set icon
@@ -389,6 +389,7 @@ class PingDiffApp:
         # Variables
         self.share_results_var = tk.BooleanVar(value=self.settings.share_results)
         self.region_var = tk.StringVar(value=self.settings.default_region)
+        self.game_var = tk.StringVar(value=self.current_game)
 
         self._create_ui()
         self._load_data()
@@ -403,6 +404,9 @@ class PingDiffApp:
 
         # ISP Info
         self._create_isp_section(main)
+
+        # Game Selector
+        self._create_game_section(main)
 
         # Region Selector
         self._create_region_section(main)
@@ -478,6 +482,64 @@ class PingDiffApp:
                                        font=get_font(13),
                                        bg=COLORS["card"], fg=COLORS["text_secondary"])
         self.location_label.pack(side=tk.RIGHT)
+
+    def _create_game_section(self, parent):
+        section = tk.Frame(parent, bg=COLORS["bg"])
+        section.pack(fill=tk.X, pady=(0, 16))
+
+        tk.Label(section, text="Select Game",
+                font=get_font(13, "bold"),
+                bg=COLORS["bg"], fg=COLORS["text"]).pack(anchor=tk.W, pady=(0, 10))
+
+        # Game buttons
+        btn_frame = tk.Frame(section, bg=COLORS["bg"])
+        btn_frame.pack(fill=tk.X)
+
+        self.game_buttons = {}
+        for game_id, game_info in GAMES.items():
+            btn = tk.Label(
+                btn_frame,
+                text=game_info["short"],
+                font=get_font(11, "bold"),
+                bg=COLORS["bg_secondary"],
+                fg=COLORS["text_muted"],
+                padx=16, pady=8,
+                cursor="hand2"
+            )
+            btn.pack(side=tk.LEFT, padx=(0, 8))
+            btn.bind("<Button-1>", lambda e, g=game_id: self._select_game(g))
+            self.game_buttons[game_id] = btn
+
+        self._update_game_buttons()
+
+    def _select_game(self, game_id):
+        if self.is_testing:
+            return
+        self.game_var.set(game_id)
+        self.current_game = game_id
+        self._update_game_buttons()
+        self._update_footer_label()
+        # Reload servers for new game
+        self._reload_servers()
+
+    def _update_game_buttons(self):
+        selected = self.game_var.get()
+        for game_id, btn in self.game_buttons.items():
+            if game_id == selected:
+                btn.config(bg=COLORS["accent"], fg="#ffffff")
+            else:
+                btn.config(bg=COLORS["bg_secondary"], fg=COLORS["text_muted"])
+
+    def _reload_servers(self):
+        def load():
+            self.servers = self.api.get_servers(self.current_game)
+        thread = threading.Thread(target=load, daemon=True)
+        thread.start()
+
+    def _update_footer_label(self):
+        game_name = GAMES.get(self.current_game, {}).get("name", "Unknown")
+        if hasattr(self, 'game_label'):
+            self.game_label.config(text=game_name)
 
     def _create_region_section(self, parent):
         section = tk.Frame(parent, bg=COLORS["bg"])
@@ -663,10 +725,12 @@ class PingDiffApp:
         )
         github_btn.pack(side=tk.LEFT, padx=(10, 0))
 
-        # Game label
-        tk.Label(footer, text="Overwatch 2",
+        # Game label (dynamic)
+        game_name = GAMES.get(self.current_game, {}).get("name", "Unknown")
+        self.game_label = tk.Label(footer, text=game_name,
                 font=get_font(11),
-                bg=COLORS["bg"], fg=COLORS["text_dim"]).pack(side=tk.RIGHT)
+                bg=COLORS["bg"], fg=COLORS["text_dim"])
+        self.game_label.pack(side=tk.RIGHT)
 
     def _load_data(self):
         def load():
@@ -775,7 +839,7 @@ class PingDiffApp:
                 "raw_times": r.raw_times
             } for r in self.results]
 
-            response = self.api.submit_results(results_data, self.isp_info)
+            response = self.api.submit_results(results_data, self.isp_info, self.current_game)
             if response.get("success"):
                 self.dashboard_url = response.get("dashboard_url")
 

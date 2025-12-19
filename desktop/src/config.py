@@ -12,7 +12,7 @@ API_ENDPOINTS = {
 }
 
 # App Version
-APP_VERSION = "1.7.0"
+APP_VERSION = "1.10.0"
 
 # Ping Configuration
 PING_COUNT = 10  # Number of pings per server
@@ -88,6 +88,96 @@ DEFAULT_SERVERS = {
             {"id": "me-bh", "location": "Bahrain", "ip": "157.175.45.1", "port": 26503},
             {"id": "me-ae", "location": "Dubai", "ip": "34.18.61.77", "port": 26503}
         ]
+    },
+    "call-of-duty": {
+        "EU": [
+            {"id": "eu-ams", "location": "Amsterdam", "ip": "108.61.198.102", "port": 3074},
+            {"id": "eu-lon", "location": "London", "ip": "108.61.196.101", "port": 3074},
+            {"id": "eu-fra", "location": "Frankfurt", "ip": "108.61.210.117", "port": 3074},
+            {"id": "eu-par", "location": "Paris", "ip": "108.61.209.127", "port": 3074},
+            {"id": "eu-mad", "location": "Madrid", "ip": "208.76.222.30", "port": 3074}
+        ],
+        "NA": [
+            {"id": "na-atl", "location": "Atlanta", "ip": "108.61.193.166", "port": 3074},
+            {"id": "na-chi", "location": "Chicago", "ip": "107.191.51.12", "port": 3074},
+            {"id": "na-dal", "location": "Dallas", "ip": "108.61.224.175", "port": 3074},
+            {"id": "na-lax", "location": "Los Angeles", "ip": "108.61.219.200", "port": 3074},
+            {"id": "na-mia", "location": "Miami", "ip": "104.156.244.232", "port": 3074},
+            {"id": "na-nyc", "location": "New York", "ip": "108.61.149.182", "port": 3074},
+            {"id": "na-sfo", "location": "San Francisco", "ip": "104.156.230.107", "port": 3074},
+            {"id": "na-sea", "location": "Seattle", "ip": "108.61.194.105", "port": 3074}
+        ],
+        "ASIA": [
+            {"id": "asia-tok", "location": "Tokyo", "ip": "108.61.201.151", "port": 3074},
+            {"id": "asia-seo", "location": "Seoul", "ip": "141.164.34.61", "port": 3074},
+            {"id": "asia-sgp", "location": "Singapore", "ip": "45.32.100.168", "port": 3074},
+            {"id": "asia-syd", "location": "Sydney", "ip": "108.61.212.117", "port": 3074}
+        ],
+        "SA": [
+            {"id": "sa-sao", "location": "São Paulo", "ip": "216.238.98.118", "port": 3074},
+            {"id": "sa-scl", "location": "Santiago", "ip": "64.176.2.7", "port": 3074}
+        ],
+        "ME": [
+            {"id": "me-tlv", "location": "Tel Aviv", "ip": "64.176.162.16", "port": 3074}
+        ]
+    },
+    "counter-strike-2": {
+        "EU": [
+            {"id": "eu-lux", "location": "Luxembourg", "ip": "146.66.152.1", "port": 27015},
+            {"id": "eu-sto", "location": "Stockholm", "ip": "146.66.156.1", "port": 27015},
+            {"id": "eu-vie", "location": "Vienna", "ip": "146.66.155.1", "port": 27015},
+            {"id": "eu-war", "location": "Warsaw", "ip": "155.133.240.1", "port": 27015},
+            {"id": "eu-mad", "location": "Madrid", "ip": "155.133.246.1", "port": 27015}
+        ],
+        "NA": [
+            {"id": "na-was", "location": "Washington DC", "ip": "208.78.164.1", "port": 27015},
+            {"id": "na-atl", "location": "Atlanta", "ip": "162.254.199.1", "port": 27015},
+            {"id": "na-sea", "location": "Seattle", "ip": "192.69.96.1", "port": 27015},
+            {"id": "na-lax", "location": "Los Angeles", "ip": "162.254.194.1", "port": 27015}
+        ],
+        "ASIA": [
+            {"id": "asia-sgp", "location": "Singapore", "ip": "103.28.54.1", "port": 27015},
+            {"id": "asia-tok", "location": "Tokyo", "ip": "45.121.186.1", "port": 27015},
+            {"id": "asia-hkg", "location": "Hong Kong", "ip": "155.133.244.1", "port": 27015},
+            {"id": "asia-mum", "location": "Mumbai", "ip": "180.149.41.1", "port": 27015},
+            {"id": "asia-syd", "location": "Sydney", "ip": "103.10.125.1", "port": 27015}
+        ],
+        "SA": [
+            {"id": "sa-sao", "location": "São Paulo", "ip": "209.197.29.1", "port": 27015},
+            {"id": "sa-scl", "location": "Santiago", "ip": "155.133.249.1", "port": 27015},
+            {"id": "sa-lim", "location": "Lima", "ip": "143.137.146.1", "port": 27015}
+        ],
+        "ME": [
+            {"id": "me-dub", "location": "Dubai", "ip": "185.25.183.1", "port": 27015}
+        ]
+    },
+    "battlefield-6": {
+        "EU": [
+            {"id": "eu-lon", "location": "London", "ip": "35.71.111.102", "port": 25200},
+            {"id": "eu-ire", "location": "Dublin", "ip": "35.71.75.100", "port": 25200},
+            {"id": "eu-fra", "location": "Frankfurt", "ip": "35.71.105.10", "port": 25200},
+            {"id": "eu-par", "location": "Paris", "ip": "35.71.101.129", "port": 25200},
+            {"id": "eu-sto", "location": "Stockholm", "ip": "35.71.98.128", "port": 25200}
+        ],
+        "NA": [
+            {"id": "na-vir", "location": "Virginia", "ip": "3.218.182.208", "port": 25200},
+            {"id": "na-ohi", "location": "Ohio", "ip": "35.71.102.135", "port": 25200},
+            {"id": "na-cal", "location": "California", "ip": "35.71.117.132", "port": 25200},
+            {"id": "na-ore", "location": "Oregon", "ip": "35.71.66.124", "port": 25200}
+        ],
+        "ASIA": [
+            {"id": "asia-tok", "location": "Tokyo", "ip": "52.94.8.118", "port": 25200},
+            {"id": "asia-seo", "location": "Seoul", "ip": "35.71.109.128", "port": 25200},
+            {"id": "asia-sgp", "location": "Singapore", "ip": "35.71.118.128", "port": 25200},
+            {"id": "asia-syd", "location": "Sydney", "ip": "35.71.97.129", "port": 25200},
+            {"id": "asia-mum", "location": "Mumbai", "ip": "35.71.100.130", "port": 25200}
+        ],
+        "SA": [
+            {"id": "sa-sao", "location": "São Paulo", "ip": "35.71.106.104", "port": 25200}
+        ],
+        "ME": [
+            {"id": "me-bhr", "location": "Bahrain", "ip": "35.71.99.128", "port": 25200}
+        ]
     }
 }
 
@@ -98,4 +188,24 @@ REGION_NAMES = {
     "ASIA": "Asia Pacific",
     "SA": "South America",
     "ME": "Middle East"
+}
+
+# Supported games
+GAMES = {
+    "overwatch-2": {
+        "name": "Overwatch 2",
+        "short": "OW2"
+    },
+    "call-of-duty": {
+        "name": "Call of Duty",
+        "short": "CoD"
+    },
+    "counter-strike-2": {
+        "name": "Counter-Strike 2",
+        "short": "CS2"
+    },
+    "battlefield-6": {
+        "name": "Battlefield 6",
+        "short": "BF6"
+    }
 }

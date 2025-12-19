@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s | PingDiff",
   },
   description: "Test your ping, packet loss, and jitter to game servers before you queue. Know your connection. Win more games.",
-  keywords: ["ping test", "overwatch 2", "gaming", "latency", "packet loss", "server ping", "connection test", "jitter"],
+  keywords: ["ping test", "overwatch 2", "call of duty", "warzone", "counter-strike 2", "cs2", "battlefield 6", "bf6", "gaming", "latency", "packet loss", "server ping", "connection test", "jitter"],
   authors: [{ name: "bokiko", url: "https://github.com/bokiko" }],
   creator: "bokiko",
   metadataBase: new URL("https://pingdiff.com"),
@@ -60,7 +60,7 @@ const jsonLd = {
   description: "Test your ping, packet loss, and jitter to game servers before you queue.",
   url: "https://pingdiff.com",
   downloadUrl: "https://pingdiff.com/download",
-  softwareVersion: "1.7.0",
+  softwareVersion: "1.10.0",
   author: {
     "@type": "Person",
     name: "bokiko",
