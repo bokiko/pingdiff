@@ -1,10 +1,47 @@
 "use client";
 
 import Link from "next/link";
-import { Activity, Download, Shield, Cpu, HardDrive, CheckCircle } from "lucide-react";
+import { Activity, Download, Shield, Cpu, HardDrive, CheckCircle, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+
+interface ReleaseInfo {
+  version: string;
+  downloadUrl: string;
+  size: string;
+  date: string;
+}
 
 export default function DownloadPage() {
-  const downloadUrl = "https://github.com/bokiko/pingdiff/releases/latest/download/PingDiff.exe";
+  const [release, setRelease] = useState<ReleaseInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch latest release from GitHub API
+    fetch("https://api.github.com/repos/bokiko/pingdiff/releases/latest")
+      .then(res => res.json())
+      .then(data => {
+        const asset = data.assets?.find((a: { name: string }) => a.name.endsWith('.exe'));
+        if (asset) {
+          setRelease({
+            version: data.tag_name || "v1.2.0",
+            downloadUrl: asset.browser_download_url,
+            size: `${(asset.size / (1024 * 1024)).toFixed(1)}MB`,
+            date: new Date(data.published_at).toLocaleDateString()
+          });
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        // Fallback
+        setRelease({
+          version: "v1.2.0",
+          downloadUrl: "https://github.com/bokiko/pingdiff/releases/latest/download/PingDiff-v1.2.0.exe",
+          size: "~15MB",
+          date: ""
+        });
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -44,16 +81,24 @@ export default function DownloadPage() {
 
             <div className="flex-1 text-center md:text-left">
               <h2 className="text-2xl font-bold mb-2">PingDiff for Windows</h2>
-              <p className="text-zinc-400 mb-4">
-                Version 1.2.0 • ~15MB • Windows 10/11
-              </p>
+              {loading ? (
+                <div className="flex items-center gap-2 text-zinc-400 mb-4">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Loading version info...</span>
+                </div>
+              ) : (
+                <p className="text-zinc-400 mb-4">
+                  {release?.version} • {release?.size} • Windows 10/11
+                  {release?.date && <span className="text-zinc-500"> • Released {release.date}</span>}
+                </p>
+              )}
 
               <a
-                href={downloadUrl}
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg font-semibold text-lg transition"
+                href={release?.downloadUrl || "#"}
+                className={`inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg font-semibold text-lg transition ${loading ? 'opacity-50 pointer-events-none' : ''}`}
               >
                 <Download className="w-5 h-5" />
-                Download for Windows
+                {loading ? "Loading..." : `Download PingDiff-${release?.version}.exe`}
               </a>
             </div>
           </div>
@@ -117,10 +162,10 @@ export default function DownloadPage() {
           </p>
           <div className="flex justify-center gap-4">
             <span className="bg-zinc-800 text-zinc-500 px-4 py-2 rounded-lg">
-              🍎 macOS - Coming Soon
+              macOS - Coming Soon
             </span>
             <span className="bg-zinc-800 text-zinc-500 px-4 py-2 rounded-lg">
-              🐧 Linux - Coming Soon
+              Linux - Coming Soon
             </span>
           </div>
         </div>
@@ -133,7 +178,7 @@ export default function DownloadPage() {
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-3">
                 1
               </div>
-              <p className="text-sm text-zinc-400">Download PingDiff.exe</p>
+              <p className="text-sm text-zinc-400">Download PingDiff</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-3">
@@ -154,6 +199,18 @@ export default function DownloadPage() {
               <p className="text-sm text-zinc-400">Click Test and see results</p>
             </div>
           </div>
+        </div>
+
+        {/* All Releases Link */}
+        <div className="mt-12 text-center">
+          <a
+            href="https://github.com/bokiko/pingdiff/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:text-blue-300 transition"
+          >
+            View all releases on GitHub →
+          </a>
         </div>
       </main>
 

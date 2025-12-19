@@ -17,6 +17,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get version from tag
+        id: version
+        run: |
+          $version = "${{ github.ref_name }}"
+          if ($version -eq "") { $version = "dev" }
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -31,19 +39,19 @@ jobs:
       - name: Build executable
         run: |
           cd desktop
-          pyinstaller --onefile --windowed --name=PingDiff src/main.py --add-data "src/config.py;." --add-data "src/ping_tester.py;." --add-data "src/api_client.py;." --add-data "src/gui.py;."
+          pyinstaller --onefile --windowed --name=PingDiff-${{ steps.version.outputs.VERSION }} src/main.py --add-data "src/config.py;." --add-data "src/ping_tester.py;." --add-data "src/api_client.py;." --add-data "src/gui.py;."
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PingDiff-Windows
-          path: desktop/dist/PingDiff.exe
+          name: PingDiff-Windows-${{ steps.version.outputs.VERSION }}
+          path: desktop/dist/PingDiff-${{ steps.version.outputs.VERSION }}.exe
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
-          files: desktop/dist/PingDiff.exe
+          files: desktop/dist/PingDiff-${{ steps.version.outputs.VERSION }}.exe
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
