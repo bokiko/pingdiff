@@ -298,7 +298,7 @@ class ServerResultCard(tk.Frame):
 
         self.configure(highlightthickness=0)
 
-        inner = tk.Frame(self, bg=bg, padx=20, pady=16)
+        inner = tk.Frame(self, bg=bg, padx=24, pady=16)
         inner.pack(fill=tk.X)
 
         # Left side - server info
@@ -307,17 +307,17 @@ class ServerResultCard(tk.Frame):
 
         # Best badge
         if is_best:
-            badge = tk.Label(left, text="RECOMMENDED",
-                           font=get_font(9, "bold"),
+            badge = tk.Label(left, text="★ BEST",
+                           font=get_font(10, "bold"),
                            bg=COLORS["success"], fg="#ffffff",
-                           padx=8, pady=2)
-            badge.pack(anchor=tk.W, pady=(0, 6))
+                           padx=10, pady=3)
+            badge.pack(anchor=tk.W, pady=(0, 8))
 
         # Server name
         is_failed = result.packet_loss >= 100
         name_color = COLORS["text_dim"] if is_failed else COLORS["text"]
         tk.Label(left, text=result.server_location,
-                font=get_font(15, "bold"),
+                font=get_font(16, "bold"),
                 bg=bg, fg=name_color).pack(anchor=tk.W)
 
         # Right side - stats
@@ -326,7 +326,7 @@ class ServerResultCard(tk.Frame):
 
         if is_failed:
             tk.Label(right, text="Unreachable",
-                    font=get_font(14),
+                    font=get_font(15),
                     bg=bg, fg=COLORS["error"]).pack(anchor=tk.E)
         else:
             # Ping value
@@ -344,10 +344,10 @@ class ServerResultCard(tk.Frame):
             ping_frame.pack(anchor=tk.E)
 
             tk.Label(ping_frame, text=f"{result.ping_avg:.0f}",
-                    font=get_font(22, "bold"),
+                    font=get_font(24, "bold"),
                     bg=bg, fg=ping_color).pack(side=tk.LEFT)
             tk.Label(ping_frame, text=" ms",
-                    font=get_font(12),
+                    font=get_font(13),
                     bg=bg, fg=COLORS["text_muted"]).pack(side=tk.LEFT, pady=(6, 0))
 
             # Jitter and packet loss
@@ -356,7 +356,7 @@ class ServerResultCard(tk.Frame):
                 stats_text += f" · {result.packet_loss:.0f}% loss"
 
             tk.Label(right, text=stats_text,
-                    font=get_font(11),
+                    font=get_font(12),
                     bg=bg, fg=COLORS["text_dim"]).pack(anchor=tk.E)
 
 
@@ -366,8 +366,8 @@ class PingDiffApp:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("PingDiff")
-        self.root.geometry("440x880")
-        self.root.minsize(400, 820)
+        self.root.geometry("580x820")
+        self.root.minsize(520, 780)
         self.root.configure(bg=COLORS["bg"])
 
         # Try to set icon
@@ -395,9 +395,9 @@ class PingDiffApp:
         self._load_data()
 
     def _create_ui(self):
-        # Main container with padding
+        # Main container with padding (32px grid)
         main = tk.Frame(self.root, bg=COLORS["bg"])
-        main.pack(fill=tk.BOTH, expand=True, padx=28, pady=24)
+        main.pack(fill=tk.BOTH, expand=True, padx=32, pady=32)
 
         # Header
         self._create_header(main)
@@ -435,51 +435,51 @@ class PingDiffApp:
         title_row.pack(fill=tk.X)
 
         tk.Label(title_row, text="PingDiff",
-                font=get_font(28, "bold"),
+                font=get_font(32, "bold"),
                 bg=COLORS["bg"], fg=COLORS["text"]).pack(side=tk.LEFT)
 
         # Version badge
         version_badge = tk.Label(title_row, text=f"v{APP_VERSION}",
-                                font=get_font(10),
+                                font=get_font(11),
                                 bg=COLORS["bg_tertiary"], fg=COLORS["text_muted"],
-                                padx=10, pady=3)
-        version_badge.pack(side=tk.LEFT, padx=(12, 0), pady=(6, 0))
+                                padx=12, pady=4)
+        version_badge.pack(side=tk.LEFT, padx=(16, 0), pady=(8, 0))
 
         # Subtitle
         tk.Label(header, text="Game Server Connection Tester",
-                font=get_font(13),
-                bg=COLORS["bg"], fg=COLORS["text_muted"]).pack(anchor=tk.W, pady=(4, 0))
+                font=get_font(14),
+                bg=COLORS["bg"], fg=COLORS["text_muted"]).pack(anchor=tk.W, pady=(8, 0))
 
     def _create_isp_section(self, parent):
-        card = ModernCard(parent, padx=20, pady=16)
-        card.pack(fill=tk.X, pady=(0, 20))
+        card = ModernCard(parent, padx=24, pady=20)
+        card.pack(fill=tk.X, pady=(0, 24))
 
         # ISP Row
         isp_row = tk.Frame(card, bg=COLORS["card"])
         isp_row.pack(fill=tk.X)
 
         tk.Label(isp_row, text="Your ISP",
-                font=get_font(12),
+                font=get_font(13),
                 bg=COLORS["card"], fg=COLORS["text_dim"]).pack(side=tk.LEFT)
 
         self.isp_label = tk.Label(isp_row, text="Detecting...",
-                                  font=get_font(13, "bold"),
+                                  font=get_font(14, "bold"),
                                   bg=COLORS["card"], fg=COLORS["text"])
         self.isp_label.pack(side=tk.RIGHT)
 
         # Separator
-        tk.Frame(card, bg=COLORS["separator"], height=1).pack(fill=tk.X, pady=12)
+        tk.Frame(card, bg=COLORS["separator"], height=1).pack(fill=tk.X, pady=16)
 
         # Location Row
         loc_row = tk.Frame(card, bg=COLORS["card"])
         loc_row.pack(fill=tk.X)
 
         tk.Label(loc_row, text="Location",
-                font=get_font(12),
+                font=get_font(13),
                 bg=COLORS["card"], fg=COLORS["text_dim"]).pack(side=tk.LEFT)
 
         self.location_label = tk.Label(loc_row, text="...",
-                                       font=get_font(13),
+                                       font=get_font(14),
                                        bg=COLORS["card"], fg=COLORS["text_secondary"])
         self.location_label.pack(side=tk.RIGHT)
 
@@ -488,10 +488,10 @@ class PingDiffApp:
         section.pack(fill=tk.X, pady=(0, 16))
 
         tk.Label(section, text="Select Game",
-                font=get_font(13, "bold"),
-                bg=COLORS["bg"], fg=COLORS["text"]).pack(anchor=tk.W, pady=(0, 10))
+                font=get_font(14, "bold"),
+                bg=COLORS["bg"], fg=COLORS["text"]).pack(anchor=tk.W, pady=(0, 12))
 
-        # Game buttons
+        # Game buttons container with wrap support
         btn_frame = tk.Frame(section, bg=COLORS["bg"])
         btn_frame.pack(fill=tk.X)
 
@@ -499,14 +499,14 @@ class PingDiffApp:
         for game_id, game_info in GAMES.items():
             btn = tk.Label(
                 btn_frame,
-                text=game_info["name"],
-                font=get_font(10, "bold"),
+                text=game_info["short"],  # Use short names to fit all games
+                font=get_font(11, "bold"),
                 bg=COLORS["bg_secondary"],
                 fg=COLORS["text_muted"],
-                padx=12, pady=8,
+                padx=14, pady=10,
                 cursor="hand2"
             )
-            btn.pack(side=tk.LEFT, padx=(0, 6))
+            btn.pack(side=tk.LEFT, padx=(0, 8))
             btn.bind("<Button-1>", lambda e, g=game_id: self._select_game(g))
             self.game_buttons[game_id] = btn
 
@@ -543,11 +543,11 @@ class PingDiffApp:
 
     def _create_region_section(self, parent):
         section = tk.Frame(parent, bg=COLORS["bg"])
-        section.pack(fill=tk.X, pady=(0, 20))
+        section.pack(fill=tk.X, pady=(0, 24))
 
         tk.Label(section, text="Select Region",
-                font=get_font(13, "bold"),
-                bg=COLORS["bg"], fg=COLORS["text"]).pack(anchor=tk.W, pady=(0, 10))
+                font=get_font(14, "bold"),
+                bg=COLORS["bg"], fg=COLORS["text"]).pack(anchor=tk.W, pady=(0, 12))
 
         # Region buttons
         btn_frame = tk.Frame(section, bg=COLORS["bg"])
@@ -558,10 +558,10 @@ class PingDiffApp:
             btn = tk.Label(
                 btn_frame,
                 text=region,
-                font=get_font(11, "bold"),
+                font=get_font(12, "bold"),
                 bg=COLORS["bg_secondary"],
                 fg=COLORS["text_muted"],
-                padx=16, pady=8,
+                padx=20, pady=10,
                 cursor="hand2"
             )
             btn.pack(side=tk.LEFT, padx=(0, 8))
@@ -587,12 +587,12 @@ class PingDiffApp:
         section = tk.Frame(parent, bg=COLORS["bg"])
         section.pack(pady=16)
 
-        self.progress_ring = GlowingRing(section, size=200)
+        self.progress_ring = GlowingRing(section, size=180)
         self.progress_ring.pack()
 
     def _create_test_button(self, parent):
         btn_frame = tk.Frame(parent, bg=COLORS["bg"])
-        btn_frame.pack(pady=(8, 24))
+        btn_frame.pack(pady=(8, 16))
 
         self.test_button = PillButton(
             btn_frame,
@@ -610,14 +610,14 @@ class PingDiffApp:
 
         # Header row
         header = tk.Frame(section, bg=COLORS["bg"])
-        header.pack(fill=tk.X, pady=(0, 12))
+        header.pack(fill=tk.X, pady=(0, 16))
 
         tk.Label(header, text="Results",
-                font=get_font(15, "bold"),
+                font=get_font(16, "bold"),
                 bg=COLORS["bg"], fg=COLORS["text"]).pack(side=tk.LEFT)
 
         self.results_count = tk.Label(header, text="",
-                                      font=get_font(12),
+                                      font=get_font(13),
                                       bg=COLORS["bg"], fg=COLORS["text_muted"])
         self.results_count.pack(side=tk.RIGHT)
 
@@ -626,14 +626,14 @@ class PingDiffApp:
         canvas_frame.pack(fill=tk.BOTH, expand=True)
 
         canvas = tk.Canvas(canvas_frame, bg=COLORS["bg"],
-                          highlightthickness=0, height=160)
+                          highlightthickness=0, height=140)
         scrollbar = ttk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
 
         self.results_frame = tk.Frame(canvas, bg=COLORS["bg"])
         self.results_frame.bind("<Configure>",
                                lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
-        canvas.create_window((0, 0), window=self.results_frame, anchor="nw", width=380)
+        canvas.create_window((0, 0), window=self.results_frame, anchor="nw", width=500)
         canvas.configure(yscrollcommand=scrollbar.set)
 
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -647,25 +647,25 @@ class PingDiffApp:
         # Empty state
         self.empty_label = tk.Label(self.results_frame,
                                     text="Run a test to see results",
-                                    font=get_font(13),
+                                    font=get_font(14),
                                     bg=COLORS["bg"], fg=COLORS["text_dim"])
-        self.empty_label.pack(pady=40)
+        self.empty_label.pack(pady=32)
 
     def _create_settings_section(self, parent):
-        card = ModernCard(parent, padx=20, pady=16)
-        card.pack(fill=tk.X, pady=(20, 0))
+        card = ModernCard(parent, padx=24, pady=20)
+        card.pack(fill=tk.X, pady=(16, 0))
 
         # Settings header
         tk.Label(card, text="Settings",
-                font=get_font(13, "bold"),
-                bg=COLORS["card"], fg=COLORS["text"]).pack(anchor=tk.W, pady=(0, 12))
+                font=get_font(14, "bold"),
+                bg=COLORS["card"], fg=COLORS["text"]).pack(anchor=tk.W, pady=(0, 16))
 
         # Share toggle row
         share_row = tk.Frame(card, bg=COLORS["card"])
         share_row.pack(fill=tk.X)
 
         tk.Label(share_row, text="Share results anonymously",
-                font=get_font(12),
+                font=get_font(13),
                 bg=COLORS["card"], fg=COLORS["text_secondary"]).pack(side=tk.LEFT)
 
         self.share_toggle = AppleToggle(share_row, self.share_results_var,
@@ -673,17 +673,17 @@ class PingDiffApp:
         self.share_toggle.pack(side=tk.RIGHT)
 
         # Data folder row
-        tk.Frame(card, bg=COLORS["separator"], height=1).pack(fill=tk.X, pady=12)
+        tk.Frame(card, bg=COLORS["separator"], height=1).pack(fill=tk.X, pady=16)
 
         folder_row = tk.Frame(card, bg=COLORS["card"])
         folder_row.pack(fill=tk.X)
 
         tk.Label(folder_row, text="App data",
-                font=get_font(12),
+                font=get_font(13),
                 bg=COLORS["card"], fg=COLORS["text_dim"]).pack(side=tk.LEFT)
 
         folder_link = tk.Label(folder_row, text="Open Folder",
-                              font=get_font(12),
+                              font=get_font(13),
                               bg=COLORS["card"], fg=COLORS["accent"],
                               cursor="hand2")
         folder_link.pack(side=tk.RIGHT)
@@ -701,14 +701,14 @@ class PingDiffApp:
 
     def _create_footer(self, parent):
         footer = tk.Frame(parent, bg=COLORS["bg"])
-        footer.pack(fill=tk.X, pady=(20, 0))
+        footer.pack(fill=tk.X, pady=(16, 0))
 
         # Dashboard button
         self.dashboard_btn = PillButton(
             footer,
             text="Open Dashboard",
             command=self._open_dashboard,
-            width=140,
+            width=150,
             height=40,
             style="secondary"
         )
@@ -719,16 +719,16 @@ class PingDiffApp:
             footer,
             text="GitHub",
             command=lambda: webbrowser.open("https://github.com/bokiko/pingdiff"),
-            width=90,
+            width=100,
             height=40,
             style="secondary"
         )
-        github_btn.pack(side=tk.LEFT, padx=(10, 0))
+        github_btn.pack(side=tk.LEFT, padx=(12, 0))
 
         # Game label (dynamic)
         game_name = GAMES.get(self.current_game, {}).get("name", "Unknown")
         self.game_label = tk.Label(footer, text=game_name,
-                font=get_font(11),
+                font=get_font(12),
                 bg=COLORS["bg"], fg=COLORS["text_dim"])
         self.game_label.pack(side=tk.RIGHT)
 
