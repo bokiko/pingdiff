@@ -168,21 +168,21 @@ class AppleToggle(tk.Canvas):
 class GlowingRing(tk.Canvas):
     """Modern circular progress with glow effect"""
 
-    def __init__(self, parent, size=220, **kwargs):
+    def __init__(self, parent, size=140, **kwargs):
         super().__init__(parent, width=size, height=size,
                         bg=COLORS["bg"], highlightthickness=0, **kwargs)
         self.size = size
         self.progress = 0
         self.center_text = ""
-        self.sub_text = "Ready to test"
+        self.sub_text = "Ready"
         self.ping_value = None
         self._draw()
 
     def _draw(self):
         self.delete("all")
         center = self.size // 2
-        outer_radius = (self.size - 30) // 2
-        thickness = 6
+        outer_radius = (self.size - 20) // 2
+        thickness = 5
 
         # Background ring
         self._draw_ring(center, outer_radius, thickness, COLORS["bg_tertiary"])
@@ -196,26 +196,26 @@ class GlowingRing(tk.Canvas):
         # Center content
         if self.ping_value is not None:
             # Large ping number
-            self.create_text(center, center - 10,
+            self.create_text(center, center - 6,
                            text=str(int(self.ping_value)),
                            fill=COLORS["text"],
-                           font=get_font(48, "bold"))
-            self.create_text(center, center + 30,
+                           font=get_font(36, "bold"))
+            self.create_text(center, center + 20,
                            text="ms",
                            fill=COLORS["text_muted"],
-                           font=get_font(16))
+                           font=get_font(12))
         elif self.center_text:
-            self.create_text(center, center - 5,
+            self.create_text(center, center,
                            text=self.center_text,
                            fill=COLORS["text"],
-                           font=get_font(18, "bold"))
+                           font=get_font(14, "bold"))
 
-        # Subtitle
-        if self.sub_text:
-            self.create_text(center, center + 55,
+        # Subtitle below ring (only if not showing ping)
+        if self.sub_text and self.ping_value is None:
+            self.create_text(center, center + 38,
                            text=self.sub_text,
                            fill=COLORS["text_muted"],
-                           font=get_font(12))
+                           font=get_font(10))
 
     def _draw_ring(self, center, radius, thickness, color, extent=360):
         self.create_arc(
@@ -236,7 +236,7 @@ class GlowingRing(tk.Canvas):
     def reset(self):
         self.progress = 0
         self.center_text = ""
-        self.sub_text = "Ready to test"
+        self.sub_text = "Ready"
         self.ping_value = None
         self._draw()
 
@@ -366,8 +366,8 @@ class PingDiffApp:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("PingDiff")
-        self.root.geometry("580x820")
-        self.root.minsize(520, 780)
+        self.root.geometry("600x700")
+        self.root.minsize(550, 650)
         self.root.configure(bg=COLORS["bg"])
 
         # Try to set icon
@@ -395,122 +395,116 @@ class PingDiffApp:
         self._load_data()
 
     def _create_ui(self):
-        # Main container with padding (32px grid)
+        # Main container with compact padding
         main = tk.Frame(self.root, bg=COLORS["bg"])
-        main.pack(fill=tk.BOTH, expand=True, padx=32, pady=32)
+        main.pack(fill=tk.BOTH, expand=True, padx=24, pady=20)
 
-        # Header
+        # Header with ISP info inline
         self._create_header(main)
 
-        # ISP Info
-        self._create_isp_section(main)
+        # Game & Region Selectors (compact)
+        self._create_selectors_section(main)
 
-        # Game Selector
-        self._create_game_section(main)
+        # Progress Ring + Test Button (centered)
+        self._create_test_section(main)
 
-        # Region Selector
-        self._create_region_section(main)
-
-        # Progress Ring
-        self._create_progress_section(main)
-
-        # Test Button
-        self._create_test_button(main)
-
-        # Results
+        # Results (expandable)
         self._create_results_section(main)
 
-        # Settings
-        self._create_settings_section(main)
-
-        # Footer
+        # Footer with settings inline
         self._create_footer(main)
 
     def _create_header(self, parent):
         header = tk.Frame(parent, bg=COLORS["bg"])
-        header.pack(fill=tk.X, pady=(0, 24))
+        header.pack(fill=tk.X, pady=(0, 16))
 
-        # Title row
+        # Title row with version
         title_row = tk.Frame(header, bg=COLORS["bg"])
         title_row.pack(fill=tk.X)
 
         tk.Label(title_row, text="PingDiff",
-                font=get_font(32, "bold"),
+                font=get_font(28, "bold"),
                 bg=COLORS["bg"], fg=COLORS["text"]).pack(side=tk.LEFT)
 
-        # Version badge
         version_badge = tk.Label(title_row, text=f"v{APP_VERSION}",
-                                font=get_font(11),
+                                font=get_font(10),
                                 bg=COLORS["bg_tertiary"], fg=COLORS["text_muted"],
-                                padx=12, pady=4)
-        version_badge.pack(side=tk.LEFT, padx=(16, 0), pady=(8, 0))
+                                padx=8, pady=2)
+        version_badge.pack(side=tk.LEFT, padx=(12, 0), pady=(6, 0))
 
-        # Subtitle
-        tk.Label(header, text="Game Server Connection Tester",
-                font=get_font(14),
-                bg=COLORS["bg"], fg=COLORS["text_muted"]).pack(anchor=tk.W, pady=(8, 0))
+        # ISP info on the right side of header
+        isp_frame = tk.Frame(title_row, bg=COLORS["bg"])
+        isp_frame.pack(side=tk.RIGHT)
 
-    def _create_isp_section(self, parent):
-        card = ModernCard(parent, padx=24, pady=20)
-        card.pack(fill=tk.X, pady=(0, 24))
-
-        # ISP Row
-        isp_row = tk.Frame(card, bg=COLORS["card"])
-        isp_row.pack(fill=tk.X)
-
-        tk.Label(isp_row, text="Your ISP",
-                font=get_font(13),
-                bg=COLORS["card"], fg=COLORS["text_dim"]).pack(side=tk.LEFT)
-
-        self.isp_label = tk.Label(isp_row, text="Detecting...",
-                                  font=get_font(14, "bold"),
-                                  bg=COLORS["card"], fg=COLORS["text"])
+        self.isp_label = tk.Label(isp_frame, text="Detecting...",
+                                  font=get_font(11),
+                                  bg=COLORS["bg"], fg=COLORS["text_muted"])
         self.isp_label.pack(side=tk.RIGHT)
 
-        # Separator
-        tk.Frame(card, bg=COLORS["separator"], height=1).pack(fill=tk.X, pady=16)
+        tk.Label(isp_frame, text="ISP: ",
+                font=get_font(11),
+                bg=COLORS["bg"], fg=COLORS["text_dim"]).pack(side=tk.RIGHT)
 
-        # Location Row
-        loc_row = tk.Frame(card, bg=COLORS["card"])
-        loc_row.pack(fill=tk.X)
+        # Location below ISP
+        self.location_label = tk.Label(header, text="",
+                                       font=get_font(11),
+                                       bg=COLORS["bg"], fg=COLORS["text_dim"])
+        self.location_label.pack(anchor=tk.E)
 
-        tk.Label(loc_row, text="Location",
-                font=get_font(13),
-                bg=COLORS["card"], fg=COLORS["text_dim"]).pack(side=tk.LEFT)
-
-        self.location_label = tk.Label(loc_row, text="...",
-                                       font=get_font(14),
-                                       bg=COLORS["card"], fg=COLORS["text_secondary"])
-        self.location_label.pack(side=tk.RIGHT)
-
-    def _create_game_section(self, parent):
+    def _create_selectors_section(self, parent):
+        """Combined game and region selectors"""
         section = tk.Frame(parent, bg=COLORS["bg"])
         section.pack(fill=tk.X, pady=(0, 16))
 
-        tk.Label(section, text="Select Game",
-                font=get_font(14, "bold"),
-                bg=COLORS["bg"], fg=COLORS["text"]).pack(anchor=tk.W, pady=(0, 12))
+        # Game row
+        game_row = tk.Frame(section, bg=COLORS["bg"])
+        game_row.pack(fill=tk.X, pady=(0, 10))
 
-        # Game buttons container with wrap support
-        btn_frame = tk.Frame(section, bg=COLORS["bg"])
-        btn_frame.pack(fill=tk.X)
+        tk.Label(game_row, text="Game:",
+                font=get_font(12, "bold"),
+                bg=COLORS["bg"], fg=COLORS["text"]).pack(side=tk.LEFT, padx=(0, 12))
 
         self.game_buttons = {}
         for game_id, game_info in GAMES.items():
             btn = tk.Label(
-                btn_frame,
-                text=game_info["short"],  # Use short names to fit all games
+                game_row,
+                text=game_info["short"],
                 font=get_font(11, "bold"),
                 bg=COLORS["bg_secondary"],
                 fg=COLORS["text_muted"],
-                padx=14, pady=10,
+                padx=12, pady=6,
                 cursor="hand2"
             )
-            btn.pack(side=tk.LEFT, padx=(0, 8))
+            btn.pack(side=tk.LEFT, padx=(0, 6))
             btn.bind("<Button-1>", lambda e, g=game_id: self._select_game(g))
             self.game_buttons[game_id] = btn
 
         self._update_game_buttons()
+
+        # Region row
+        region_row = tk.Frame(section, bg=COLORS["bg"])
+        region_row.pack(fill=tk.X)
+
+        tk.Label(region_row, text="Region:",
+                font=get_font(12, "bold"),
+                bg=COLORS["bg"], fg=COLORS["text"]).pack(side=tk.LEFT, padx=(0, 12))
+
+        self.region_buttons = {}
+        for region in REGIONS:
+            btn = tk.Label(
+                region_row,
+                text=region,
+                font=get_font(11, "bold"),
+                bg=COLORS["bg_secondary"],
+                fg=COLORS["text_muted"],
+                padx=14, pady=6,
+                cursor="hand2"
+            )
+            btn.pack(side=tk.LEFT, padx=(0, 6))
+            btn.bind("<Button-1>", lambda e, r=region: self._select_region(r))
+            self.region_buttons[region] = btn
+
+        self._update_region_buttons()
 
     def _select_game(self, game_id):
         if self.is_testing:
@@ -518,7 +512,6 @@ class PingDiffApp:
         self.game_var.set(game_id)
         self.current_game = game_id
         self._update_game_buttons()
-        self._update_footer_label()
         # Reload servers for new game
         self._reload_servers()
 
@@ -536,40 +529,6 @@ class PingDiffApp:
         thread = threading.Thread(target=load, daemon=True)
         thread.start()
 
-    def _update_footer_label(self):
-        game_name = GAMES.get(self.current_game, {}).get("name", "Unknown")
-        if hasattr(self, 'game_label'):
-            self.game_label.config(text=game_name)
-
-    def _create_region_section(self, parent):
-        section = tk.Frame(parent, bg=COLORS["bg"])
-        section.pack(fill=tk.X, pady=(0, 24))
-
-        tk.Label(section, text="Select Region",
-                font=get_font(14, "bold"),
-                bg=COLORS["bg"], fg=COLORS["text"]).pack(anchor=tk.W, pady=(0, 12))
-
-        # Region buttons
-        btn_frame = tk.Frame(section, bg=COLORS["bg"])
-        btn_frame.pack(fill=tk.X)
-
-        self.region_buttons = {}
-        for region in REGIONS:
-            btn = tk.Label(
-                btn_frame,
-                text=region,
-                font=get_font(12, "bold"),
-                bg=COLORS["bg_secondary"],
-                fg=COLORS["text_muted"],
-                padx=20, pady=10,
-                cursor="hand2"
-            )
-            btn.pack(side=tk.LEFT, padx=(0, 8))
-            btn.bind("<Button-1>", lambda e, r=region: self._select_region(r))
-            self.region_buttons[region] = btn
-
-        self._update_region_buttons()
-
     def _select_region(self, region):
         self.region_var.set(region)
         self.settings.default_region = region
@@ -583,111 +542,72 @@ class PingDiffApp:
             else:
                 btn.config(bg=COLORS["bg_secondary"], fg=COLORS["text_muted"])
 
-    def _create_progress_section(self, parent):
+    def _create_test_section(self, parent):
+        """Combined progress ring and test button"""
         section = tk.Frame(parent, bg=COLORS["bg"])
-        section.pack(pady=16)
+        section.pack(pady=12)
 
-        self.progress_ring = GlowingRing(section, size=180)
+        # Smaller progress ring
+        self.progress_ring = GlowingRing(section, size=140)
         self.progress_ring.pack()
 
-    def _create_test_button(self, parent):
-        btn_frame = tk.Frame(parent, bg=COLORS["bg"])
-        btn_frame.pack(pady=(8, 16))
-
+        # Test button right below
         self.test_button = PillButton(
-            btn_frame,
+            section,
             text="Start Test",
             command=self._start_test,
-            width=200,
-            height=50,
+            width=180,
+            height=44,
             style="primary"
         )
-        self.test_button.pack()
+        self.test_button.pack(pady=(12, 0))
 
     def _create_results_section(self, parent):
         section = tk.Frame(parent, bg=COLORS["bg"])
-        section.pack(fill=tk.BOTH, expand=True)
+        section.pack(fill=tk.BOTH, expand=True, pady=(8, 0))
 
         # Header row
         header = tk.Frame(section, bg=COLORS["bg"])
-        header.pack(fill=tk.X, pady=(0, 16))
+        header.pack(fill=tk.X, pady=(0, 8))
 
         tk.Label(header, text="Results",
-                font=get_font(16, "bold"),
+                font=get_font(14, "bold"),
                 bg=COLORS["bg"], fg=COLORS["text"]).pack(side=tk.LEFT)
 
         self.results_count = tk.Label(header, text="",
-                                      font=get_font(13),
+                                      font=get_font(12),
                                       bg=COLORS["bg"], fg=COLORS["text_muted"])
         self.results_count.pack(side=tk.RIGHT)
 
-        # Scrollable results
+        # Scrollable results - takes remaining space
         canvas_frame = tk.Frame(section, bg=COLORS["bg"])
         canvas_frame.pack(fill=tk.BOTH, expand=True)
 
-        canvas = tk.Canvas(canvas_frame, bg=COLORS["bg"],
-                          highlightthickness=0, height=140)
-        scrollbar = ttk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
+        self.results_canvas = tk.Canvas(canvas_frame, bg=COLORS["bg"],
+                          highlightthickness=0)
+        scrollbar = ttk.Scrollbar(canvas_frame, orient="vertical", command=self.results_canvas.yview)
 
-        self.results_frame = tk.Frame(canvas, bg=COLORS["bg"])
+        self.results_frame = tk.Frame(self.results_canvas, bg=COLORS["bg"])
         self.results_frame.bind("<Configure>",
-                               lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+                               lambda e: self.results_canvas.configure(scrollregion=self.results_canvas.bbox("all")))
 
-        canvas.create_window((0, 0), window=self.results_frame, anchor="nw", width=500)
-        canvas.configure(yscrollcommand=scrollbar.set)
+        self.results_canvas.create_window((0, 0), window=self.results_frame, anchor="nw", width=540)
+        self.results_canvas.configure(yscrollcommand=scrollbar.set)
 
-        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.results_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Mouse wheel scroll
         def _scroll(event):
-            canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-        canvas.bind_all("<MouseWheel>", _scroll)
+            self.results_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        self.results_canvas.bind_all("<MouseWheel>", _scroll)
 
         # Empty state
         self.empty_label = tk.Label(self.results_frame,
                                     text="Run a test to see results",
-                                    font=get_font(14),
+                                    font=get_font(13),
                                     bg=COLORS["bg"], fg=COLORS["text_dim"])
-        self.empty_label.pack(pady=32)
-
-    def _create_settings_section(self, parent):
-        card = ModernCard(parent, padx=24, pady=20)
-        card.pack(fill=tk.X, pady=(16, 0))
-
-        # Settings header
-        tk.Label(card, text="Settings",
-                font=get_font(14, "bold"),
-                bg=COLORS["card"], fg=COLORS["text"]).pack(anchor=tk.W, pady=(0, 16))
-
-        # Share toggle row
-        share_row = tk.Frame(card, bg=COLORS["card"])
-        share_row.pack(fill=tk.X)
-
-        tk.Label(share_row, text="Share results anonymously",
-                font=get_font(13),
-                bg=COLORS["card"], fg=COLORS["text_secondary"]).pack(side=tk.LEFT)
-
-        self.share_toggle = AppleToggle(share_row, self.share_results_var,
-                                        command=self._on_share_toggle)
-        self.share_toggle.pack(side=tk.RIGHT)
-
-        # Data folder row
-        tk.Frame(card, bg=COLORS["separator"], height=1).pack(fill=tk.X, pady=16)
-
-        folder_row = tk.Frame(card, bg=COLORS["card"])
-        folder_row.pack(fill=tk.X)
-
-        tk.Label(folder_row, text="App data",
-                font=get_font(13),
-                bg=COLORS["card"], fg=COLORS["text_dim"]).pack(side=tk.LEFT)
-
-        folder_link = tk.Label(folder_row, text="Open Folder",
-                              font=get_font(13),
-                              bg=COLORS["card"], fg=COLORS["accent"],
-                              cursor="hand2")
-        folder_link.pack(side=tk.RIGHT)
-        folder_link.bind("<Button-1>", self._open_data_folder)
+        self.empty_label.pack(pady=24)
 
     def _on_share_toggle(self):
         self.settings.share_results = self.share_results_var.get()
@@ -701,36 +621,53 @@ class PingDiffApp:
 
     def _create_footer(self, parent):
         footer = tk.Frame(parent, bg=COLORS["bg"])
-        footer.pack(fill=tk.X, pady=(16, 0))
+        footer.pack(fill=tk.X, pady=(12, 0))
 
-        # Dashboard button
+        # Left side - buttons
+        left = tk.Frame(footer, bg=COLORS["bg"])
+        left.pack(side=tk.LEFT)
+
         self.dashboard_btn = PillButton(
-            footer,
-            text="Open Dashboard",
+            left,
+            text="Dashboard",
             command=self._open_dashboard,
-            width=150,
-            height=40,
+            width=110,
+            height=36,
             style="secondary"
         )
         self.dashboard_btn.pack(side=tk.LEFT)
 
-        # GitHub button
         github_btn = PillButton(
-            footer,
+            left,
             text="GitHub",
             command=lambda: webbrowser.open("https://github.com/bokiko/pingdiff"),
-            width=100,
-            height=40,
+            width=80,
+            height=36,
             style="secondary"
         )
-        github_btn.pack(side=tk.LEFT, padx=(12, 0))
+        github_btn.pack(side=tk.LEFT, padx=(8, 0))
 
-        # Game label (dynamic)
-        game_name = GAMES.get(self.current_game, {}).get("name", "Unknown")
-        self.game_label = tk.Label(footer, text=game_name,
-                font=get_font(12),
-                bg=COLORS["bg"], fg=COLORS["text_dim"])
-        self.game_label.pack(side=tk.RIGHT)
+        folder_btn = PillButton(
+            left,
+            text="Data",
+            command=self._open_data_folder,
+            width=60,
+            height=36,
+            style="secondary"
+        )
+        folder_btn.pack(side=tk.LEFT, padx=(8, 0))
+
+        # Right side - share toggle
+        right = tk.Frame(footer, bg=COLORS["bg"])
+        right.pack(side=tk.RIGHT)
+
+        tk.Label(right, text="Share:",
+                font=get_font(11),
+                bg=COLORS["bg"], fg=COLORS["text_dim"]).pack(side=tk.LEFT, padx=(0, 8))
+
+        self.share_toggle = AppleToggle(right, self.share_results_var,
+                                        command=self._on_share_toggle)
+        self.share_toggle.pack(side=tk.LEFT)
 
     def _load_data(self):
         def load():
