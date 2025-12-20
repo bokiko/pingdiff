@@ -499,14 +499,14 @@ class PingDiffApp:
         for game_id, game_info in GAMES.items():
             btn = tk.Label(
                 btn_frame,
-                text=game_info["short"],
-                font=get_font(11, "bold"),
+                text=game_info["name"],
+                font=get_font(10, "bold"),
                 bg=COLORS["bg_secondary"],
                 fg=COLORS["text_muted"],
-                padx=16, pady=8,
+                padx=12, pady=8,
                 cursor="hand2"
             )
-            btn.pack(side=tk.LEFT, padx=(0, 8))
+            btn.pack(side=tk.LEFT, padx=(0, 6))
             btn.bind("<Button-1>", lambda e, g=game_id: self._select_game(g))
             self.game_buttons[game_id] = btn
 
