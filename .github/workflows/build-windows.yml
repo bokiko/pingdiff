@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write  # Required for SignPath
 
 jobs:
   build:
@@ -58,6 +59,34 @@ jobs:
       - name: Build installer
         run: |
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" desktop/installer.iss
+
+      # Upload unsigned artifact for SignPath
+      - name: Upload unsigned artifact
+        id: upload-unsigned
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-installer
+          path: desktop/installer_output/PingDiff-Setup-*.exe
+
+      # SignPath code signing (uncomment after SignPath approval)
+      # - name: Sign with SignPath
+      #   id: signpath
+      #   uses: signpath/github-action-submit-signing-request@v2
+      #   with:
+      #     api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
+      #     organization-id: 'YOUR_ORG_ID'  # Replace after approval
+      #     project-slug: 'pingdiff'
+      #     signing-policy-slug: 'release-signing'
+      #     github-artifact-id: '${{ steps.upload-unsigned.outputs.artifact-id }}'
+      #     wait-for-completion: true
+      #     output-artifact-directory: 'signed-output'
+
+      # Upload signed artifact (use this after SignPath is set up)
+      # - name: Upload signed artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: PingDiff-Setup-${{ steps.version.outputs.VERSION }}-signed
+      #     path: signed-output/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
