@@ -87,7 +87,7 @@ export default function Home() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            <span className="text-sm text-blue-400">Now supporting Overwatch 2, CoD, CS2, Battlefield 6 & Marvel Rivals</span>
+            <span className="text-sm text-blue-400">Now supporting 7 games: OW2, CoD, CS2, BF6, Marvel Rivals, Valorant & Fortnite</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight fade-in-delay-1">
@@ -250,13 +250,13 @@ export default function Home() {
                 </span>
               </div>
 
-              <div className="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 w-44 md:w-48 opacity-60">
+              <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-44 md:w-48 card-hover">
                 <div className="w-16 h-16 bg-red-500/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
                   <span className="text-3xl">🎯</span>
                 </div>
                 <h3 className="font-semibold mb-2">Valorant</h3>
-                <span className="text-xs text-zinc-500 bg-zinc-700 px-3 py-1 rounded-full">
-                  Coming Soon
+                <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
+                  Active
                 </span>
               </div>
 
@@ -285,6 +285,16 @@ export default function Home() {
                   <span className="text-3xl">🦸</span>
                 </div>
                 <h3 className="font-semibold mb-2">Marvel Rivals</h3>
+                <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
+                  Active
+                </span>
+              </div>
+
+              <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-44 md:w-48 card-hover">
+                <div className="w-16 h-16 bg-purple-500/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-3xl">🏝️</span>
+                </div>
+                <h3 className="font-semibold mb-2">Fortnite</h3>
                 <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
                   Active
                 </span>

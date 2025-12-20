@@ -12,7 +12,7 @@ API_ENDPOINTS = {
 }
 
 # App Version
-APP_VERSION = "1.13.0"
+APP_VERSION = "1.14.0"
 
 # Ping Configuration
 PING_COUNT = 10  # Number of pings per server
@@ -206,6 +206,62 @@ DEFAULT_SERVERS = {
         "ME": [
             {"id": "me-bhr", "location": "Bahrain", "ip": "52.94.91.1", "port": 443}
         ]
+    },
+    "valorant": {
+        "EU": [
+            {"id": "eu-lon", "location": "London", "ip": "104.160.141.3", "port": 443},
+            {"id": "eu-par", "location": "Paris", "ip": "162.249.72.1", "port": 443},
+            {"id": "eu-fra", "location": "Frankfurt", "ip": "162.249.73.1", "port": 443},
+            {"id": "eu-sto", "location": "Stockholm", "ip": "162.249.74.1", "port": 443},
+            {"id": "eu-war", "location": "Warsaw", "ip": "162.249.75.1", "port": 443}
+        ],
+        "NA": [
+            {"id": "na-ash", "location": "Ashburn", "ip": "104.160.131.3", "port": 443},
+            {"id": "na-chi", "location": "Chicago", "ip": "104.160.136.3", "port": 443},
+            {"id": "na-dal", "location": "Dallas", "ip": "104.160.151.182", "port": 443},
+            {"id": "na-lax", "location": "Los Angeles", "ip": "104.160.159.1", "port": 443},
+            {"id": "na-atl", "location": "Atlanta", "ip": "104.160.156.1", "port": 443},
+            {"id": "na-sea", "location": "Seattle", "ip": "104.160.158.1", "port": 443}
+        ],
+        "ASIA": [
+            {"id": "asia-tok", "location": "Tokyo", "ip": "104.160.129.1", "port": 443},
+            {"id": "asia-seo", "location": "Seoul", "ip": "104.160.142.1", "port": 443},
+            {"id": "asia-sgp", "location": "Singapore", "ip": "151.106.248.1", "port": 443},
+            {"id": "asia-hkg", "location": "Hong Kong", "ip": "104.160.144.1", "port": 443},
+            {"id": "asia-mum", "location": "Mumbai", "ip": "151.106.246.1", "port": 443},
+            {"id": "asia-syd", "location": "Sydney", "ip": "43.229.64.1", "port": 443}
+        ],
+        "SA": [
+            {"id": "sa-sao", "location": "São Paulo", "ip": "104.160.152.1", "port": 443},
+            {"id": "sa-scl", "location": "Santiago", "ip": "104.160.154.1", "port": 443}
+        ],
+        "ME": [
+            {"id": "me-bhr", "location": "Bahrain", "ip": "104.160.146.1", "port": 443}
+        ]
+    },
+    "fortnite": {
+        "EU": [
+            {"id": "eu-lon", "location": "London", "ip": "18.133.162.190", "port": 443},
+            {"id": "eu-fra", "location": "Frankfurt", "ip": "3.66.90.29", "port": 443},
+            {"id": "eu-par", "location": "Paris", "ip": "13.37.148.3", "port": 443},
+            {"id": "eu-sto", "location": "Stockholm", "ip": "15.237.20.100", "port": 443}
+        ],
+        "NA": [
+            {"id": "na-east", "location": "Virginia", "ip": "3.129.132.114", "port": 443},
+            {"id": "na-east2", "location": "Ohio", "ip": "44.192.143.240", "port": 443},
+            {"id": "na-west", "location": "Oregon", "ip": "44.237.247.68", "port": 443},
+            {"id": "na-west2", "location": "California", "ip": "3.101.95.110", "port": 443}
+        ],
+        "ASIA": [
+            {"id": "asia-tok", "location": "Tokyo", "ip": "35.72.18.106", "port": 443},
+            {"id": "asia-syd", "location": "Sydney", "ip": "3.25.159.13", "port": 443}
+        ],
+        "SA": [
+            {"id": "sa-sao", "location": "São Paulo", "ip": "15.228.25.140", "port": 443}
+        ],
+        "ME": [
+            {"id": "me-bhr", "location": "Bahrain", "ip": "15.184.13.113", "port": 443}
+        ]
     }
 }
 
@@ -239,5 +295,13 @@ GAMES = {
     "marvel-rivals": {
         "name": "Marvel Rivals",
         "short": "MR"
+    },
+    "valorant": {
+        "name": "Valorant",
+        "short": "VAL"
+    },
+    "fortnite": {
+        "name": "Fortnite",
+        "short": "FN"
     }
 }
