@@ -12,7 +12,7 @@ API_ENDPOINTS = {
 }
 
 # App Version
-APP_VERSION = "1.10.0"
+APP_VERSION = "1.11.0"
 
 # Ping Configuration
 PING_COUNT = 10  # Number of pings per server
@@ -178,6 +178,34 @@ DEFAULT_SERVERS = {
         "ME": [
             {"id": "me-bhr", "location": "Bahrain", "ip": "35.71.99.128", "port": 25200}
         ]
+    },
+    "marvel-rivals": {
+        "EU": [
+            {"id": "eu-ire", "location": "Dublin", "ip": "52.94.76.1", "port": 443},
+            {"id": "eu-lon", "location": "London", "ip": "52.94.77.1", "port": 443},
+            {"id": "eu-par", "location": "Paris", "ip": "52.94.78.1", "port": 443},
+            {"id": "eu-fra", "location": "Frankfurt", "ip": "52.94.79.1", "port": 443},
+            {"id": "eu-sto", "location": "Stockholm", "ip": "52.94.80.1", "port": 443}
+        ],
+        "NA": [
+            {"id": "na-vir", "location": "Virginia", "ip": "52.94.81.1", "port": 443},
+            {"id": "na-ohi", "location": "Ohio", "ip": "52.94.82.1", "port": 443},
+            {"id": "na-cal", "location": "California", "ip": "52.94.83.1", "port": 443},
+            {"id": "na-ore", "location": "Oregon", "ip": "52.94.84.1", "port": 443}
+        ],
+        "ASIA": [
+            {"id": "asia-tok", "location": "Tokyo", "ip": "52.94.85.1", "port": 443},
+            {"id": "asia-seo", "location": "Seoul", "ip": "52.94.86.1", "port": 443},
+            {"id": "asia-sgp", "location": "Singapore", "ip": "52.94.87.1", "port": 443},
+            {"id": "asia-syd", "location": "Sydney", "ip": "52.94.88.1", "port": 443},
+            {"id": "asia-mum", "location": "Mumbai", "ip": "52.94.89.1", "port": 443}
+        ],
+        "SA": [
+            {"id": "sa-sao", "location": "São Paulo", "ip": "52.94.90.1", "port": 443}
+        ],
+        "ME": [
+            {"id": "me-bhr", "location": "Bahrain", "ip": "52.94.91.1", "port": 443}
+        ]
     }
 }
 
@@ -207,5 +235,9 @@ GAMES = {
     "battlefield-6": {
         "name": "Battlefield 6",
         "short": "BF6"
+    },
+    "marvel-rivals": {
+        "name": "Marvel Rivals",
+        "short": "MR"
     }
 }
