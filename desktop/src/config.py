@@ -12,7 +12,7 @@ API_ENDPOINTS = {
 }
 
 # App Version
-APP_VERSION = "1.14.0"
+APP_VERSION = "1.15.0"
 
 # Ping Configuration
 PING_COUNT = 10  # Number of pings per server
@@ -262,6 +262,55 @@ DEFAULT_SERVERS = {
         "ME": [
             {"id": "me-bhr", "location": "Bahrain", "ip": "15.184.13.113", "port": 443}
         ]
+    },
+    "league-of-legends": {
+        "EU": [
+            {"id": "eu-euw", "location": "Amsterdam", "ip": "104.160.141.3", "port": 443},
+            {"id": "eu-eune", "location": "Frankfurt", "ip": "104.160.142.3", "port": 443},
+            {"id": "eu-tr", "location": "Istanbul", "ip": "104.160.143.3", "port": 443}
+        ],
+        "NA": [
+            {"id": "na-chi", "location": "Chicago", "ip": "104.160.131.3", "port": 443},
+            {"id": "na-lan", "location": "Miami", "ip": "104.160.136.3", "port": 443}
+        ],
+        "ASIA": [
+            {"id": "asia-jp", "location": "Tokyo", "ip": "104.160.129.3", "port": 443},
+            {"id": "asia-kr", "location": "Seoul", "ip": "104.160.142.1", "port": 443},
+            {"id": "asia-sgp", "location": "Singapore", "ip": "151.106.248.3", "port": 443},
+            {"id": "asia-oce", "location": "Sydney", "ip": "104.160.156.1", "port": 443}
+        ],
+        "SA": [
+            {"id": "sa-br", "location": "São Paulo", "ip": "104.160.152.3", "port": 443}
+        ],
+        "ME": [
+            {"id": "me-tr", "location": "Istanbul", "ip": "104.160.143.3", "port": 443}
+        ]
+    },
+    "apex-legends": {
+        "EU": [
+            {"id": "eu-lon", "location": "London", "ip": "13.43.48.202", "port": 443},
+            {"id": "eu-fra", "location": "Frankfurt", "ip": "52.94.141.14", "port": 443},
+            {"id": "eu-ams", "location": "Amsterdam", "ip": "3.66.90.156", "port": 443},
+            {"id": "eu-bel", "location": "Belgium", "ip": "13.37.152.32", "port": 443}
+        ],
+        "NA": [
+            {"id": "na-vir", "location": "Virginia", "ip": "209.54.182.34", "port": 443},
+            {"id": "na-ore", "location": "Oregon", "ip": "52.119.174.12", "port": 443},
+            {"id": "na-ohi", "location": "Ohio", "ip": "3.129.132.172", "port": 443},
+            {"id": "na-dal", "location": "Dallas", "ip": "44.198.247.11", "port": 443}
+        ],
+        "ASIA": [
+            {"id": "asia-tok", "location": "Tokyo", "ip": "99.77.58.84", "port": 443},
+            {"id": "asia-sgp", "location": "Singapore", "ip": "15.221.8.220", "port": 443},
+            {"id": "asia-hkg", "location": "Hong Kong", "ip": "99.83.81.12", "port": 443},
+            {"id": "asia-syd", "location": "Sydney", "ip": "99.83.81.12", "port": 443}
+        ],
+        "SA": [
+            {"id": "sa-sao", "location": "São Paulo", "ip": "177.72.245.178", "port": 443}
+        ],
+        "ME": [
+            {"id": "me-bhr", "location": "Bahrain", "ip": "99.82.132.91", "port": 443}
+        ]
     }
 }
 
@@ -303,5 +352,13 @@ GAMES = {
     "fortnite": {
         "name": "Fortnite",
         "short": "FN"
+    },
+    "league-of-legends": {
+        "name": "League of Legends",
+        "short": "LoL"
+    },
+    "apex-legends": {
+        "name": "Apex Legends",
+        "short": "APEX"
     }
 }

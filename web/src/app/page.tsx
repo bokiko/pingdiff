@@ -87,7 +87,7 @@ export default function Home() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            <span className="text-sm text-blue-400">Now supporting 7 games: OW2, CoD, CS2, BF6, Marvel Rivals, Valorant & Fortnite</span>
+            <span className="text-sm text-blue-400">Now supporting 9 games including LoL, Apex, Valorant, Fortnite & more</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight fade-in-delay-1">
@@ -295,6 +295,26 @@ export default function Home() {
                   <span className="text-3xl">🏝️</span>
                 </div>
                 <h3 className="font-semibold mb-2">Fortnite</h3>
+                <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
+                  Active
+                </span>
+              </div>
+
+              <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-44 md:w-48 card-hover">
+                <div className="w-16 h-16 bg-blue-500/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-3xl">⚔️</span>
+                </div>
+                <h3 className="font-semibold mb-2">League of Legends</h3>
+                <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
+                  Active
+                </span>
+              </div>
+
+              <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-44 md:w-48 card-hover">
+                <div className="w-16 h-16 bg-red-600/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-3xl">🔺</span>
+                </div>
+                <h3 className="font-semibold mb-2">Apex Legends</h3>
                 <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
                   Active
                 </span>
