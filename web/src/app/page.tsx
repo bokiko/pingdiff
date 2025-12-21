@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Activity, Download, Users, Zap, Globe, TrendingUp, Menu, X } from "lucide-react";
+import { Activity, Download, Zap, Globe, TrendingUp, Menu, X } from "lucide-react";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -97,8 +97,8 @@ export default function Home() {
           </h1>
 
           <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed fade-in-delay-2">
-            Test your ping, packet loss, and jitter to game servers without launching the game.
-            Get personalized recommendations based on your ISP and location.
+            Test your ping to game servers across multiple regions at once.
+            Compare EU vs NA vs ASIA and find your best server instantly.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center fade-in-delay-3">
@@ -168,11 +168,11 @@ export default function Home() {
               {/* Feature 3 */}
               <div className="bg-zinc-800/50 border border-zinc-700 rounded-xl p-6 card-hover">
                 <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-4">
-                  <Users className="w-6 h-6 text-purple-500" />
+                  <TrendingUp className="w-6 h-6 text-purple-500" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Community Tips</h3>
+                <h3 className="text-xl font-semibold mb-2">Multi-Region Compare</h3>
                 <p className="text-zinc-400 leading-relaxed">
-                  Learn from other players. Share tips about the best servers for your region and ISP.
+                  Test EU, NA, and ASIA at once. Results ranked by ping so you know exactly where to play.
                 </p>
               </div>
             </div>
@@ -204,7 +204,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Test</h3>
                 <p className="text-zinc-400">
-                  Select your region and click test. Results in under 30 seconds.
+                  Select multiple regions to compare (EU + NA + ASIA). Results in seconds.
                 </p>
               </div>
 
@@ -214,7 +214,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Know</h3>
                 <p className="text-zinc-400">
-                  See your results, track history, and get recommendations on the dashboard.
+                  See results ranked by ping. Find your best server across all regions instantly.
                 </p>
               </div>
             </div>
