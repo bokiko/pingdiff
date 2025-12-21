@@ -67,15 +67,15 @@ PingDiff is a lightweight desktop app that tests your connection to game servers
 ### Download & Install
 
 1. **Download** the latest installer from [Releases](https://github.com/bokiko/pingdiff/releases/latest)
-2. **Run** `PingDiff-Setup-1.15.0.exe`
+2. **Run** `PingDiff-Setup-1.17.0.exe`
 3. **Launch** PingDiff from your Start Menu
 
 ### Usage
 
-1. Select your **game** (9 games available)
-2. Select your **region** (EU, NA, ASIA, SA, ME)
+1. Select your **game** from the dropdown (9 games available)
+2. Select one or more **regions** to compare (EU, NA, ASIA, SA, ME)
 3. Click **Start Test**
-4. View your results and find the **best server**
+4. View results **ranked by ping** - find the best server instantly
 5. Check the [dashboard](https://pingdiff.com/dashboard) for historical data
 
 ---
@@ -191,10 +191,12 @@ pingdiff/
 
 ## Features
 
-### Desktop App (v1.15.0)
+### Desktop App (v1.17.0)
 
 - 🎨 **Apple-inspired UI** - Modern, clean dark theme
 - 🎮 **9 Games** - All major competitive titles
+- 🌍 **Multi-Region Compare** - Test EU + NA + ASIA in one go
+- 🏆 **Ranked Results** - Servers sorted by ping, best first
 - 🔄 **Auto ISP Detection** - Detects your ISP and location
 - 📊 **Real-time Progress** - Circular progress indicator
 - ⚙️ **Settings** - Toggle anonymous data sharing
