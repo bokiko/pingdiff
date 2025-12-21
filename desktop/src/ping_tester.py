@@ -62,6 +62,7 @@ class PingResult:
     successful_pings: int
     total_pings: int
     raw_times: List[float]
+    region: str = ""
     error: Optional[str] = None
 
 
@@ -210,6 +211,7 @@ def test_server(server: Dict, ping_count: int = 10, timeout: int = 1) -> PingRes
         successful_pings=result["packets_received"],
         total_pings=result["packets_sent"],
         raw_times=ping_times,
+        region=server.get("region", ""),
         error=result["error"]
     )
 

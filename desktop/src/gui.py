@@ -313,10 +313,16 @@ class ServerResultCard(tk.Frame):
                            padx=10, pady=3)
             badge.pack(anchor=tk.W, pady=(0, 8))
 
-        # Server name
+        # Server name with region
         is_failed = result.packet_loss >= 100
         name_color = COLORS["text_dim"] if is_failed else COLORS["text"]
-        tk.Label(left, text=result.server_location,
+
+        # Show location with region if available
+        location_text = result.server_location
+        if result.region:
+            location_text = f"{result.server_location} ({result.region})"
+
+        tk.Label(left, text=location_text,
                 font=get_font(16, "bold"),
                 bg=bg, fg=name_color).pack(anchor=tk.W)
 
@@ -505,30 +511,82 @@ class PingDiffApp:
                                            bg=COLORS["bg"], fg=COLORS["text_muted"])
         self.server_count_label.pack(side=tk.RIGHT, padx=(12, 0))
 
-        # Region row
+        # Region checkboxes row
         region_row = tk.Frame(section, bg=COLORS["bg"])
         region_row.pack(fill=tk.X)
 
-        tk.Label(region_row, text="Region:",
+        tk.Label(region_row, text="Regions:",
                 font=get_font(12, "bold"),
                 bg=COLORS["bg"], fg=COLORS["text"]).pack(side=tk.LEFT, padx=(0, 12))
 
-        self.region_buttons = {}
-        for region in REGIONS:
-            btn = tk.Label(
-                region_row,
-                text=region,
-                font=get_font(11, "bold"),
-                bg=COLORS["bg_secondary"],
-                fg=COLORS["text_muted"],
-                padx=14, pady=6,
-                cursor="hand2"
-            )
-            btn.pack(side=tk.LEFT, padx=(0, 6))
-            btn.bind("<Button-1>", lambda e, r=region: self._select_region(r))
-            self.region_buttons[region] = btn
+        # Container for region checkboxes
+        self.region_container = tk.Frame(region_row, bg=COLORS["bg"])
+        self.region_container.pack(side=tk.LEFT, fill=tk.X)
 
-        self._update_region_buttons()
+        # Region checkbox variables and widgets
+        self.region_vars = {}
+        self.region_checks = {}
+        self._create_region_checkboxes()
+
+    def _create_region_checkboxes(self):
+        """Create region checkboxes based on available regions for current game"""
+        # Clear existing checkboxes
+        for widget in self.region_container.winfo_children():
+            widget.destroy()
+        self.region_vars.clear()
+        self.region_checks.clear()
+
+        # Get available regions for this game
+        available_regions = list(self.servers.keys()) if self.servers else REGIONS
+
+        for region in REGIONS:
+            if region not in available_regions:
+                continue
+
+            # Count servers in this region
+            server_count = len(self.servers.get(region, []))
+
+            # Create checkbox variable (default: select first region)
+            var = tk.BooleanVar(value=(region == available_regions[0] if available_regions else False))
+            self.region_vars[region] = var
+
+            # Create styled checkbox frame
+            check_frame = tk.Frame(self.region_container, bg=COLORS["bg"])
+            check_frame.pack(side=tk.LEFT, padx=(0, 8))
+
+            # Custom checkbox look
+            cb = tk.Checkbutton(
+                check_frame,
+                text=f"{region} ({server_count})",
+                variable=var,
+                font=get_font(11),
+                bg=COLORS["bg"],
+                fg=COLORS["text"],
+                selectcolor=COLORS["bg_secondary"],
+                activebackground=COLORS["bg"],
+                activeforeground=COLORS["text"],
+                highlightthickness=0,
+                bd=0,
+                cursor="hand2",
+                command=self._on_region_changed
+            )
+            cb.pack()
+            self.region_checks[region] = cb
+
+    def _on_region_changed(self):
+        """Handle region checkbox change"""
+        self._update_selected_server_count()
+
+    def _update_selected_server_count(self):
+        """Update server count based on selected regions"""
+        total = 0
+        for region, var in self.region_vars.items():
+            if var.get():
+                total += len(self.servers.get(region, []))
+        if total > 0:
+            self.server_count_label.config(text=f"{total} servers selected")
+        else:
+            self.server_count_label.config(text="Select at least one region")
 
     def _on_game_selected(self, event=None):
         """Handle game dropdown selection"""
@@ -542,14 +600,9 @@ class PingDiffApp:
             self._reload_servers()
 
     def _update_server_count(self):
-        """Update the server count label for current game"""
-        total = 0
-        for region, servers in self.servers.items():
-            total += len(servers)
-        if total > 0:
-            self.server_count_label.config(text=f"{total} servers")
-        else:
-            self.server_count_label.config(text="")
+        """Update the server count label and refresh region checkboxes"""
+        self._create_region_checkboxes()
+        self._update_selected_server_count()
 
     def _reload_servers(self):
         def load():
@@ -558,18 +611,9 @@ class PingDiffApp:
         thread = threading.Thread(target=load, daemon=True)
         thread.start()
 
-    def _select_region(self, region):
-        self.region_var.set(region)
-        self.settings.default_region = region
-        self._update_region_buttons()
-
-    def _update_region_buttons(self):
-        selected = self.region_var.get()
-        for region, btn in self.region_buttons.items():
-            if region == selected:
-                btn.config(bg=COLORS["accent"], fg="#ffffff")
-            else:
-                btn.config(bg=COLORS["bg_secondary"], fg=COLORS["text_muted"])
+    def _get_selected_regions(self):
+        """Get list of selected regions"""
+        return [region for region, var in self.region_vars.items() if var.get()]
 
     def _create_test_section(self, parent):
         """Combined progress ring and test button"""
@@ -720,21 +764,31 @@ class PingDiffApp:
         if self.is_testing:
             return
 
+        # Get all selected regions
+        selected_regions = self._get_selected_regions()
+
+        if not selected_regions:
+            messagebox.showerror("Error", "Please select at least one region")
+            return
+
+        # Combine all servers from selected regions
+        all_servers = []
+        for region in selected_regions:
+            region_servers = self.servers.get(region, [])
+            # Add region info to each server for display
+            for server in region_servers:
+                server_with_region = server.copy()
+                server_with_region['region'] = region
+                all_servers.append(server_with_region)
+
+        if not all_servers:
+            messagebox.showerror("Error", "No servers available for selected regions")
+            return
+
         self.is_testing = True
         self.test_button.set_disabled(True)
         self.test_button.set_text("Testing...")
-        self.progress_ring.set_progress(0, "Testing", "Connecting to servers...")
-
-        region = self.region_var.get()
-        servers = self.servers.get(region, [])
-
-        if not servers:
-            messagebox.showerror("Error", f"No servers available for {region}")
-            self.is_testing = False
-            self.test_button.set_disabled(False)
-            self.test_button.set_text("Start Test")
-            self.progress_ring.reset()
-            return
+        self.progress_ring.set_progress(0, "Testing", f"Testing {len(all_servers)} servers...")
 
         def run_test():
             def progress_callback(current, total, result):
@@ -747,7 +801,7 @@ class PingDiffApp:
                 self.root.after(0, lambda: self.progress_ring.set_progress(
                     progress, status, sub))
 
-            self.results = test_all_servers(servers, callback=progress_callback)
+            self.results = test_all_servers(all_servers, callback=progress_callback)
             self.root.after(0, self._show_results)
 
         thread = threading.Thread(target=run_test, daemon=True)
@@ -760,8 +814,10 @@ class PingDiffApp:
 
         best = get_best_server(self.results)
         if best:
-            self.progress_ring.set_progress(
-                100, "", f"Best: {best.server_location}", ping=best.ping_avg)
+            best_text = f"Best: {best.server_location}"
+            if best.region:
+                best_text = f"Best: {best.server_location} ({best.region})"
+            self.progress_ring.set_progress(100, "", best_text, ping=best.ping_avg)
         else:
             self.progress_ring.set_progress(100, "Failed", "All servers unreachable")
 
