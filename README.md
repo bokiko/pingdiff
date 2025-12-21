@@ -36,8 +36,8 @@ PingDiff is a lightweight desktop app that tests your connection to game servers
 
 | Game | Status | Servers |
 |:-----|:------:|:-------:|
-| 🎮 Overwatch 2 | ✅ Active | 13 |
-| 🔫 Call of Duty | ✅ Active | 16 |
+| 🎮 Overwatch 2 | ✅ Active | 14 |
+| 🔫 Call of Duty | ✅ Active | 20 |
 | 💥 Counter-Strike 2 | ✅ Active | 18 |
 | 🎖️ Battlefield 6 | ✅ Active | 16 |
 | 🦸 Marvel Rivals | ✅ Active | 16 |
@@ -46,7 +46,7 @@ PingDiff is a lightweight desktop app that tests your connection to game servers
 | ⚔️ League of Legends | ✅ Active | 11 |
 | 🔺 Apex Legends | ✅ Active | 14 |
 
-**Total: 9 games, 136+ servers worldwide**
+**Total: 9 games, 141 servers worldwide**
 
 ---
 
