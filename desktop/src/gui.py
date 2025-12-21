@@ -452,34 +452,58 @@ class PingDiffApp:
         self.location_label.pack(anchor=tk.E)
 
     def _create_selectors_section(self, parent):
-        """Combined game and region selectors"""
+        """Game dropdown and region selectors"""
         section = tk.Frame(parent, bg=COLORS["bg"])
         section.pack(fill=tk.X, pady=(0, 16))
 
-        # Game row
+        # Game dropdown row
         game_row = tk.Frame(section, bg=COLORS["bg"])
-        game_row.pack(fill=tk.X, pady=(0, 10))
+        game_row.pack(fill=tk.X, pady=(0, 12))
 
         tk.Label(game_row, text="Game:",
                 font=get_font(12, "bold"),
                 bg=COLORS["bg"], fg=COLORS["text"]).pack(side=tk.LEFT, padx=(0, 12))
 
-        self.game_buttons = {}
-        for game_id, game_info in GAMES.items():
-            btn = tk.Label(
-                game_row,
-                text=game_info["short"],
-                font=get_font(11, "bold"),
-                bg=COLORS["bg_secondary"],
-                fg=COLORS["text_muted"],
-                padx=12, pady=6,
-                cursor="hand2"
-            )
-            btn.pack(side=tk.LEFT, padx=(0, 6))
-            btn.bind("<Button-1>", lambda e, g=game_id: self._select_game(g))
-            self.game_buttons[game_id] = btn
+        # Create game name to id mapping
+        self.game_name_to_id = {info["name"]: gid for gid, info in GAMES.items()}
+        self.game_id_to_name = {gid: info["name"] for gid, info in GAMES.items()}
+        game_names = list(self.game_name_to_id.keys())
 
-        self._update_game_buttons()
+        # Style the combobox
+        style = ttk.Style()
+        style.theme_use('clam')
+        style.configure("Game.TCombobox",
+                       fieldbackground=COLORS["bg_secondary"],
+                       background=COLORS["bg_tertiary"],
+                       foreground=COLORS["text"],
+                       arrowcolor=COLORS["text"],
+                       borderwidth=0,
+                       padding=8)
+        style.map("Game.TCombobox",
+                 fieldbackground=[('readonly', COLORS["bg_secondary"])],
+                 selectbackground=[('readonly', COLORS["accent"])],
+                 selectforeground=[('readonly', '#ffffff')])
+
+        self.game_combo_var = tk.StringVar(value=self.game_id_to_name.get(self.current_game, "Overwatch 2"))
+        self.game_combo = ttk.Combobox(
+            game_row,
+            textvariable=self.game_combo_var,
+            values=game_names,
+            state="readonly",
+            style="Game.TCombobox",
+            width=25,
+            font=get_font(12)
+        )
+        self.game_combo.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        self.game_combo.bind("<<ComboboxSelected>>", self._on_game_selected)
+        # Set initial selection
+        self.game_combo.set(self.game_id_to_name.get(self.current_game, "Overwatch 2"))
+
+        # Server count label
+        self.server_count_label = tk.Label(game_row, text="",
+                                           font=get_font(11),
+                                           bg=COLORS["bg"], fg=COLORS["text_muted"])
+        self.server_count_label.pack(side=tk.RIGHT, padx=(12, 0))
 
         # Region row
         region_row = tk.Frame(section, bg=COLORS["bg"])
@@ -506,26 +530,31 @@ class PingDiffApp:
 
         self._update_region_buttons()
 
-    def _select_game(self, game_id):
+    def _on_game_selected(self, event=None):
+        """Handle game dropdown selection"""
         if self.is_testing:
             return
-        self.game_var.set(game_id)
-        self.current_game = game_id
-        self._update_game_buttons()
-        # Reload servers for new game
-        self._reload_servers()
+        selected_name = self.game_combo.get()
+        game_id = self.game_name_to_id.get(selected_name)
+        if game_id:
+            self.game_var.set(game_id)
+            self.current_game = game_id
+            self._reload_servers()
 
-    def _update_game_buttons(self):
-        selected = self.game_var.get()
-        for game_id, btn in self.game_buttons.items():
-            if game_id == selected:
-                btn.config(bg=COLORS["accent"], fg="#ffffff")
-            else:
-                btn.config(bg=COLORS["bg_secondary"], fg=COLORS["text_muted"])
+    def _update_server_count(self):
+        """Update the server count label for current game"""
+        total = 0
+        for region, servers in self.servers.items():
+            total += len(servers)
+        if total > 0:
+            self.server_count_label.config(text=f"{total} servers")
+        else:
+            self.server_count_label.config(text="")
 
     def _reload_servers(self):
         def load():
             self.servers = self.api.get_servers(self.current_game)
+            self.root.after(0, self._update_server_count)
         thread = threading.Thread(target=load, daemon=True)
         thread.start()
 
@@ -674,6 +703,7 @@ class PingDiffApp:
             self.isp_info = self.api.get_isp_info()
             self.root.after(0, self._update_isp_display)
             self.servers = self.api.get_servers(self.current_game)
+            self.root.after(0, self._update_server_count)
 
         thread = threading.Thread(target=load, daemon=True)
         thread.start()
