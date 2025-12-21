@@ -32,6 +32,54 @@ PingDiff is a lightweight desktop app that tests your connection to game servers
 
 ---
 
+## Supported Games
+
+| Game | Status | Servers |
+|:-----|:------:|:-------:|
+| 🎮 Overwatch 2 | ✅ Active | 13 |
+| 🔫 Call of Duty | ✅ Active | 16 |
+| 💥 Counter-Strike 2 | ✅ Active | 18 |
+| 🎖️ Battlefield 6 | ✅ Active | 16 |
+| 🦸 Marvel Rivals | ✅ Active | 16 |
+| 🎯 Valorant | ✅ Active | 20 |
+| 🏝️ Fortnite | ✅ Active | 12 |
+| ⚔️ League of Legends | ✅ Active | 11 |
+| 🔺 Apex Legends | ✅ Active | 14 |
+
+**Total: 9 games, 136+ servers worldwide**
+
+---
+
+## Server Regions
+
+| Region | Coverage |
+|:-------|:---------|
+| 🇪🇺 **EU** | London, Paris, Frankfurt, Amsterdam, Stockholm, Warsaw, Dublin, Istanbul |
+| 🇺🇸 **NA** | Virginia, Chicago, Dallas, Los Angeles, Seattle, Atlanta, Oregon, Ohio |
+| 🌏 **ASIA** | Tokyo, Seoul, Singapore, Hong Kong, Mumbai, Sydney, Taiwan |
+| 🇧🇷 **SA** | São Paulo, Santiago, Lima |
+| 🇦🇪 **ME** | Bahrain, Dubai |
+
+---
+
+## Quick Start
+
+### Download & Install
+
+1. **Download** the latest installer from [Releases](https://github.com/bokiko/pingdiff/releases/latest)
+2. **Run** `PingDiff-Setup-1.15.0.exe`
+3. **Launch** PingDiff from your Start Menu
+
+### Usage
+
+1. Select your **game** (9 games available)
+2. Select your **region** (EU, NA, ASIA, SA, ME)
+3. Click **Start Test**
+4. View your results and find the **best server**
+5. Check the [dashboard](https://pingdiff.com/dashboard) for historical data
+
+---
+
 ## Screenshots
 
 <div align="center">
@@ -46,46 +94,6 @@ PingDiff is a lightweight desktop app that tests your connection to game servers
 </tr>
 </table>
 </div>
-
----
-
-## Quick Start
-
-### Download & Install
-
-1. **Download** the latest installer from [Releases](https://github.com/bokiko/pingdiff/releases/latest)
-2. **Run** `PingDiff-Setup-x.x.x.exe`
-3. **Launch** PingDiff from your Start Menu
-
-### Usage
-
-1. Select your **region** (EU, NA, ASIA, SA, ME)
-2. Click **Start Test**
-3. View your results and find the **recommended server**
-4. Check the [dashboard](https://pingdiff.com/dashboard) for historical data
-
----
-
-## Supported Games
-
-| Game | Status | Servers |
-|:-----|:------:|:-------:|
-| 🎮 Overwatch 2 | ✅ Active | 13 |
-| 🎯 Valorant | 🔜 Coming Soon | - |
-| 💥 Counter-Strike 2 | 🔜 Coming Soon | - |
-| 🚀 Apex Legends | 🔜 Coming Soon | - |
-
----
-
-## Server Regions
-
-| Region | Locations |
-|:-------|:----------|
-| 🇪🇺 **EU** | Amsterdam, Paris, Frankfurt |
-| 🇺🇸 **NA** | Los Angeles, Chicago, New York |
-| 🌏 **ASIA** | Singapore, Seoul, Tokyo, Taiwan, Sydney |
-| 🇧🇷 **SA** | São Paulo |
-| 🇦🇪 **ME** | Bahrain, Dubai |
 
 ---
 
@@ -170,8 +178,11 @@ pingdiff/
 │   ├── installer.iss         # Inno Setup script
 │   └── requirements.txt
 │
+├── supabase/
+│   └── migrations/           # Database migrations
+│
 ├── .github/
-│   └── workflows/            # CI/CD
+│   └── workflows/            # CI/CD (auto-build)
 │
 └── README.md
 ```
@@ -180,9 +191,10 @@ pingdiff/
 
 ## Features
 
-### Desktop App (v1.7.0)
+### Desktop App (v1.15.0)
 
-- 🎨 **Apple-inspired UI** - Modern, clean design
+- 🎨 **Apple-inspired UI** - Modern, clean dark theme
+- 🎮 **9 Games** - All major competitive titles
 - 🔄 **Auto ISP Detection** - Detects your ISP and location
 - 📊 **Real-time Progress** - Circular progress indicator
 - ⚙️ **Settings** - Toggle anonymous data sharing
@@ -218,7 +230,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Blizzard Entertainment (Overwatch 2 is a trademark)
+- Blizzard, Riot Games, Valve, EA, Epic Games, Respawn, NetEase
 - The gaming community for server IP contributions
 - All contributors and testers
 
