@@ -100,14 +100,6 @@ export default function Home() {
             </div>
           </a>
 
-          <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-6 fade-in">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-            </span>
-            <span className="text-sm text-blue-400">Now supporting 9 games including LoL, Apex, Valorant, Fortnite & more</span>
-          </div>
-
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight fade-in-delay-1">
             Know Your Connection
             <br />
@@ -242,9 +234,16 @@ export default function Home() {
         {/* Supported Games */}
         <section className="bg-zinc-900/50 py-16 md:py-24">
           <div className="max-w-6xl mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-4">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="text-sm text-blue-400">9 games • 141 servers worldwide</span>
+            </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-4">Supported Games</h2>
             <p className="text-zinc-400 mb-12">
-              Test your connection to your favorite games. More games coming soon.
+              Test your connection to your favorite games. More coming soon.
             </p>
 
             <div className="flex justify-center gap-6 md:gap-8 flex-wrap">
