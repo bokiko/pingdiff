@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Activity, Download, Zap, Globe, TrendingUp, Menu, X } from "lucide-react";
+import { Activity, Download, Zap, Globe, TrendingUp, Menu, X, Github, Shield } from "lucide-react";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -82,6 +82,24 @@ export default function Home() {
       <main id="main-content">
         {/* Hero Section */}
         <section className="max-w-6xl mx-auto px-4 py-16 md:py-24 text-center">
+          {/* Open Source Trust Badge */}
+          <a
+            href="https://github.com/bokiko/pingdiff"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 bg-zinc-800/80 border border-zinc-700 hover:border-zinc-600 rounded-full px-5 py-2.5 mb-4 transition-all hover:bg-zinc-800 fade-in group"
+          >
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-green-500" />
+              <span className="text-sm font-medium text-green-400">100% Open Source</span>
+            </div>
+            <span className="text-zinc-600">|</span>
+            <div className="flex items-center gap-2">
+              <Github className="w-4 h-4 text-zinc-400 group-hover:text-white transition" />
+              <span className="text-sm text-zinc-400 group-hover:text-white transition">No Trackers. No BS. Just Code.</span>
+            </div>
+          </a>
+
           <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-6 fade-in">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
