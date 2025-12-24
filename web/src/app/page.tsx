@@ -249,7 +249,7 @@ export default function Home() {
             <div className="flex justify-center gap-6 md:gap-8 flex-wrap">
               <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-44 md:w-48 card-hover">
                 <div className="w-16 h-16 bg-orange-500/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
-                  <img src="https://cdn.simpleicons.org/overwatch/F99E1A" alt="Overwatch 2" className="w-10 h-10" />
+                  <span className="text-2xl font-bold text-orange-500">OW2</span>
                 </div>
                 <h3 className="font-semibold mb-2">Overwatch 2</h3>
                 <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
@@ -259,7 +259,7 @@ export default function Home() {
 
               <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-44 md:w-48 card-hover">
                 <div className="w-16 h-16 bg-zinc-700/50 rounded-xl mx-auto mb-4 flex items-center justify-center">
-                  <img src="https://cdn.simpleicons.org/callofduty/ffffff" alt="Call of Duty" className="w-10 h-10" />
+                  <img src="https://cdn.simpleicons.org/activision/ffffff" alt="Call of Duty" className="w-10 h-10" />
                 </div>
                 <h3 className="font-semibold mb-2">Call of Duty</h3>
                 <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
@@ -288,8 +288,8 @@ export default function Home() {
               </div>
 
               <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-44 md:w-48 card-hover">
-                <div className="w-16 h-16 bg-emerald-500/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
-                  <img src="https://cdn.simpleicons.org/battlefield/23a3dd" alt="Battlefield 6" className="w-10 h-10" />
+                <div className="w-16 h-16 bg-blue-500/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                  <img src="https://cdn.simpleicons.org/ea/ffffff" alt="Battlefield 6" className="w-10 h-10" />
                 </div>
                 <h3 className="font-semibold mb-2">Battlefield 6</h3>
                 <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
@@ -299,7 +299,7 @@ export default function Home() {
 
               <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-44 md:w-48 card-hover">
                 <div className="w-16 h-16 bg-red-500/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
-                  <img src="https://cdn.simpleicons.org/marvel/EC1D24" alt="Marvel Rivals" className="w-10 h-10" />
+                  <span className="text-2xl font-bold text-red-500">MR</span>
                 </div>
                 <h3 className="font-semibold mb-2">Marvel Rivals</h3>
                 <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
@@ -309,7 +309,7 @@ export default function Home() {
 
               <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-44 md:w-48 card-hover">
                 <div className="w-16 h-16 bg-purple-500/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
-                  <img src="https://cdn.simpleicons.org/fortnite/ffffff" alt="Fortnite" className="w-10 h-10" />
+                  <img src="https://cdn.simpleicons.org/fortnite/a855f7" alt="Fortnite" className="w-10 h-10" />
                 </div>
                 <h3 className="font-semibold mb-2">Fortnite</h3>
                 <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
@@ -318,7 +318,7 @@ export default function Home() {
               </div>
 
               <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-44 md:w-48 card-hover">
-                <div className="w-16 h-16 bg-blue-500/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                <div className="w-16 h-16 bg-amber-500/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
                   <img src="https://cdn.simpleicons.org/leagueoflegends/C28F2C" alt="League of Legends" className="w-10 h-10" />
                 </div>
                 <h3 className="font-semibold mb-2">League of Legends</h3>
@@ -329,7 +329,7 @@ export default function Home() {
 
               <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-6 w-44 md:w-48 card-hover">
                 <div className="w-16 h-16 bg-red-600/20 rounded-xl mx-auto mb-4 flex items-center justify-center">
-                  <img src="https://cdn.simpleicons.org/apexlegends/ED1C24" alt="Apex Legends" className="w-10 h-10" />
+                  <img src="https://cdn.simpleicons.org/ea/ED1C24" alt="Apex Legends" className="w-10 h-10" />
                 </div>
                 <h3 className="font-semibold mb-2">Apex Legends</h3>
                 <span className="text-xs text-green-500 bg-green-500/20 px-3 py-1 rounded-full font-medium">
