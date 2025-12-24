@@ -9,6 +9,9 @@
 [![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 [![Website](https://img.shields.io/badge/website-pingdiff.com-blue?style=for-the-badge&logo=vercel)](https://pingdiff.com)
 [![Downloads](https://img.shields.io/github/downloads/bokiko/pingdiff/total?style=for-the-badge&logo=windows&color=22c55e)](https://github.com/bokiko/pingdiff/releases)
+[![GitHub stars](https://img.shields.io/github/stars/bokiko/pingdiff?style=for-the-badge&logo=github&color=yellow)](https://github.com/bokiko/pingdiff/stargazers)
+
+### 🎮 Free & Open Source • By Gamers, For Gamers
 
 **Test your ping, packet loss, and jitter to game servers before you queue.**
 
@@ -242,10 +245,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **[pingdiff.com](https://pingdiff.com)**
 
-Made with ❤️ for gamers who hate lag
+---
+
+### ⭐ Like PingDiff? Give us a star!
+
+**100% Free • 100% Open Source • Zero Tracking**
+
+We built this for the gaming community. No ads, no data harvesting, no premium tiers.
+Just a simple tool that helps you find the best server.
+
+If PingDiff helped you avoid lag, consider starring the repo — it helps other gamers find us!
+
+[![Star on GitHub](https://img.shields.io/badge/⭐_Star_on_GitHub-yellow?style=for-the-badge&logo=github)](https://github.com/bokiko/pingdiff)
 
 <br/>
 
-<sub>If this project helped you, consider giving it a ⭐</sub>
+Made with ❤️ by gamers, for gamers
 
 </div>
