@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Activity, Download, Zap, Globe, TrendingUp, Menu, X, Github, Shield } from "lucide-react";
+import { Activity, Download, Zap, Globe, TrendingUp, Menu, X, Shield, Code, Lock } from "lucide-react";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -95,8 +95,10 @@ export default function Home() {
             </div>
             <span className="text-zinc-600">|</span>
             <div className="flex items-center gap-2">
-              <Github className="w-4 h-4 text-zinc-400 group-hover:text-white transition" />
-              <span className="text-sm text-zinc-400 group-hover:text-white transition">No Trackers. No BS. Just Code.</span>
+              <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.955 13.587l-1.342-4.135-2.664-8.189a.455.455 0 00-.867 0L16.418 9.45H7.582L4.918 1.263a.455.455 0 00-.867 0L1.386 9.45.044 13.587a.924.924 0 00.331 1.023L12 23.054l11.625-8.443a.92.92 0 00.33-1.024"/>
+              </svg>
+              <span className="text-sm text-zinc-400 group-hover:text-white transition">View Source on GitLab</span>
             </div>
           </a>
 
@@ -184,6 +186,56 @@ export default function Home() {
                 <p className="text-zinc-400 leading-relaxed">
                   Test EU, NA, and ASIA at once. Results ranked by ping so you know exactly where to play.
                 </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Open Source Trust Section */}
+        <section className="py-16 md:py-24">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 border border-zinc-700 rounded-2xl p-8 md:p-12">
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="flex-shrink-0">
+                  <div className="w-20 h-20 bg-green-500/20 rounded-2xl flex items-center justify-center">
+                    <Code className="w-10 h-10 text-green-500" />
+                  </div>
+                </div>
+                <div className="text-center md:text-left flex-1">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-3">Built in the Open</h2>
+                  <p className="text-zinc-400 mb-4 max-w-2xl leading-relaxed">
+                    PingDiff is 100% open source. Every line of code is public on GitLab.
+                    No hidden trackers, no data harvesting, no premium tiers.
+                    Built by gamers who were tired of sketchy &quot;ping tools&quot; that sell your data.
+                  </p>
+                  <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Shield className="w-4 h-4 text-green-500" />
+                      <span className="text-zinc-300">No Tracking</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Lock className="w-4 h-4 text-blue-500" />
+                      <span className="text-zinc-300">Privacy First</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Code className="w-4 h-4 text-purple-500" />
+                      <span className="text-zinc-300">MIT License</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  <a
+                    href="https://gitlab.com/bokiko/pingdiff"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition"
+                  >
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M23.955 13.587l-1.342-4.135-2.664-8.189a.455.455 0 00-.867 0L16.418 9.45H7.582L4.918 1.263a.455.455 0 00-.867 0L1.386 9.45.044 13.587a.924.924 0 00.331 1.023L12 23.054l11.625-8.443a.92.92 0 00.33-1.024"/>
+                    </svg>
+                    View on GitLab
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -381,9 +433,12 @@ export default function Home() {
               href="https://gitlab.com/bokiko/pingdiff"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white transition focus-ring rounded px-1"
+              className="hover:text-white transition focus-ring rounded px-1 flex items-center gap-1"
             >
-              GitHub
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.955 13.587l-1.342-4.135-2.664-8.189a.455.455 0 00-.867 0L16.418 9.45H7.582L4.918 1.263a.455.455 0 00-.867 0L1.386 9.45.044 13.587a.924.924 0 00.331 1.023L12 23.054l11.625-8.443a.92.92 0 00.33-1.024"/>
+              </svg>
+              GitLab
             </a>
           </div>
         </div>
