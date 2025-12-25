@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Activity, Download, Zap, Globe, TrendingUp, Menu, X, Shield, Code, Lock } from "lucide-react";
+import { Activity, Download, Zap, Globe, TrendingUp, Menu, X, Shield, Code, Lock, Github } from "lucide-react";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -83,24 +83,35 @@ export default function Home() {
         {/* Hero Section */}
         <section className="max-w-6xl mx-auto px-4 py-16 md:py-24 text-center">
           {/* Open Source Trust Badge */}
-          <a
-            href="https://gitlab.com/bokiko/pingdiff"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 bg-zinc-800/80 border border-zinc-700 hover:border-zinc-600 rounded-full px-5 py-2.5 mb-4 transition-all hover:bg-zinc-800 fade-in group"
-          >
+          <div className="inline-flex items-center gap-3 bg-zinc-800/80 border border-zinc-700 rounded-full px-5 py-2.5 mb-4 fade-in">
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-green-500" />
               <span className="text-sm font-medium text-green-400">100% Open Source</span>
             </div>
             <span className="text-zinc-600">|</span>
-            <div className="flex items-center gap-2">
-              <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M23.955 13.587l-1.342-4.135-2.664-8.189a.455.455 0 00-.867 0L16.418 9.45H7.582L4.918 1.263a.455.455 0 00-.867 0L1.386 9.45.044 13.587a.924.924 0 00.331 1.023L12 23.054l11.625-8.443a.92.92 0 00.33-1.024"/>
-              </svg>
-              <span className="text-sm text-zinc-400 group-hover:text-white transition">View Source on GitLab</span>
+            <div className="flex items-center gap-3">
+              <a
+                href="https://github.com/bokiko/pingdiff"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white transition"
+              >
+                <Github className="w-4 h-4" />
+                GitHub
+              </a>
+              <a
+                href="https://gitlab.com/bokiko/pingdiff"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-orange-400 transition"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23.955 13.587l-1.342-4.135-2.664-8.189a.455.455 0 00-.867 0L16.418 9.45H7.582L4.918 1.263a.455.455 0 00-.867 0L1.386 9.45.044 13.587a.924.924 0 00.331 1.023L12 23.054l11.625-8.443a.92.92 0 00.33-1.024"/>
+                </svg>
+                GitLab
+              </a>
             </div>
-          </a>
+          </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight fade-in-delay-1">
             Know Your Connection
@@ -223,7 +234,16 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 flex flex-col sm:flex-row gap-3">
+                  <a
+                    href="https://github.com/bokiko/pingdiff"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-zinc-700 hover:bg-zinc-600 text-white px-6 py-3 rounded-xl font-semibold transition"
+                  >
+                    <Github className="w-5 h-5" />
+                    GitHub
+                  </a>
                   <a
                     href="https://gitlab.com/bokiko/pingdiff"
                     target="_blank"
@@ -233,7 +253,7 @@ export default function Home() {
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M23.955 13.587l-1.342-4.135-2.664-8.189a.455.455 0 00-.867 0L16.418 9.45H7.582L4.918 1.263a.455.455 0 00-.867 0L1.386 9.45.044 13.587a.924.924 0 00.331 1.023L12 23.054l11.625-8.443a.92.92 0 00.33-1.024"/>
                     </svg>
-                    View on GitLab
+                    GitLab
                   </a>
                 </div>
               </div>
@@ -429,6 +449,15 @@ export default function Home() {
             <Link href="/terms" className="hover:text-white transition focus-ring rounded px-1">
               Terms
             </Link>
+            <a
+              href="https://github.com/bokiko/pingdiff"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition focus-ring rounded px-1 flex items-center gap-1"
+            >
+              <Github className="w-4 h-4" />
+              GitHub
+            </a>
             <a
               href="https://gitlab.com/bokiko/pingdiff"
               target="_blank"
