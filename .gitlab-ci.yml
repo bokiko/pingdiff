@@ -1,0 +1,61 @@
+stages:
+  - build
+  - release
+
+variables:
+  VERSION: $CI_COMMIT_TAG
+
+build-windows:
+  stage: build
+  tags:
+    - saas-windows-medium-amd64
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v.*/
+  script:
+    - cd desktop
+    - pip install -r requirements.txt
+    - pip install pyinstaller
+    - python build.py
+    - choco install innosetup -y
+    - $version = $CI_COMMIT_TAG -replace '^v', ''
+    - (Get-Content installer.iss) -replace '#define MyAppVersion ".*"', "#define MyAppVersion `"$version`"" | Set-Content installer.iss
+    - '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss'
+  artifacts:
+    paths:
+      - desktop/installer_output/PingDiff-Setup-*.exe
+    expire_in: 1 week
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v.*/
+  needs:
+    - job: build-windows
+      artifacts: true
+  script:
+    - echo "Creating release for $CI_COMMIT_TAG"
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: "PingDiff $CI_COMMIT_TAG"
+    description: |
+      ## What's New in $CI_COMMIT_TAG
+
+      ### Installation
+      Download the installer and run it.
+
+      The installer will:
+      - Install PingDiff to your Program Files
+      - Create Start Menu shortcuts
+      - Optionally create a Desktop shortcut
+      - Clean up old versions automatically
+
+      ### User Data
+      Your settings and logs are stored in `%APPDATA%\PingDiff` and will be preserved when you update.
+
+      ### Supported Games (9 Total, 141 Servers)
+      Overwatch 2, Call of Duty, Valorant, Counter-Strike 2, Battlefield 6, Marvel Rivals, Fortnite, League of Legends, Apex Legends
+    assets:
+      links:
+        - name: "PingDiff-Setup-${CI_COMMIT_TAG#v}.exe"
+          url: "${CI_PROJECT_URL}/-/jobs/artifacts/${CI_COMMIT_TAG}/raw/desktop/installer_output/PingDiff-Setup-${CI_COMMIT_TAG#v}.exe?job=build-windows"
