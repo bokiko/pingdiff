@@ -84,7 +84,7 @@ export default function Home() {
         <section className="max-w-6xl mx-auto px-4 py-16 md:py-24 text-center">
           {/* Open Source Trust Badge */}
           <a
-            href="https://github.com/bokiko/pingdiff"
+            href="https://gitlab.com/bokiko/pingdiff"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3 bg-zinc-800/80 border border-zinc-700 hover:border-zinc-600 rounded-full px-5 py-2.5 mb-4 transition-all hover:bg-zinc-800 fade-in group"
@@ -378,7 +378,7 @@ export default function Home() {
               Terms
             </Link>
             <a
-              href="https://github.com/bokiko/pingdiff"
+              href="https://gitlab.com/bokiko/pingdiff"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-white transition focus-ring rounded px-1"

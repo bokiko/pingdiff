@@ -20,33 +20,38 @@ export default function DownloadPage() {
   const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
-    // Fetch latest release from GitHub API
-    fetch("https://api.github.com/repos/bokiko/pingdiff/releases/latest")
+    // Fetch latest release from GitLab API
+    fetch("https://gitlab.com/api/v4/projects/bokiko%2Fpingdiff/releases")
       .then(res => {
         if (!res.ok) throw new Error("API error");
         return res.json();
       })
       .then(data => {
-        const asset = data.assets?.find((a: { name: string }) => a.name.endsWith('.exe'));
-        if (asset) {
-          const isInstaller = asset.name.includes('Setup');
-          setRelease({
-            version: data.tag_name || "v1.7.0",
-            downloadUrl: asset.browser_download_url,
-            size: `${(asset.size / (1024 * 1024)).toFixed(1)}MB`,
-            date: new Date(data.published_at).toLocaleDateString(),
-            isInstaller
-          });
+        if (data && data.length > 0) {
+          const latestRelease = data[0];
+          const asset = latestRelease.assets?.links?.find((a: { name: string }) => a.name.endsWith('.exe'));
+          if (asset) {
+            const isInstaller = asset.name.includes('Setup');
+            setRelease({
+              version: latestRelease.tag_name || "v1.17.0",
+              downloadUrl: asset.direct_asset_url || asset.url,
+              size: "~20MB",
+              date: new Date(latestRelease.released_at).toLocaleDateString(),
+              isInstaller
+            });
+          } else {
+            throw new Error("No exe found");
+          }
         } else {
-          throw new Error("No exe found");
+          throw new Error("No releases");
         }
         setLoading(false);
       })
       .catch(() => {
         // Fallback - still provide download link
         setRelease({
-          version: "v1.10.0",
-          downloadUrl: "https://github.com/bokiko/pingdiff/releases/latest/download/PingDiff-Setup-1.10.0.exe",
+          version: "v1.17.0",
+          downloadUrl: "https://gitlab.com/bokiko/pingdiff/-/releases",
           size: "~20MB",
           date: "",
           isInstaller: true
@@ -122,7 +127,7 @@ export default function DownloadPage() {
             <AlertCircle className="w-5 h-5 text-yellow-500 flex-shrink-0" />
             <p className="text-yellow-200 text-sm">
               Couldn&apos;t fetch latest version info. Showing fallback download link.
-              Check <a href="https://github.com/bokiko/pingdiff/releases" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">GitHub Releases</a> for the latest version.
+              Check <a href="https://gitlab.com/bokiko/pingdiff/-/releases" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">GitLab Releases</a> for the latest version.
             </p>
           </div>
         )}
@@ -167,7 +172,7 @@ export default function DownloadPage() {
             </div>
             <h3 className="font-semibold mb-2">Safe & Open Source</h3>
             <p className="text-zinc-400 text-sm leading-relaxed">
-              100% open source. No malware, no tracking, no ads. Check the code yourself on GitHub.
+              100% open source. No malware, no tracking, no ads. Check the code yourself on GitLab.
             </p>
           </div>
 
@@ -278,12 +283,12 @@ export default function DownloadPage() {
         {/* All Releases Link */}
         <div className="mt-12 text-center">
           <a
-            href="https://github.com/bokiko/pingdiff/releases"
+            href="https://gitlab.com/bokiko/pingdiff/-/releases"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-400 hover:text-blue-300 transition"
           >
-            View all releases on GitHub →
+            View all releases on GitLab →
           </a>
         </div>
       </main>
@@ -304,12 +309,12 @@ export default function DownloadPage() {
               Terms
             </Link>
             <a
-              href="https://github.com/bokiko/pingdiff"
+              href="https://gitlab.com/bokiko/pingdiff"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-white transition"
             >
-              GitHub
+              GitLab
             </a>
           </div>
         </div>
