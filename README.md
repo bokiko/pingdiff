@@ -83,23 +83,6 @@ PingDiff is a lightweight desktop app that tests your connection to game servers
 
 ---
 
-## Screenshots
-
-<div align="center">
-<table>
-<tr>
-<td align="center"><b>Desktop App</b></td>
-<td align="center"><b>Web Dashboard</b></td>
-</tr>
-<tr>
-<td><img src="https://via.placeholder.com/400x500/1c1c1e/3b82f6?text=Desktop+App" alt="Desktop App" width="400"/></td>
-<td><img src="https://via.placeholder.com/400x500/0a0a0a/3b82f6?text=Web+Dashboard" alt="Dashboard" width="400"/></td>
-</tr>
-</table>
-</div>
-
----
-
 ## Tech Stack
 
 <div align="center">
