@@ -5,17 +5,16 @@
 <br/>
 <br/>
 
-[![GitHub release](https://img.shields.io/github/v/release/bokiko/pingdiff?style=for-the-badge&logo=github&color=3b82f6)](https://github.com/bokiko/pingdiff/releases/latest)
+[![GitLab release](https://img.shields.io/badge/release-v1.17.0-blue?style=for-the-badge&logo=gitlab&color=3b82f6)](https://gitlab.com/bokiko/pingdiff/-/releases)
 [![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 [![Website](https://img.shields.io/badge/website-pingdiff.com-blue?style=for-the-badge&logo=vercel)](https://pingdiff.com)
-[![Downloads](https://img.shields.io/github/downloads/bokiko/pingdiff/total?style=for-the-badge&logo=windows&color=22c55e)](https://github.com/bokiko/pingdiff/releases)
-[![GitHub stars](https://img.shields.io/github/stars/bokiko/pingdiff?style=for-the-badge&logo=github&color=yellow)](https://github.com/bokiko/pingdiff/stargazers)
+[![GitLab stars](https://img.shields.io/gitlab/stars/bokiko%2Fpingdiff?style=for-the-badge&logo=gitlab&color=yellow)](https://gitlab.com/bokiko/pingdiff/-/starrers)
 
 ### 🎮 Free & Open Source • By Gamers, For Gamers
 
 **Test your ping, packet loss, and jitter to game servers before you queue.**
 
-[Download](https://pingdiff.com/download) • [Dashboard](https://pingdiff.com/dashboard) • [Report Bug](https://github.com/bokiko/pingdiff/issues)
+[Download](https://pingdiff.com/download) • [Dashboard](https://pingdiff.com/dashboard) • [Report Bug](https://gitlab.com/bokiko/pingdiff/-/issues)
 
 </div>
 
@@ -69,7 +68,7 @@ PingDiff is a lightweight desktop app that tests your connection to game servers
 
 ### Download & Install
 
-1. **Download** the latest installer from [Releases](https://github.com/bokiko/pingdiff/releases/latest)
+1. **Download** the latest installer from [Releases](https://gitlab.com/bokiko/pingdiff/-/releases)
 2. **Run** `PingDiff-Setup-1.17.0.exe`
 3. **Launch** PingDiff from your Start Menu
 
@@ -94,7 +93,7 @@ PingDiff is a lightweight desktop app that tests your connection to game servers
 | **Desktop App** | Python, tkinter |
 | **Installer** | Inno Setup |
 | **Hosting** | Vercel |
-| **CI/CD** | GitHub Actions |
+| **CI/CD** | GitLab CI/CD |
 
 </div>
 
@@ -112,7 +111,7 @@ PingDiff is a lightweight desktop app that tests your connection to game servers
 
 ```bash
 # Clone the repo
-git clone https://github.com/bokiko/pingdiff.git
+git clone https://gitlab.com/bokiko/pingdiff.git
 cd pingdiff/web
 
 # Install dependencies
@@ -239,7 +238,7 @@ Just a simple tool that helps you find the best server.
 
 If PingDiff helped you avoid lag, consider starring the repo — it helps other gamers find us!
 
-[![Star on GitHub](https://img.shields.io/badge/⭐_Star_on_GitHub-yellow?style=for-the-badge&logo=github)](https://github.com/bokiko/pingdiff)
+[![Star on GitLab](https://img.shields.io/badge/⭐_Star_on_GitLab-yellow?style=for-the-badge&logo=gitlab)](https://gitlab.com/bokiko/pingdiff)
 
 <br/>
 
