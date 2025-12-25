@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Activity, Download, Shield, Settings, CheckCircle, Loader2, FolderOpen, Menu, X, AlertCircle } from "lucide-react";
+import { Activity, Download, Shield, Settings, CheckCircle, Loader2, FolderOpen, Menu, X, AlertCircle, Github } from "lucide-react";
 import { useEffect } from "react";
 
 interface ReleaseInfo {
@@ -172,7 +172,7 @@ export default function DownloadPage() {
             </div>
             <h3 className="font-semibold mb-2">Safe & Open Source</h3>
             <p className="text-zinc-400 text-sm leading-relaxed">
-              100% open source. No malware, no tracking, no ads. Check the code yourself on GitLab.
+              100% open source. No malware, no tracking, no ads. Check the code yourself on GitHub or GitLab.
             </p>
           </div>
 
@@ -280,15 +280,27 @@ export default function DownloadPage() {
           </div>
         </div>
 
-        {/* All Releases Link */}
-        <div className="mt-12 text-center">
+        {/* All Releases Links */}
+        <div className="mt-12 text-center flex justify-center gap-6">
+          <a
+            href="https://github.com/bokiko/pingdiff/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-zinc-400 hover:text-white transition flex items-center gap-2"
+          >
+            <Github className="w-4 h-4" />
+            GitHub Releases
+          </a>
           <a
             href="https://gitlab.com/bokiko/pingdiff/-/releases"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-400 hover:text-blue-300 transition"
+            className="text-orange-400 hover:text-orange-300 transition flex items-center gap-2"
           >
-            View all releases on GitLab →
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.955 13.587l-1.342-4.135-2.664-8.189a.455.455 0 00-.867 0L16.418 9.45H7.582L4.918 1.263a.455.455 0 00-.867 0L1.386 9.45.044 13.587a.924.924 0 00.331 1.023L12 23.054l11.625-8.443a.92.92 0 00.33-1.024"/>
+            </svg>
+            GitLab Releases
           </a>
         </div>
       </main>
@@ -309,11 +321,23 @@ export default function DownloadPage() {
               Terms
             </Link>
             <a
+              href="https://github.com/bokiko/pingdiff"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition flex items-center gap-1"
+            >
+              <Github className="w-4 h-4" />
+              GitHub
+            </a>
+            <a
               href="https://gitlab.com/bokiko/pingdiff"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white transition"
+              className="hover:text-white transition flex items-center gap-1"
             >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.955 13.587l-1.342-4.135-2.664-8.189a.455.455 0 00-.867 0L16.418 9.45H7.582L4.918 1.263a.455.455 0 00-.867 0L1.386 9.45.044 13.587a.924.924 0 00.331 1.023L12 23.054l11.625-8.443a.92.92 0 00.33-1.024"/>
+              </svg>
               GitLab
             </a>
           </div>
