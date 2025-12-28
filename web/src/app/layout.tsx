@@ -60,7 +60,7 @@ const jsonLd = {
   description: "Test your ping, packet loss, and jitter to game servers before you queue.",
   url: "https://pingdiff.com",
   downloadUrl: "https://pingdiff.com/download",
-  softwareVersion: "1.10.0",
+  softwareVersion: "1.17.0",
   author: {
     "@type": "Person",
     name: "bokiko",
