@@ -311,7 +311,7 @@ export default function DownloadPage() {
           <div className="flex items-center gap-2">
             <Activity className="w-5 h-5 text-blue-500" />
             <span className="font-semibold">PingDiff</span>
-            <span className="text-zinc-500 text-sm">© 2025</span>
+            <span className="text-zinc-500 text-sm">© 2026</span>
           </div>
           <div className="flex gap-6 text-zinc-400 text-sm">
             <Link href="/privacy" className="hover:text-white transition">
