@@ -33,7 +33,7 @@ export default function DownloadPage() {
           if (asset) {
             const isInstaller = asset.name.includes('Setup');
             setRelease({
-              version: latestRelease.tag_name || "v1.17.0",
+              version: latestRelease.tag_name || "v1.17.1",
               downloadUrl: asset.direct_asset_url || asset.url,
               size: "~20MB",
               date: new Date(latestRelease.released_at).toLocaleDateString(),
@@ -50,7 +50,7 @@ export default function DownloadPage() {
       .catch(() => {
         // Fallback - still provide download link
         setRelease({
-          version: "v1.17.0",
+          version: "v1.17.1",
           downloadUrl: "https://gitlab.com/bokiko/pingdiff/-/releases",
           size: "~20MB",
           date: "",
