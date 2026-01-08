@@ -20,30 +20,26 @@ export default function DownloadPage() {
   const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
-    // Fetch latest release from GitLab API
-    fetch("https://gitlab.com/api/v4/projects/bokiko%2Fpingdiff/releases")
+    // Fetch latest release from GitHub API
+    fetch("https://api.github.com/repos/bokiko/pingdiff/releases/latest")
       .then(res => {
         if (!res.ok) throw new Error("API error");
         return res.json();
       })
       .then(data => {
-        if (data && data.length > 0) {
-          const latestRelease = data[0];
-          const asset = latestRelease.assets?.links?.find((a: { name: string }) => a.name.endsWith('.exe'));
-          if (asset) {
-            const isInstaller = asset.name.includes('Setup');
-            setRelease({
-              version: latestRelease.tag_name || "v1.17.1",
-              downloadUrl: asset.direct_asset_url || asset.url,
-              size: "~20MB",
-              date: new Date(latestRelease.released_at).toLocaleDateString(),
-              isInstaller
-            });
-          } else {
-            throw new Error("No exe found");
-          }
+        const asset = data.assets?.find((a: { name: string }) => a.name.endsWith('.exe'));
+        if (asset) {
+          const isInstaller = asset.name.includes('Setup');
+          const sizeInMB = (asset.size / (1024 * 1024)).toFixed(1);
+          setRelease({
+            version: data.tag_name || "v1.17.1",
+            downloadUrl: asset.browser_download_url,
+            size: `${sizeInMB} MB`,
+            date: new Date(data.published_at).toLocaleDateString(),
+            isInstaller
+          });
         } else {
-          throw new Error("No releases");
+          throw new Error("No exe found");
         }
         setLoading(false);
       })
@@ -51,8 +47,8 @@ export default function DownloadPage() {
         // Fallback - still provide download link
         setRelease({
           version: "v1.17.1",
-          downloadUrl: "https://gitlab.com/bokiko/pingdiff/-/releases",
-          size: "~20MB",
+          downloadUrl: "https://github.com/bokiko/pingdiff/releases/latest",
+          size: "~11 MB",
           date: "",
           isInstaller: true
         });
@@ -127,7 +123,7 @@ export default function DownloadPage() {
             <AlertCircle className="w-5 h-5 text-yellow-500 flex-shrink-0" />
             <p className="text-yellow-200 text-sm">
               Couldn&apos;t fetch latest version info. Showing fallback download link.
-              Check <a href="https://gitlab.com/bokiko/pingdiff/-/releases" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">GitLab Releases</a> for the latest version.
+              Check <a href="https://github.com/bokiko/pingdiff/releases" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">GitHub Releases</a> for the latest version.
             </p>
           </div>
         )}
