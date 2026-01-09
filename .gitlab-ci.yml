@@ -40,25 +40,7 @@ release:
     - ls -la desktop/installer_output/
     - INSTALLER_FILE=$(ls desktop/installer_output/PingDiff-Setup-*.exe | head -1)
     - INSTALLER_NAME=$(basename "$INSTALLER_FILE")
-    - echo "Found installer: $INSTALLER_NAME"
-    - |
-      release-cli create \
-        --name "PingDiff $CI_COMMIT_TAG" \
-        --tag-name "$CI_COMMIT_TAG" \
-        --description "## What's New in $CI_COMMIT_TAG
-
-      ### Installation
-      Download the installer and run it.
-
-      The installer will:
-      - Install PingDiff to your Program Files
-      - Create Start Menu shortcuts
-      - Optionally create a Desktop shortcut
-      - Clean up old versions automatically
-
-      ### User Data
-      Your settings and logs are stored in \`%APPDATA%\\PingDiff\` and will be preserved when you update.
-
-      ### Supported Games (9 Total, 141 Servers)
-      Overwatch 2, Call of Duty, Valorant, Counter-Strike 2, Battlefield 6, Marvel Rivals, Fortnite, League of Legends, Apex Legends" \
-        --assets-link "{\"name\":\"$INSTALLER_NAME\",\"url\":\"${CI_PROJECT_URL}/-/jobs/artifacts/${CI_COMMIT_TAG}/raw/desktop/installer_output/${INSTALLER_NAME}?job=build-windows\"}"
+    - echo "Found installer - $INSTALLER_NAME"
+    - ASSET_URL="${CI_PROJECT_URL}/-/jobs/artifacts/${CI_COMMIT_TAG}/raw/desktop/installer_output/${INSTALLER_NAME}?job=build-windows"
+    - 'DESCRIPTION="## What'\''s New in $CI_COMMIT_TAG\n\n### Installation\nDownload the installer and run it.\n\n### Supported Games (9 Total, 141 Servers)\nOverwatch 2, Call of Duty, Valorant, Counter-Strike 2, Battlefield 6, Marvel Rivals, Fortnite, League of Legends, Apex Legends"'
+    - 'release-cli create --name "PingDiff $CI_COMMIT_TAG" --tag-name "$CI_COMMIT_TAG" --description "$DESCRIPTION" --assets-link "{\"name\":\"$INSTALLER_NAME\",\"url\":\"$ASSET_URL\"}"'
