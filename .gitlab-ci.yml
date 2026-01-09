@@ -17,7 +17,8 @@ build-windows:
     - pip install pyinstaller
     - python build.py
     - choco install innosetup -y
-    - $version = $CI_COMMIT_TAG -replace '^v', ''
+    - $version = $env:CI_COMMIT_TAG -replace '^v', ''
+    - echo "Building installer for version $version"
     - (Get-Content installer.iss) -replace '#define MyAppVersion ".*"', "#define MyAppVersion `"$version`"" | Set-Content installer.iss
     - '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss'
   artifacts:
@@ -34,12 +35,17 @@ release:
     - job: build-windows
       artifacts: true
   script:
-    - echo "Creating release for $CI_COMMIT_TAG"
-  release:
-    tag_name: $CI_COMMIT_TAG
-    name: "PingDiff $CI_COMMIT_TAG"
-    description: |
-      ## What's New in $CI_COMMIT_TAG
+    - VERSION_NUM="${CI_COMMIT_TAG#v}"
+    - echo "Creating release for $CI_COMMIT_TAG (version $VERSION_NUM)"
+    - ls -la desktop/installer_output/
+    - INSTALLER_FILE=$(ls desktop/installer_output/PingDiff-Setup-*.exe | head -1)
+    - INSTALLER_NAME=$(basename "$INSTALLER_FILE")
+    - echo "Found installer: $INSTALLER_NAME"
+    - |
+      release-cli create \
+        --name "PingDiff $CI_COMMIT_TAG" \
+        --tag-name "$CI_COMMIT_TAG" \
+        --description "## What's New in $CI_COMMIT_TAG
 
       ### Installation
       Download the installer and run it.
@@ -51,11 +57,8 @@ release:
       - Clean up old versions automatically
 
       ### User Data
-      Your settings and logs are stored in `%APPDATA%\PingDiff` and will be preserved when you update.
+      Your settings and logs are stored in \`%APPDATA%\\PingDiff\` and will be preserved when you update.
 
       ### Supported Games (9 Total, 141 Servers)
-      Overwatch 2, Call of Duty, Valorant, Counter-Strike 2, Battlefield 6, Marvel Rivals, Fortnite, League of Legends, Apex Legends
-    assets:
-      links:
-        - name: "PingDiff-Setup-${CI_COMMIT_TAG#v}.exe"
-          url: "${CI_PROJECT_URL}/-/jobs/artifacts/${CI_COMMIT_TAG}/raw/desktop/installer_output/PingDiff-Setup-${CI_COMMIT_TAG#v}.exe?job=build-windows"
+      Overwatch 2, Call of Duty, Valorant, Counter-Strike 2, Battlefield 6, Marvel Rivals, Fortnite, League of Legends, Apex Legends" \
+        --assets-link "{\"name\":\"$INSTALLER_NAME\",\"url\":\"${CI_PROJECT_URL}/-/jobs/artifacts/${CI_COMMIT_TAG}/raw/desktop/installer_output/${INSTALLER_NAME}?job=build-windows\"}"
