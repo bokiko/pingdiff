@@ -11,8 +11,10 @@ Usage:
 
 import argparse
 import json
+import os
 import sys
 import time
+from datetime import datetime
 from typing import List, Optional
 
 from config import APP_VERSION, GAMES, DEFAULT_SERVERS, REGIONS, REGION_NAMES
@@ -234,8 +236,45 @@ def build_parser() -> argparse.ArgumentParser:
                         help="List available games and exit")
     parser.add_argument("--no-color", action="store_true",
                         help="Disable colored output")
+    parser.add_argument("--watch", action="store_true",
+                        help="Continuously ping servers and refresh results (use --interval to set seconds, default 30)")
+    parser.add_argument("--interval", type=int, default=30,
+                        help="Seconds between updates in watch mode (default: 30)")
 
     return parser
+
+
+def run_watch(game_info: dict, all_servers: list, args: argparse.Namespace) -> int:
+    """Run continuous ping testing in watch mode. Returns exit code."""
+    try:
+        while True:
+            os.system("clear" if os.name != "nt" else "cls")
+
+            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print(colorize(f"PingDiff — {game_info['name']} [Watch Mode]", Colors.BOLD))
+            print(colorize(f"Last update: {now}", Colors.DIM))
+            print()
+
+            results = test_all_servers(all_servers, ping_count=args.count, callback=progress_callback)
+
+            print_table(results)
+
+            best = get_best_server(results)
+            if best:
+                quality = get_connection_quality(best)
+                print(f"  Recommended: {colorize(best.server_location, Colors.CYAN)} ({best.region}) — "
+                      f"{colorize(f'{best.ping_avg:.0f}ms', quality_color(quality))} "
+                      f"[{colorize(quality, quality_color(quality))}]")
+                print()
+
+            for remaining in range(args.interval, 0, -1):
+                sys.stdout.write(f"\r  Next update in {remaining}s  [Ctrl+C to stop]  ")
+                sys.stdout.flush()
+                time.sleep(1)
+
+    except KeyboardInterrupt:
+        print("\n\n  Watch mode stopped. Goodbye!")
+        return 0
 
 
 def run_cli(args: argparse.Namespace) -> int:
@@ -279,6 +318,12 @@ def run_cli(args: argparse.Namespace) -> int:
 
     total = len(all_servers)
     region_label = args.region or "all regions"
+
+    if args.watch:
+        if args.json_output:
+            print("Warning: --json is not supported with --watch, ignoring --json.")
+            args.json_output = False
+        return run_watch(game_info, all_servers, args)
 
     if not args.json_output:
         print()
