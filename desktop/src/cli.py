@@ -10,6 +10,8 @@ Usage:
 """
 
 import argparse
+import csv
+import io
 import json
 import os
 import sys
@@ -39,7 +41,7 @@ class Colors:
     def supports_color() -> bool:
         """Check if terminal supports ANSI colors."""
         if sys.platform == "win32":
-            return "ANSICON" in __builtins__ or "WT_SESSION" in __builtins__
+            return "ANSICON" in os.environ or "WT_SESSION" in os.environ
         return hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
 
 
@@ -176,6 +178,30 @@ def results_to_json(results: List[PingResult], best_only: bool = False) -> str:
     return json.dumps(data, indent=2)
 
 
+def results_to_csv(results: List[PingResult], best_only: bool = False) -> str:
+    """Convert results to CSV string."""
+    if best_only:
+        best = get_best_server(results)
+        if not best:
+            return ""
+        results = [best]
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "server", "region", "ip", "ping_avg", "ping_min", "ping_max",
+        "jitter", "packet_loss", "quality", "successful_pings", "total_pings",
+    ])
+    for r in results:
+        writer.writerow([
+            r.server_location, r.region, r.ip_address,
+            f"{r.ping_avg:.2f}", f"{r.ping_min:.2f}", f"{r.ping_max:.2f}",
+            f"{r.jitter:.2f}", f"{r.packet_loss:.2f}",
+            get_connection_quality(r), r.successful_pings, r.total_pings,
+        ])
+    return output.getvalue().rstrip("\n")
+
+
 def progress_callback(completed: int, total: int, result: PingResult) -> None:
     """Show progress during testing."""
     bar_width = 30
@@ -228,6 +254,8 @@ def build_parser() -> argparse.ArgumentParser:
                         help="Number of pings per server (default: 10)")
     parser.add_argument("--json", action="store_true", dest="json_output",
                         help="Output results as JSON")
+    parser.add_argument("--csv", action="store_true", dest="csv_output",
+                        help="Output results as CSV")
     parser.add_argument("--best", action="store_true",
                         help="Show only the best server")
     parser.add_argument("--version", action="version",
@@ -323,9 +351,18 @@ def run_cli(args: argparse.Namespace) -> int:
         if args.json_output:
             print("Warning: --json is not supported with --watch, ignoring --json.")
             args.json_output = False
+        if args.csv_output:
+            print("Warning: --csv is not supported with --watch, ignoring --csv.")
+            args.csv_output = False
         return run_watch(game_info, all_servers, args)
 
-    if not args.json_output:
+    if args.json_output and args.csv_output:
+        print("Warning: --json and --csv both set, using --json.", file=sys.stderr)
+        args.csv_output = False
+
+    machine_output = args.json_output or args.csv_output
+
+    if not machine_output:
         print()
         print(colorize(f"PingDiff v{APP_VERSION}", Colors.BOLD))
         print(f"Testing {colorize(game_info['name'], Colors.CYAN)} — {total} servers ({region_label})")
@@ -333,12 +370,14 @@ def run_cli(args: argparse.Namespace) -> int:
         print()
 
     # Run tests
-    callback = progress_callback if not args.json_output else None
+    callback = progress_callback if not machine_output else None
     results = test_all_servers(all_servers, ping_count=args.count, callback=callback)
 
     # Output
     if args.json_output:
         print(results_to_json(results, best_only=args.best))
+    elif args.csv_output:
+        print(results_to_csv(results, best_only=args.best))
     elif args.best:
         print_best(results)
     else:
