@@ -16,12 +16,30 @@ else:
 
 sys.path.insert(0, application_path)
 
-from gui import PingDiffApp
+from cli import build_parser, run_cli
 
 
 def main():
-    """Main entry point"""
+    """Main entry point — routes to CLI or GUI mode based on arguments."""
+    parser = build_parser()
+
+    # Check if any CLI flags are present (without consuming them for GUI mode)
+    args, remaining = parser.parse_known_args()
+
+    if args.cli or args.list_games:
+        # CLI mode
+        args = parser.parse_args()
+        sys.exit(run_cli(args))
+
+    # Check for --version (argparse handles it, but just in case)
+    if "--version" in sys.argv:
+        from config import APP_VERSION
+        print(f"PingDiff v{APP_VERSION}")
+        sys.exit(0)
+
+    # GUI mode
     try:
+        from gui import PingDiffApp
         app = PingDiffApp()
         app.run()
     except Exception as e:
