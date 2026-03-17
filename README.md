@@ -176,7 +176,7 @@ pingdiff/
 
 ## Features
 
-### Desktop App (v1.17.0)
+### Desktop App (v1.17.1)
 
 - 🎨 **Apple-inspired UI** - Modern, clean dark theme
 - 🎮 **9 Games** - All major competitive titles
@@ -187,6 +187,41 @@ pingdiff/
 - ⚙️ **Settings** - Toggle anonymous data sharing
 - 📁 **Local Logs** - Stored in `%APPDATA%\PingDiff`
 - 🔧 **Proper Installer** - Start Menu shortcuts, clean updates
+
+### CLI Mode (Headless / Scripting)
+
+Run PingDiff without the GUI — perfect for automation and scripting:
+
+```bash
+# Basic test
+python src/main.py --cli --game counter-strike-2 --region EU
+
+# Get best server as JSON
+python src/main.py --cli --json --best
+
+# Save results to a file (format auto-detected from extension)
+python src/main.py --cli --output results.json
+python src/main.py --cli --output results.csv --region NA
+
+# Continuous monitoring
+python src/main.py --cli --watch --interval 60
+
+# List all supported games
+python src/main.py --list-games
+```
+
+| Flag | Description |
+|:-----|:------------|
+| `--cli` | Enable CLI mode (no GUI) |
+| `--game <slug>` | Game to test (default: `overwatch-2`) |
+| `--region <EU\|NA\|ASIA\|SA\|ME>` | Filter by region |
+| `--count <n>` | Pings per server (default: 10) |
+| `--best` | Show only the best server |
+| `--json` | Output as JSON |
+| `--csv` | Output as CSV |
+| `--output <file>` | Save results to file (`.json` or `.csv`) |
+| `--watch` | Continuously refresh (use with `--interval`) |
+| `--no-color` | Disable colored output |
 
 ### Web Dashboard
 

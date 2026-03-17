@@ -5,6 +5,8 @@ Command-line ping testing without the GUI — for power users and scripting.
 Usage:
     python main.py --cli --game cs2 --region EU
     python main.py --cli --json --best
+    python main.py --cli --output results.json
+    python main.py --cli --output results.csv --region NA
     python main.py --list-games
     python main.py --version
 """
@@ -231,6 +233,30 @@ def list_games() -> None:
     print()
 
 
+def save_results_to_file(results: List[PingResult], filepath: str,
+                          use_json: bool = False, use_csv: bool = False,
+                          best_only: bool = False) -> None:
+    """Save ping results to a file.
+
+    Format is determined by:
+    1. File extension (.json → JSON, .csv → CSV)
+    2. --json / --csv flags as fallback
+    3. Defaults to JSON if ambiguous
+    """
+    ext = os.path.splitext(filepath)[1].lower()
+
+    if ext == ".json" or (use_json and ext != ".csv"):
+        content = results_to_json(results, best_only=best_only)
+    elif ext == ".csv" or use_csv:
+        content = results_to_csv(results, best_only=best_only)
+    else:
+        # Default to JSON for unknown extensions
+        content = results_to_json(results, best_only=best_only)
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(content)
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Build the argument parser."""
     parser = argparse.ArgumentParser(
@@ -239,6 +265,8 @@ def build_parser() -> argparse.ArgumentParser:
         epilog="Examples:\n"
                "  pingdiff --cli --game counter-strike-2 --region EU\n"
                "  pingdiff --cli --json --best\n"
+               "  pingdiff --cli --output results.json\n"
+               "  pingdiff --cli --output results.csv --region NA\n"
                "  pingdiff --list-games\n",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -264,6 +292,9 @@ def build_parser() -> argparse.ArgumentParser:
                         help="List available games and exit")
     parser.add_argument("--no-color", action="store_true",
                         help="Disable colored output")
+    parser.add_argument("--output", type=str, default=None, metavar="FILE",
+                        help="Save results to FILE (format auto-detected from .json/.csv extension, "
+                             "or uses --json/--csv flag if set)")
     parser.add_argument("--watch", action="store_true",
                         help="Continuously ping servers and refresh results (use --interval to set seconds, default 30)")
     parser.add_argument("--interval", type=int, default=30,
@@ -354,6 +385,9 @@ def run_cli(args: argparse.Namespace) -> int:
         if args.csv_output:
             print("Warning: --csv is not supported with --watch, ignoring --csv.")
             args.csv_output = False
+        if args.output:
+            print("Warning: --output is not supported with --watch, ignoring --output.")
+            args.output = None
         return run_watch(game_info, all_servers, args)
 
     if args.json_output and args.csv_output:
@@ -373,7 +407,23 @@ def run_cli(args: argparse.Namespace) -> int:
     callback = progress_callback if not machine_output else None
     results = test_all_servers(all_servers, ping_count=args.count, callback=callback)
 
-    # Output
+    # Save to file if --output specified
+    if args.output:
+        try:
+            save_results_to_file(results, args.output,
+                                  use_json=args.json_output,
+                                  use_csv=args.csv_output,
+                                  best_only=args.best)
+            if not machine_output:
+                ext = os.path.splitext(args.output)[1].lower()
+                fmt = "CSV" if ext == ".csv" or args.csv_output else "JSON"
+                print(colorize(f"  Results saved to {args.output} ({fmt})", Colors.GREEN))
+                print()
+        except OSError as e:
+            print(colorize(f"  Error saving to {args.output}: {e}", Colors.RED), file=sys.stderr)
+            return 1
+
+    # Output to stdout
     if args.json_output:
         print(results_to_json(results, best_only=args.best))
     elif args.csv_output:
