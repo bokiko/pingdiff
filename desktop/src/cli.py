@@ -92,14 +92,32 @@ def format_loss(value: float) -> str:
         return colorize(f"{value:.1f}%", Colors.RED)
 
 
-def print_table(results: List[PingResult]) -> None:
+def sort_results(results: List[PingResult], sort_by: str) -> List[PingResult]:
+    """Sort results by the specified column."""
+    sort_keys = {
+        "ping": lambda r: (r.packet_loss >= 100, r.ping_avg),
+        "jitter": lambda r: (r.packet_loss >= 100, r.jitter),
+        "loss": lambda r: (r.packet_loss >= 100, r.packet_loss),
+        "location": lambda r: (r.packet_loss >= 100, r.server_location.lower()),
+        "region": lambda r: (r.packet_loss >= 100, r.region, r.ping_avg),
+    }
+    key = sort_keys.get(sort_by, sort_keys["ping"])
+    return sorted(results, key=key)
+
+
+def filter_by_max_ping(results: List[PingResult], max_ping: float) -> List[PingResult]:
+    """Remove servers exceeding the max ping threshold (unreachable servers always excluded)."""
+    return [r for r in results if r.packet_loss < 100 and r.ping_avg <= max_ping]
+
+
+def print_table(results: List[PingResult], sort_by: str = "ping") -> None:
     """Print results as a formatted table."""
     if not results:
         print("No results.")
         return
 
-    # Sort by ping (best first), unreachable last
-    results = sorted(results, key=lambda r: (r.packet_loss >= 100, r.ping_avg))
+    # Sort results
+    results = sort_results(results, sort_by)
 
     # Column widths
     header = f"{'Server':<20} {'Region':<8} {'Avg':>7} {'Min':>7} {'Max':>7} {'Jitter':>7} {'Loss':>7} {'Quality':<10}"
@@ -267,6 +285,8 @@ def build_parser() -> argparse.ArgumentParser:
                "  pingdiff --cli --json --best\n"
                "  pingdiff --cli --output results.json\n"
                "  pingdiff --cli --output results.csv --region NA\n"
+               "  pingdiff --cli --sort jitter --region EU\n"
+               "  pingdiff --cli --max-ping 80 --region NA\n"
                "  pingdiff --list-games\n",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -299,6 +319,11 @@ def build_parser() -> argparse.ArgumentParser:
                         help="Continuously ping servers and refresh results (use --interval to set seconds, default 30)")
     parser.add_argument("--interval", type=int, default=30,
                         help="Seconds between updates in watch mode (default: 30)")
+    parser.add_argument("--sort", type=str, default="ping",
+                        choices=["ping", "jitter", "loss", "location", "region"],
+                        help="Sort results by column (default: ping)")
+    parser.add_argument("--max-ping", type=float, default=None, metavar="MS",
+                        help="Hide servers with avg ping above this threshold (ms)")
 
     return parser
 
@@ -316,7 +341,10 @@ def run_watch(game_info: dict, all_servers: list, args: argparse.Namespace) -> i
 
             results = test_all_servers(all_servers, ping_count=args.count, callback=progress_callback)
 
-            print_table(results)
+            if args.max_ping is not None:
+                results = filter_by_max_ping(results, args.max_ping)
+
+            print_table(results, sort_by=args.sort)
 
             best = get_best_server(results)
             if best:
@@ -407,6 +435,14 @@ def run_cli(args: argparse.Namespace) -> int:
     callback = progress_callback if not machine_output else None
     results = test_all_servers(all_servers, ping_count=args.count, callback=callback)
 
+    # Apply --max-ping filter
+    if args.max_ping is not None:
+        filtered = filter_by_max_ping(results, args.max_ping)
+        if not filtered:
+            print(colorize(f"  No servers found under {args.max_ping:.0f}ms threshold.", Colors.YELLOW))
+            return 0
+        results = filtered
+
     # Save to file if --output specified
     if args.output:
         try:
@@ -431,7 +467,7 @@ def run_cli(args: argparse.Namespace) -> int:
     elif args.best:
         print_best(results)
     else:
-        print_table(results)
+        print_table(results, sort_by=args.sort)
 
         # Also show best server summary
         best = get_best_server(results)
