@@ -1,5 +1,15 @@
 # PingDiff Improvement Log
 
+## 2026-03-18 — Security: Harden API routes and add CSP/HSTS headers
+
+`/api/servers` was completely unprotected by rate limiting while `/api/results` already had it — an oversight that left the DB endpoint open to unbounded hammering. The rate-limit and IP-extraction logic was also duplicated inline, meaning the two routes could silently diverge over time. Additionally, `next.config.ts` was missing the two highest-impact HTTP security headers: Content Security Policy and HSTS.
+
+Fixed by extracting a shared `rate-limit.ts` utility (named buckets, consistent IP extraction), applying rate limiting + slug validation to `/api/servers`, adding CDN caching on that endpoint, and adding CSP + HSTS to `next.config.ts`.
+
+**Files changed:** `web/src/lib/rate-limit.ts` (new), `web/src/app/api/results/route.ts`, `web/src/app/api/servers/route.ts`, `web/next.config.ts`
+**Lines:** +127 / -35
+
+
 ## 2026-03-18 — Code Quality: Extract shared Navbar and Footer components
 
 The navigation bar and footer were duplicated verbatim across 4 pages (home, dashboard, community,
