@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { supabase } from '@/lib/supabase';
+import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
 // Input validation schemas
 const PingResultSchema = z.object({
@@ -25,39 +26,12 @@ const SubmitRequestSchema = z.object({
   anonymous_id: z.string().max(100).default('anonymous'),
 });
 
-// Simple in-memory rate limiting
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT = 30; // requests per window
-const RATE_WINDOW = 60 * 1000; // 1 minute
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const record = rateLimitMap.get(ip);
-
-  if (!record || now > record.resetTime) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_WINDOW });
-    return true;
-  }
-
-  if (record.count >= RATE_LIMIT) {
-    return false;
-  }
-
-  record.count++;
-  return true;
-}
-
-function getClientIP(request: NextRequest): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  const realIP = request.headers.get('x-real-ip');
-  return forwarded?.split(',')[0]?.trim() || realIP || '127.0.0.1';
-}
 
 export async function POST(request: NextRequest) {
   const clientIP = getClientIP(request);
 
   // Rate limiting
-  if (!checkRateLimit(clientIP)) {
+  if (!checkRateLimit("results", clientIP)) {
     return NextResponse.json(
       { error: 'Rate limit exceeded. Please try again later.' },
       { status: 429 }
@@ -168,7 +142,7 @@ export async function GET(request: NextRequest) {
   const clientIP = getClientIP(request);
 
   // Rate limiting
-  if (!checkRateLimit(clientIP)) {
+  if (!checkRateLimit("results", clientIP)) {
     return NextResponse.json(
       { error: 'Rate limit exceeded' },
       { status: 429 }
