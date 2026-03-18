@@ -3,18 +3,17 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  Activity,
   Download,
   Clock,
   Server,
   Wifi,
   TrendingDown,
   AlertTriangle,
-  Menu,
-  X,
   RefreshCw,
   AlertCircle,
 } from "lucide-react";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import {
   LineChart,
   Line,
@@ -49,8 +48,6 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   useEffect(() => {
     fetchResults();
   }, []);
@@ -151,54 +148,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2 focus-ring rounded-lg">
-            <Activity className="w-7 h-7 md:w-8 md:h-8 text-blue-500" />
-            <span className="text-lg md:text-xl font-bold">PingDiff</span>
-          </Link>
-
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-zinc-400 hover:text-white transition focus-ring rounded-lg"
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-
-          {/* Desktop menu */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/dashboard" className="text-white font-medium focus-ring rounded-lg px-2 py-1">
-              Dashboard
-            </Link>
-            <Link href="/community" className="text-zinc-400 hover:text-white transition focus-ring rounded-lg px-2 py-1">
-              Community
-            </Link>
-            <Link href="/download" className="btn-primary px-5 py-2 rounded-lg font-medium focus-ring">
-              Download
-            </Link>
-          </div>
-        </div>
-
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-zinc-800 bg-zinc-950 fade-in">
-            <div className="px-4 py-4 flex flex-col gap-4">
-              <Link href="/dashboard" className="text-white font-medium py-2" onClick={() => setMobileMenuOpen(false)}>
-                Dashboard
-              </Link>
-              <Link href="/community" className="text-zinc-400 hover:text-white transition py-2" onClick={() => setMobileMenuOpen(false)}>
-                Community
-              </Link>
-              <Link href="/download" className="btn-primary text-center py-3 rounded-lg font-medium" onClick={() => setMobileMenuOpen(false)}>
-                Download
-              </Link>
-            </div>
-          </div>
-        )}
-      </nav>
+      <Navbar />
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-8">
@@ -436,32 +386,7 @@ export default function DashboardPage() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-800 py-8 mt-16">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Activity className="w-5 h-5 text-blue-500" />
-            <span className="font-semibold">PingDiff</span>
-            <span className="text-zinc-500 text-sm">© 2026</span>
-          </div>
-          <div className="flex gap-6 text-zinc-400 text-sm">
-            <Link href="/privacy" className="hover:text-white transition">
-              Privacy
-            </Link>
-            <Link href="/terms" className="hover:text-white transition">
-              Terms
-            </Link>
-            <a
-              href="https://github.com/bokiko/pingdiff"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition"
-            >
-              GitHub
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

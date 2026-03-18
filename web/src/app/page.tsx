@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Activity, Download, Zap, Globe, TrendingUp, Menu, X, Shield, Code, Lock, Github } from "lucide-react";
+import { Download, Zap, Globe, TrendingUp, Shield, Code, Lock, Github } from "lucide-react";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
     <div className="min-h-screen">
       {/* Skip to content - Accessibility */}
@@ -14,70 +13,7 @@ export default function Home() {
         Skip to main content
       </a>
 
-      {/* Navigation */}
-      <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2 focus-ring rounded-lg">
-            <Activity className="w-7 h-7 md:w-8 md:h-8 text-blue-500" />
-            <span className="text-lg md:text-xl font-bold">PingDiff</span>
-          </Link>
-
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-zinc-400 hover:text-white transition focus-ring rounded-lg"
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileMenuOpen}
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-
-          {/* Desktop menu */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/dashboard" className="text-zinc-400 hover:text-white transition focus-ring rounded-lg px-2 py-1">
-              Dashboard
-            </Link>
-            <Link href="/community" className="text-zinc-400 hover:text-white transition focus-ring rounded-lg px-2 py-1">
-              Community
-            </Link>
-            <Link
-              href="/download"
-              className="btn-primary px-5 py-2 rounded-lg font-medium focus-ring"
-            >
-              Download
-            </Link>
-          </div>
-        </div>
-
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-zinc-800 bg-zinc-950 fade-in">
-            <div className="px-4 py-4 flex flex-col gap-4">
-              <Link
-                href="/dashboard"
-                className="text-zinc-400 hover:text-white transition py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/community"
-                className="text-zinc-400 hover:text-white transition py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Community
-              </Link>
-              <Link
-                href="/download"
-                className="btn-primary text-center py-3 rounded-lg font-medium"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Download
-              </Link>
-            </div>
-          </div>
-        )}
-      </nav>
+      <Navbar />
 
       <main id="main-content">
         {/* Hero Section */}
@@ -434,44 +370,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-800 py-8">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Activity className="w-5 h-5 text-blue-500" />
-            <span className="font-semibold">PingDiff</span>
-            <span className="text-zinc-500 text-sm">© 2026</span>
-          </div>
-          <div className="flex gap-6 text-zinc-400 text-sm">
-            <Link href="/privacy" className="hover:text-white transition focus-ring rounded px-1">
-              Privacy
-            </Link>
-            <Link href="/terms" className="hover:text-white transition focus-ring rounded px-1">
-              Terms
-            </Link>
-            <a
-              href="https://github.com/bokiko/pingdiff"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition focus-ring rounded px-1 flex items-center gap-1"
-            >
-              <Github className="w-4 h-4" />
-              GitHub
-            </a>
-            <a
-              href="https://gitlab.com/bokiko/pingdiff"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition focus-ring rounded px-1 flex items-center gap-1"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M23.955 13.587l-1.342-4.135-2.664-8.189a.455.455 0 00-.867 0L16.418 9.45H7.582L4.918 1.263a.455.455 0 00-.867 0L1.386 9.45.044 13.587a.924.924 0 00.331 1.023L12 23.054l11.625-8.443a.92.92 0 00.33-1.024"/>
-              </svg>
-              GitLab
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
