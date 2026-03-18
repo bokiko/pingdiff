@@ -1,5 +1,20 @@
 # PingDiff Improvement Log
 
+## 2026-03-18 — Code Quality: Extract shared Navbar and Footer components
+
+The navigation bar and footer were duplicated verbatim across 4 pages (home, dashboard, community,
+download), with each page managing its own mobileMenuOpen state and hardcoding its own active link
+style. Extracted both into reusable components in web/src/components/.
+
+The new Navbar uses usePathname() for automatic active-link highlighting and a single NAV_LINKS
+array as the source of truth for site navigation. Any future nav change (new link, style tweak)
+now requires editing one file instead of four.
+
+**Files changed:** `web/src/components/Navbar.tsx` (new), `web/src/components/Footer.tsx` (new),
+`web/src/app/page.tsx`, `web/src/app/dashboard/page.tsx`, `web/src/app/community/page.tsx`,
+`web/src/app/download/page.tsx`
+**Lines:** +157 / -338
+
 ## 2026-03-17 — Testing: Unit test suite for CLI and ping core logic
 
 Added a pytest test suite covering the CLI and ping tester modules — the first tests in the project.
