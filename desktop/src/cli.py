@@ -224,6 +224,8 @@ def results_to_csv(results: List[PingResult], best_only: bool = False) -> str:
 
 def progress_callback(completed: int, total: int, result: PingResult) -> None:
     """Show progress during testing."""
+    if total == 0:
+        return
     bar_width = 30
     filled = int(bar_width * completed / total)
     bar = "█" * filled + "░" * (bar_width - filled)

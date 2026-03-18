@@ -236,6 +236,9 @@ class APIClient:
             )
             if response.status_code == 200:
                 servers = response.json()
+                if not isinstance(servers, dict):
+                    logger.warning(f"Unexpected server response type: {type(servers).__name__}")
+                    raise ValueError("API returned non-dict response")
                 total = sum(len(v) for v in servers.values())
                 logger.info(f"Loaded {total} servers from API")
                 return servers
