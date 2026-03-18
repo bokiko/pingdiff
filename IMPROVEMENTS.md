@@ -45,3 +45,17 @@ and work offline. 68 tests across 10 test classes covering:
 **Files changed:** `desktop/tests/__init__.py`, `desktop/tests/test_ping_tester.py`,
 `desktop/tests/test_cli.py`, `desktop/pytest.ini`
 **Lines:** +370 / -0
+
+## 2026-03-18 — UI/UX: Skeleton loading screen for dashboard
+
+The dashboard previously showed a centered spinner while fetching results from
+/api/results, giving no visual indication of page structure and causing a jarring
+layout shift when content arrived.
+
+Replaced the spinner with a DashboardSkeleton component that mirrors the real
+dashboard layout — four stat cards, two chart panels, and a six-row results table
+— all with the existing .skeleton shimmer animation. No new dependencies. Screen
+reader support via aria-busy="true" and aria-label on the skeleton root.
+
+**Files changed:** `web/src/components/DashboardSkeleton.tsx` (new), `web/src/app/dashboard/page.tsx`
+**Lines:** +123 / -4
