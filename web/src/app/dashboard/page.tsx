@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { DashboardSkeleton } from "@/components/DashboardSkeleton";
 import {
   LineChart,
   Line,
@@ -181,10 +182,7 @@ export default function DashboardPage() {
         </div>
 
         {loading ? (
-          <div className="text-center py-20">
-            <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-zinc-400">Loading results...</p>
-          </div>
+          <DashboardSkeleton />
         ) : error ? (
           <div className="text-center py-20">
             <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
