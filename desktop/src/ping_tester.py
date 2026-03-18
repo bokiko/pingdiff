@@ -245,7 +245,22 @@ def test_all_servers(servers: List[Dict], ping_count: int = 10,
             }
 
             for future in as_completed(future_to_server):
-                result = future.result()
+                try:
+                    result = future.result()
+                except Exception as e:
+                    server = future_to_server[future]
+                    logger.error(f"Unexpected error testing server {server.get('id', '?')}: {e}")
+                    result = PingResult(
+                        server_id=server.get("id", "unknown"),
+                        server_location=server.get("location", "Unknown"),
+                        ip_address=server.get("ip", ""),
+                        ping_avg=0.0, ping_min=0.0, ping_max=0.0,
+                        jitter=0.0, packet_loss=100.0,
+                        successful_pings=0, total_pings=ping_count,
+                        raw_times=[],
+                        region=server.get("region", ""),
+                        error=str(e),
+                    )
                 results.append(result)
                 completed += 1
 
