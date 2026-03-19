@@ -7,13 +7,17 @@ import { Footer } from "@/components/Footer";
 export default function CommunityPage() {
   return (
     <div className="min-h-screen">
+      <a href="#main-content" className="skip-to-content focus-ring">
+        Skip to main content
+      </a>
+
       <Navbar />
 
-      <main className="max-w-6xl mx-auto px-4 py-16">
+      <main id="main-content" className="max-w-6xl mx-auto px-4 py-16">
         {/* Coming Soon Banner */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-yellow-500/20 rounded-2xl mb-6">
-            <Construction className="w-10 h-10 text-yellow-500" />
+            <Construction className="w-10 h-10 text-yellow-500" aria-hidden="true" />
           </div>
           <h1 className="text-4xl font-bold mb-4">Community Hub</h1>
           <p className="text-zinc-400 text-lg max-w-xl mx-auto">
@@ -25,7 +29,8 @@ export default function CommunityPage() {
         </div>
 
         {/* Preview Features */}
-        <div className="grid md:grid-cols-3 gap-6 mb-16">
+        <section aria-labelledby="preview-features-heading" className="grid md:grid-cols-3 gap-6 mb-16">
+          <h2 id="preview-features-heading" className="sr-only">Upcoming community features</h2>
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 opacity-60">
             <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-4">
               <MessageSquare className="w-6 h-6 text-blue-500" />
@@ -55,7 +60,7 @@ export default function CommunityPage() {
               See the best ping results by region, ISP, and server location.
             </p>
           </div>
-        </div>
+        </section>
 
         {/* CTA */}
         <div className="text-center bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8">

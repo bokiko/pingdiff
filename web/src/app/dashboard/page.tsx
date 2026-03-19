@@ -226,10 +226,14 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen">
+      <a href="#main-content" className="skip-to-content focus-ring">
+        Skip to main content
+      </a>
+
       <Navbar />
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main id="main-content" className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -398,11 +402,11 @@ export default function DashboardPage() {
             </div>
 
             {/* Charts */}
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="grid md:grid-cols-2 gap-6 mb-8" role="region" aria-label="Performance charts">
               {/* Ping History Chart */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-                <h3 className="text-lg font-semibold mb-4">Ping History</h3>
-                <div className="h-64">
+                <h3 className="text-lg font-semibold mb-4" id="ping-history-heading">Ping History</h3>
+                <div className="h-64" role="img" aria-labelledby="ping-history-heading">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#333" />
@@ -429,8 +433,8 @@ export default function DashboardPage() {
 
               {/* Server Comparison Chart */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-                <h3 className="text-lg font-semibold mb-4">Server Comparison</h3>
-                <div className="h-64">
+                <h3 className="text-lg font-semibold mb-4" id="server-comparison-heading">Server Comparison</h3>
+                <div className="h-64" role="img" aria-labelledby="server-comparison-heading">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={serverChartData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#333" />
@@ -459,15 +463,15 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full" aria-label="Recent ping test results">
                   <thead>
                     <tr className="text-left text-zinc-400 text-sm">
-                      <th className="pb-4">Server</th>
-                      <th className="pb-4">Ping</th>
-                      <th className="pb-4">Jitter</th>
-                      <th className="pb-4">Loss</th>
-                      <th className="pb-4">ISP</th>
-                      <th className="pb-4">Time</th>
+                      <th scope="col" className="pb-4">Server</th>
+                      <th scope="col" className="pb-4">Ping</th>
+                      <th scope="col" className="pb-4">Jitter</th>
+                      <th scope="col" className="pb-4">Loss</th>
+                      <th scope="col" className="pb-4">ISP</th>
+                      <th scope="col" className="pb-4">Time</th>
                     </tr>
                   </thead>
                   <tbody>

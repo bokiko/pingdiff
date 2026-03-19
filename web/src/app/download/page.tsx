@@ -65,10 +65,14 @@ export default function DownloadPage() {
 
   return (
     <div className="min-h-screen">
+      <a href="#main-content" className="skip-to-content focus-ring">
+        Skip to main content
+      </a>
+
       <Navbar />
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-16">
+      <main id="main-content" className="max-w-4xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">Download PingDiff</h1>
           <p className="text-zinc-400 text-lg">
@@ -111,8 +115,10 @@ export default function DownloadPage() {
               <a
                 href={release?.downloadUrl || "#"}
                 className={`inline-flex items-center gap-2 btn-primary px-8 py-4 rounded-xl font-semibold text-lg focus-ring ${loading ? 'opacity-50 pointer-events-none' : ''}`}
+                aria-label={loading ? "Loading download link" : `Download ${getFileName()} for Windows`}
+                aria-disabled={loading}
               >
-                <Download className="w-5 h-5" />
+                <Download className="w-5 h-5" aria-hidden="true" />
                 {loading ? "Loading..." : `Download ${getFileName()}`}
               </a>
             </div>

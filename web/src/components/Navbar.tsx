@@ -60,6 +60,7 @@ export function Navbar() {
                 className={`transition focus-ring rounded-lg px-2 py-1 ${
                   isActive(href) ? "text-white font-medium" : "text-zinc-400 hover:text-white"
                 }`}
+                aria-current={isActive(href) ? "page" : undefined}
               >
                 {label}
               </Link>
@@ -93,6 +94,7 @@ export function Navbar() {
                     isActive(href) ? "text-white font-medium" : "text-zinc-400 hover:text-white"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
+                  aria-current={isActive(href) ? "page" : undefined}
                 >
                   {label}
                 </Link>
