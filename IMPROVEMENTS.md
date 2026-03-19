@@ -1,5 +1,18 @@
 # PingDiff Improvement Log
 
+## 2026-03-19 — New Feature: Date range filter and CSV export for dashboard
+
+Added two practical dashboard improvements with no new dependencies and no API changes.
+
+Date range filter: a dropdown (Last 7 / 30 / 90 days / All time, defaulting to 30 days) applied before the existing region filter. An empty-state UI with a Clear Filters button handles the case where filters return no results.
+
+CSV export: an Export CSV button appears in the filter toolbar whenever filtered results exist. It exports exactly the current view (date + region filters applied) as RFC 4180-compliant CSV with columns for Date, Server, Region, Avg/Min/Max Ping, Jitter, Packet Loss, ISP, Country, and City. Filename includes today's date.
+
+Also: Refresh button moved into the filter toolbar for a consistent row; result count label added to the Recent Tests table header; header layout improved for mobile (stacks vertically below sm breakpoint).
+
+**Files changed:** `web/src/app/dashboard/page.tsx`
+**Lines:** +145 / -13
+
 ## 2026-03-18 — Security: Harden API routes and add CSP/HSTS headers
 
 `/api/servers` was completely unprotected by rate limiting while `/api/results` already had it — an oversight that left the DB endpoint open to unbounded hammering. The rate-limit and IP-extraction logic was also duplicated inline, meaning the two routes could silently diverge over time. Additionally, `next.config.ts` was missing the two highest-impact HTTP security headers: Content Security Policy and HSTS.
