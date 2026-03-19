@@ -1,5 +1,13 @@
 # PingDiff Improvement Log
 
+## 2026-03-19 — Performance: Memoize dashboard derived state
+
+All derived values on the dashboard (filteredResults, avgPing, avgPacketLoss, avgJitter, regions, chartData, serverChartData) were being recomputed inline on every React render — including renders triggered by unrelated state changes like the loading flag toggling off. Wrapped each value in useMemo with the tightest possible dependency array, eliminating 5 O(n) reduce passes and 2 groupBy passes on every extraneous render. At current scale the savings are modest; at the 500-1000 result range the dashboard would hit without this change the difference is measurable. The memoized structure also makes data dependencies explicit and auditable at a glance.
+
+**Files changed:** `web/src/app/dashboard/page.tsx`
+**Lines:** +76 / -56
+
+
 ## 2026-03-19 — New Feature: Date range filter and CSV export for dashboard
 
 Added two practical dashboard improvements with no new dependencies and no API changes.
