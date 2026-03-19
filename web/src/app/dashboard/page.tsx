@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import {
   Download,
@@ -147,66 +147,86 @@ export default function DashboardPage() {
     [dateRange]
   );
 
-  // Apply region filter on top of date filter
-  const dateFiltered = applyDateFilter(results);
-  const filteredResults =
-    selectedRegion === "all"
+  // Apply date + region filters — memoized so they only recompute when deps change
+  const filteredResults = useMemo(() => {
+    const dateFiltered = applyDateFilter(results);
+    return selectedRegion === "all"
       ? dateFiltered
       : dateFiltered.filter((r) => r.game_servers?.region === selectedRegion);
+  }, [results, applyDateFilter, selectedRegion]);
 
-  const avgPing =
-    filteredResults.length > 0
-      ? Math.round(
-          filteredResults.reduce((sum, r) => sum + r.ping_avg, 0) /
+  // Aggregate stats — memoized on filteredResults
+  const avgPing = useMemo(
+    () =>
+      filteredResults.length > 0
+        ? Math.round(
+            filteredResults.reduce((sum, r) => sum + r.ping_avg, 0) /
+              filteredResults.length
+          )
+        : 0,
+    [filteredResults]
+  );
+
+  const avgPacketLoss = useMemo(
+    () =>
+      filteredResults.length > 0
+        ? (
+            filteredResults.reduce((sum, r) => sum + r.packet_loss, 0) /
             filteredResults.length
-        )
-      : 0;
+          ).toFixed(1)
+        : "0",
+    [filteredResults]
+  );
 
-  const avgPacketLoss =
-    filteredResults.length > 0
-      ? (
-          filteredResults.reduce((sum, r) => sum + r.packet_loss, 0) /
-          filteredResults.length
-        ).toFixed(1)
-      : "0";
+  const avgJitter = useMemo(
+    () =>
+      filteredResults.length > 0
+        ? (
+            filteredResults.reduce((sum, r) => sum + (r.jitter || 0), 0) /
+            filteredResults.length
+          ).toFixed(1)
+        : "0",
+    [filteredResults]
+  );
 
-  const avgJitter =
-    filteredResults.length > 0
-      ? (
-          filteredResults.reduce((sum, r) => sum + (r.jitter || 0), 0) /
-          filteredResults.length
-        ).toFixed(1)
-      : "0";
+  // Unique regions derived from all results (unaffected by filters)
+  const regions = useMemo(
+    () => [
+      ...new Set(results.map((r) => r.game_servers?.region).filter(Boolean)),
+    ],
+    [results]
+  );
 
-  // Get unique regions (from all results, not filtered)
-  const regions = [
-    ...new Set(results.map((r) => r.game_servers?.region).filter(Boolean)),
-  ];
+  // Ping history chart data
+  const chartData = useMemo(
+    () =>
+      filteredResults.slice(0, 20).reverse().map((r, i) => ({
+        name: `Test ${i + 1}`,
+        ping: r.ping_avg,
+        jitter: r.jitter || 0,
+        loss: r.packet_loss,
+      })),
+    [filteredResults]
+  );
 
-  // Prepare chart data
-  const chartData = filteredResults.slice(0, 20).reverse().map((r, i) => ({
-    name: `Test ${i + 1}`,
-    ping: r.ping_avg,
-    jitter: r.jitter || 0,
-    loss: r.packet_loss,
-  }));
+  // Server comparison chart data — group by location, sort by avg ping
+  const serverChartData = useMemo(() => {
+    const serverData = filteredResults.reduce((acc, r) => {
+      const location = r.game_servers?.location || "Unknown";
+      if (!acc[location]) {
+        acc[location] = { pings: [], location };
+      }
+      acc[location].pings.push(r.ping_avg);
+      return acc;
+    }, {} as Record<string, { pings: number[]; location: string }>);
 
-  // Server comparison data
-  const serverData = filteredResults.reduce((acc, r) => {
-    const location = r.game_servers?.location || "Unknown";
-    if (!acc[location]) {
-      acc[location] = { pings: [], location };
-    }
-    acc[location].pings.push(r.ping_avg);
-    return acc;
-  }, {} as Record<string, { pings: number[]; location: string }>);
-
-  const serverChartData = Object.values(serverData)
-    .map((s) => ({
-      name: s.location.split(" ")[0],
-      ping: Math.round(s.pings.reduce((a, b) => a + b, 0) / s.pings.length),
-    }))
-    .sort((a, b) => a.ping - b.ping);
+    return Object.values(serverData)
+      .map((s) => ({
+        name: s.location.split(" ")[0],
+        ping: Math.round(s.pings.reduce((a, b) => a + b, 0) / s.pings.length),
+      }))
+      .sort((a, b) => a.ping - b.ping);
+  }, [filteredResults]);
 
   const getQualityColor = (ping: number) => {
     if (ping < 30) return "text-green-500";
