@@ -1,5 +1,17 @@
 # PingDiff Improvement Log
 
+## 2026-03-19 — Accessibility: Site-wide accessibility improvements
+
+Accessibility pass across all pages. Every page now has consistent skip-to-content
+navigation, active nav state announced to screen readers, major sections labelled as
+landmarks, chart regions wrapped with accessible roles, table headers scoped, decorative
+icons hidden from assistive tech, and a sr-only utility added to globals.css.
+
+**Files changed:** `web/src/app/globals.css`, `web/src/components/Navbar.tsx`,
+`web/src/app/page.tsx`, `web/src/app/community/page.tsx`,
+`web/src/app/dashboard/page.tsx`, `web/src/app/download/page.tsx`
+**Lines:** +57 / -27
+
 ## 2026-03-19 — New Feature: Date range filter and CSV export for dashboard
 
 Added two practical dashboard improvements with no new dependencies and no API changes.
