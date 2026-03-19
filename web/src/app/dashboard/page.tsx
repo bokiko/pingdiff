@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   Download,
@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   RefreshCw,
   AlertCircle,
+  FileDown,
 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -44,11 +45,75 @@ interface TestResult {
   };
 }
 
+type DateRange = "7" | "30" | "90" | "all";
+
+const DATE_RANGE_OPTIONS: { value: DateRange; label: string }[] = [
+  { value: "7", label: "Last 7 days" },
+  { value: "30", label: "Last 30 days" },
+  { value: "90", label: "Last 90 days" },
+  { value: "all", label: "All time" },
+];
+
+function exportToCSV(results: TestResult[]) {
+  const headers = [
+    "Date",
+    "Server",
+    "Region",
+    "Avg Ping (ms)",
+    "Min Ping (ms)",
+    "Max Ping (ms)",
+    "Jitter (ms)",
+    "Packet Loss (%)",
+    "ISP",
+    "Country",
+    "City",
+  ];
+
+  const rows = results.map((r) => [
+    new Date(r.created_at).toISOString(),
+    r.game_servers?.location ?? "Unknown",
+    r.game_servers?.region ?? "",
+    r.ping_avg,
+    r.ping_min,
+    r.ping_max,
+    r.jitter?.toFixed(2) ?? "0",
+    r.packet_loss,
+    r.isp ?? "Unknown",
+    r.country ?? "",
+    r.city ?? "",
+  ]);
+
+  const csvContent = [headers, ...rows]
+    .map((row) =>
+      row
+        .map((cell) => {
+          const str = String(cell);
+          // Wrap in quotes if contains comma, quote, or newline
+          if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+            return `"${str.replace(/"/g, '""')}"`;
+          }
+          return str;
+        })
+        .join(",")
+    )
+    .join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `pingdiff-results-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function DashboardPage() {
   const [results, setResults] = useState<TestResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
+  const [dateRange, setDateRange] = useState<DateRange>("30");
+
   useEffect(() => {
     fetchResults();
   }, []);
@@ -71,11 +136,23 @@ export default function DashboardPage() {
     }
   };
 
-  // Calculate stats
+  // Apply date range filter
+  const applyDateFilter = useCallback(
+    (data: TestResult[]): TestResult[] => {
+      if (dateRange === "all") return data;
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - parseInt(dateRange));
+      return data.filter((r) => new Date(r.created_at) >= cutoff);
+    },
+    [dateRange]
+  );
+
+  // Apply region filter on top of date filter
+  const dateFiltered = applyDateFilter(results);
   const filteredResults =
     selectedRegion === "all"
-      ? results
-      : results.filter((r) => r.game_servers?.region === selectedRegion);
+      ? dateFiltered
+      : dateFiltered.filter((r) => r.game_servers?.region === selectedRegion);
 
   const avgPing =
     filteredResults.length > 0
@@ -101,7 +178,7 @@ export default function DashboardPage() {
         ).toFixed(1)
       : "0";
 
-  // Get unique regions
+  // Get unique regions (from all results, not filtered)
   const regions = [
     ...new Set(results.map((r) => r.game_servers?.region).filter(Boolean)),
   ];
@@ -153,22 +230,34 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold">Dashboard</h1>
             <p className="text-zinc-400">Your connection test results</p>
           </div>
 
-          {/* Region Filter */}
-          <div className="flex items-center gap-2">
-            <label htmlFor="region-filter" className="text-zinc-400 text-sm sr-only md:not-sr-only">
-              Filter by:
-            </label>
+          {/* Filters */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Date range filter */}
+            <select
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value as DateRange)}
+              className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus-ring"
+              aria-label="Filter results by date range"
+            >
+              {DATE_RANGE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+
+            {/* Region filter */}
             <select
               id="region-filter"
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
-              className="bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus-ring"
+              className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus-ring"
               aria-label="Filter results by region"
             >
               <option value="all">All Regions</option>
@@ -178,6 +267,30 @@ export default function DashboardPage() {
                 </option>
               ))}
             </select>
+
+            {/* Export CSV button */}
+            {filteredResults.length > 0 && (
+              <button
+                onClick={() => exportToCSV(filteredResults)}
+                className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-2 rounded-lg text-sm font-medium transition focus-ring"
+                aria-label={`Export ${filteredResults.length} results to CSV`}
+                title="Export filtered results as CSV"
+              >
+                <FileDown className="w-4 h-4" />
+                Export CSV
+              </button>
+            )}
+
+            {/* Refresh */}
+            <button
+              onClick={fetchResults}
+              disabled={loading}
+              className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-2 rounded-lg text-sm font-medium transition focus-ring disabled:opacity-50"
+              aria-label="Refresh results"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+              Refresh
+            </button>
           </div>
         </div>
 
@@ -210,6 +323,20 @@ export default function DashboardPage() {
               <Download className="w-5 h-5" />
               Download PingDiff
             </Link>
+          </div>
+        ) : filteredResults.length === 0 ? (
+          <div className="text-center py-20">
+            <Clock className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold mb-2">No Results in This Range</h2>
+            <p className="text-zinc-400 mb-6">
+              No tests found for the selected filters. Try a wider date range or different region.
+            </p>
+            <button
+              onClick={() => { setDateRange("all"); setSelectedRegion("all"); }}
+              className="inline-flex items-center gap-2 bg-zinc-700 hover:bg-zinc-600 px-6 py-3 rounded-lg font-medium transition"
+            >
+              Clear Filters
+            </button>
           </div>
         ) : (
           <>
@@ -325,7 +452,12 @@ export default function DashboardPage() {
 
             {/* Recent Results Table */}
             <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-              <h3 className="text-lg font-semibold mb-4">Recent Tests</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Recent Tests</h3>
+                <span className="text-sm text-zinc-500">
+                  Showing {Math.min(filteredResults.length, 10)} of {filteredResults.length}
+                </span>
+              </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
