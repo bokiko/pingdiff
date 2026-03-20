@@ -1,5 +1,20 @@
 # PingDiff Improvement Log
 
+## 2026-03-20 — Bug Fix: Per-page metadata for dashboard, download, and community
+
+All three main pages used `"use client"` at the top level, which blocks Next.js from reading the
+`metadata` export. Every page fell back to the generic homepage title and description — so sharing
+any page on Discord, Twitter, or iMessage showed "PingDiff - Test Your Game Server Connection"
+regardless of which page it was. The `template: "%s | PingDiff"` in `layout.tsx` was dead code.
+
+Fixed by splitting each page into a thin server wrapper (`page.tsx`, exports metadata) and a
+client component (`*Client.tsx`, holds all interactive state). No logic changed — pure structural
+refactor following the standard App Router pattern. Each page now has a distinct title,
+description, and og:title/og:description for accurate social previews.
+
+**Files changed:** `web/src/app/dashboard/page.tsx`, `web/src/app/dashboard/DashboardClient.tsx` (new), `web/src/app/download/page.tsx`, `web/src/app/download/DownloadClient.tsx` (new), `web/src/app/community/page.tsx`, `web/src/app/community/CommunityClient.tsx` (new)
+**Lines:** +934 / -890
+
 ## 2026-03-20 — Accessibility: ARIA labels, table semantics, and skip navigation
 
 Comprehensive a11y pass across the dashboard, navbar, and secondary pages. The site had no named navigation landmark, no skip links on 3 of 4 pages, tables without column scope attributes, charts completely invisible to assistive technology, and stat cards that conveyed quality purely through color (WCAG 1.4.1 violation). All fixed without new dependencies.
