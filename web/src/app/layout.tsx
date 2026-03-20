@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image.svg",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "PingDiff - Know Your Connection Before You Queue",
@@ -39,7 +39,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PingDiff - Know Your Connection Before You Queue",
     description: "Test your ping to game servers without launching the game.",
-    images: ["/og-image.svg"],
+    images: ["/opengraph-image"],
+    site: "@pingdiff",
+    creator: "@pingdiff",
   },
   robots: {
     index: true,
@@ -71,11 +73,53 @@ const jsonLd = {
     price: "0",
     priceCurrency: "USD",
   },
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "5",
-    ratingCount: "100",
-  },
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "How do I test my ping before playing?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "PingDiff tests real game server IPs using ICMP ping. Select your game, pick a region, and get instant results showing your ping, packet loss, and jitter — no game launch required.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What games does PingDiff support?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "PingDiff supports 9 games: Valorant, CS2 (Counter-Strike 2), Overwatch 2, Call of Duty, Apex Legends, Fortnite, League of Legends, Battlefield 6, and Marvel Rivals.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is PingDiff free?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes, PingDiff is 100% free and open source under the MIT license. There are no ads, no premium tiers, and no hidden costs.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Does PingDiff track my data?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No, PingDiff is privacy-first. There is no tracking by default. You can optionally enable anonymous data sharing to contribute community connection insights, but this is entirely opt-in.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What regions can I test?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "PingDiff covers EU, NA, Asia, South America, and Middle East regions with 141 servers worldwide. You can test your connection to any supported server to find the best region for your game.",
+      },
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -89,6 +133,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       </head>
       <body className={`${inter.className} antialiased bg-zinc-950 text-white min-h-screen`}>
