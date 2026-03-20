@@ -1,0 +1,40 @@
+# PingDiff
+
+> Test your ping, packet loss, and jitter to game servers before you queue. Know your connection. Win more games.
+
+PingDiff is a free, open-source game server connection testing tool. It lets gamers test their network quality (ping, packet loss, jitter) to real game server IPs using ICMP ping — without launching the game.
+
+## Key Facts
+
+- **Supported Games (9):** Valorant, CS2, Overwatch 2, Call of Duty, Apex Legends, Fortnite, League of Legends, Battlefield 6, Marvel Rivals
+- **Server Coverage:** 141 servers across EU, NA, Asia, South America, and Middle East
+- **Platforms:** Web app (pingdiff.com) + Windows desktop app
+- **Tech Stack:** Next.js (web), Python/Tkinter (desktop), TypeScript, Tailwind CSS
+- **License:** MIT — 100% free and open source
+- **Privacy:** No tracking by default. Optional anonymous data sharing for community insights.
+
+## Links
+
+- Website: https://pingdiff.com
+- Download Desktop App: https://pingdiff.com/download
+- Dashboard: https://pingdiff.com/dashboard
+- GitHub: https://github.com/bokiko/pingdiff
+
+## How It Works
+
+1. Select a game from the supported list
+2. PingDiff tests your connection to real game server IPs
+3. Get results showing ping (latency), packet loss, and jitter
+4. See which server region gives you the best connection
+5. Optionally share anonymous results to help the community
+
+## FAQ
+
+### How do I test my ping before playing?
+PingDiff tests real game server IPs using ICMP ping. Select your game, pick a region, and get instant results — no game launch required.
+
+### Is PingDiff free?
+Yes, 100% free and open source under the MIT license. No ads, no premium tiers.
+
+### What data does PingDiff collect?
+None by default. You can optionally share anonymous ping data to help build community connection insights.
