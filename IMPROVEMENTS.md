@@ -80,3 +80,24 @@ reader support via aria-busy="true" and aria-label on the skeleton root.
 
 **Files changed:** `web/src/components/DashboardSkeleton.tsx` (new), `web/src/app/dashboard/page.tsx`
 **Lines:** +123 / -4
+
+## 2026-03-20 — Testing: Jest unit tests for web API validation and rate-limiter
+
+Added the first unit test suite for the Next.js web layer. The project already had pytest covering
+the CLI/desktop; this fills the gap for the server-side API logic that handles all incoming requests.
+
+Two test files, 41 tests total:
+- `rate-limit.test.ts`: 27 tests covering checkRateLimit (first request, counting, blocking, window
+  reset, independent IP/bucket namespacing, default limit) and getClientIP (x-forwarded-for
+  multi-IP parsing, x-real-ip fallback, 127.0.0.1 fallback, whitespace trimming)
+- `validation.test.ts`: 26 tests covering PingResultSchema (field presence, string lengths, numeric
+  range boundaries, raw_times array limits) and SubmitRequestSchema (defaults, results array limits,
+  field length limits, nested validation propagation)
+
+Also extracted the Zod schemas from the inline route handler into `src/lib/validation.ts` — a shared
+module that the route imports from. No logic changed; pure structural improvement for testability.
+
+**Files changed:** `web/jest.config.js` (new), `web/package.json`, `web/src/lib/validation.ts` (new),
+`web/src/__tests__/rate-limit.test.ts` (new), `web/src/__tests__/validation.test.ts` (new),
+`web/src/app/api/results/route.ts`
+**Lines:** +387 / -20
