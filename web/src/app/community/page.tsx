@@ -7,9 +7,12 @@ import { Footer } from "@/components/Footer";
 export default function CommunityPage() {
   return (
     <div className="min-h-screen">
+      <a href="#main-content" className="skip-to-content focus-ring">
+        Skip to main content
+      </a>
       <Navbar />
 
-      <main className="max-w-6xl mx-auto px-4 py-16">
+      <main id="main-content" className="max-w-6xl mx-auto px-4 py-16">
         {/* Coming Soon Banner */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-yellow-500/20 rounded-2xl mb-6">

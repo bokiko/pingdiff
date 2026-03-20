@@ -226,10 +226,13 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen">
+      <a href="#main-content" className="skip-to-content focus-ring">
+        Skip to main content
+      </a>
       <Navbar />
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main id="main-content" className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -341,13 +344,20 @@ export default function DashboardPage() {
         ) : (
           <>
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+            <div
+              className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+              role="region"
+              aria-label="Connection statistics summary"
+            >
+              <div
+                className="bg-zinc-900 border border-zinc-800 rounded-xl p-6"
+                aria-label={`Average ping: ${avgPing} milliseconds — ${getQualityLabel(avgPing)}`}
+              >
                 <div className="flex items-center gap-3 mb-2">
-                  <Wifi className="w-5 h-5 text-blue-500" />
+                  <Wifi className="w-5 h-5 text-blue-500" aria-hidden="true" />
                   <span className="text-zinc-400 text-sm">Average Ping</span>
                 </div>
-                <div className={`text-3xl font-bold ${getQualityColor(avgPing)}`}>
+                <div className={`text-3xl font-bold ${getQualityColor(avgPing)}`} aria-hidden="true">
                   {avgPing}ms
                 </div>
                 <div className="text-sm text-zinc-500">
@@ -355,9 +365,12 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+              <div
+                className="bg-zinc-900 border border-zinc-800 rounded-xl p-6"
+                aria-label={`Average packet loss: ${avgPacketLoss} percent — ${parseFloat(avgPacketLoss) === 0 ? "No loss" : "Some loss"}`}
+              >
                 <div className="flex items-center gap-3 mb-2">
-                  <AlertTriangle className="w-5 h-5 text-orange-500" />
+                  <AlertTriangle className="w-5 h-5 text-orange-500" aria-hidden="true" />
                   <span className="text-zinc-400 text-sm">Packet Loss</span>
                 </div>
                 <div
@@ -366,6 +379,7 @@ export default function DashboardPage() {
                       ? "text-green-500"
                       : "text-orange-500"
                   }`}
+                  aria-hidden="true"
                 >
                   {avgPacketLoss}%
                 </div>
@@ -374,23 +388,29 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+              <div
+                className="bg-zinc-900 border border-zinc-800 rounded-xl p-6"
+                aria-label={`Average jitter: ${avgJitter} milliseconds`}
+              >
                 <div className="flex items-center gap-3 mb-2">
-                  <TrendingDown className="w-5 h-5 text-purple-500" />
+                  <TrendingDown className="w-5 h-5 text-purple-500" aria-hidden="true" />
                   <span className="text-zinc-400 text-sm">Jitter</span>
                 </div>
-                <div className="text-3xl font-bold text-purple-500">
+                <div className="text-3xl font-bold text-purple-500" aria-hidden="true">
                   {avgJitter}ms
                 </div>
                 <div className="text-sm text-zinc-500">Variation</div>
               </div>
 
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+              <div
+                className="bg-zinc-900 border border-zinc-800 rounded-xl p-6"
+                aria-label={`Total tests run: ${filteredResults.length}`}
+              >
                 <div className="flex items-center gap-3 mb-2">
-                  <Clock className="w-5 h-5 text-green-500" />
+                  <Clock className="w-5 h-5 text-green-500" aria-hidden="true" />
                   <span className="text-zinc-400 text-sm">Tests Run</span>
                 </div>
-                <div className="text-3xl font-bold text-green-500">
+                <div className="text-3xl font-bold text-green-500" aria-hidden="true">
                   {filteredResults.length}
                 </div>
                 <div className="text-sm text-zinc-500">Total tests</div>
@@ -402,7 +422,7 @@ export default function DashboardPage() {
               {/* Ping History Chart */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
                 <h3 className="text-lg font-semibold mb-4">Ping History</h3>
-                <div className="h-64">
+                <div className="h-64" role="img" aria-label={`Line chart showing ping history across ${chartData.length} recent tests. Latest ping: ${chartData.at(-1)?.ping ?? 0}ms`}>
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#333" />
@@ -430,7 +450,7 @@ export default function DashboardPage() {
               {/* Server Comparison Chart */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
                 <h3 className="text-lg font-semibold mb-4">Server Comparison</h3>
-                <div className="h-64">
+                <div className="h-64" role="img" aria-label={`Bar chart comparing average ping across ${serverChartData.length} servers. Best server: ${serverChartData[0]?.name ?? "N/A"} at ${serverChartData[0]?.ping ?? 0}ms`}>
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={serverChartData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#333" />
@@ -459,15 +479,18 @@ export default function DashboardPage() {
                 </span>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table
+                  className="w-full"
+                  aria-label={`Recent test results — showing ${Math.min(filteredResults.length, 10)} of ${filteredResults.length}`}
+                >
                   <thead>
                     <tr className="text-left text-zinc-400 text-sm">
-                      <th className="pb-4">Server</th>
-                      <th className="pb-4">Ping</th>
-                      <th className="pb-4">Jitter</th>
-                      <th className="pb-4">Loss</th>
-                      <th className="pb-4">ISP</th>
-                      <th className="pb-4">Time</th>
+                      <th scope="col" className="pb-4 font-medium">Server</th>
+                      <th scope="col" className="pb-4 font-medium">Ping</th>
+                      <th scope="col" className="pb-4 font-medium">Jitter</th>
+                      <th scope="col" className="pb-4 font-medium">Loss</th>
+                      <th scope="col" className="pb-4 font-medium">ISP</th>
+                      <th scope="col" className="pb-4 font-medium">Time</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -482,9 +505,8 @@ export default function DashboardPage() {
                           </div>
                         </td>
                         <td
-                          className={`py-4 font-semibold ${getQualityColor(
-                            result.ping_avg
-                          )}`}
+                          className={`py-4 font-semibold ${getQualityColor(result.ping_avg)}`}
+                          aria-label={`${result.ping_avg} milliseconds — ${getQualityLabel(result.ping_avg)}`}
                         >
                           {result.ping_avg}ms
                         </td>
@@ -497,6 +519,7 @@ export default function DashboardPage() {
                               ? "text-green-500"
                               : "text-orange-500"
                           }`}
+                          aria-label={`${result.packet_loss} percent packet loss${result.packet_loss === 0 ? " — no loss" : ""}`}
                         >
                           {result.packet_loss}%
                         </td>
@@ -504,7 +527,9 @@ export default function DashboardPage() {
                           {result.isp || "Unknown"}
                         </td>
                         <td className="py-4 text-zinc-500 text-sm">
-                          {new Date(result.created_at).toLocaleDateString()}
+                          <time dateTime={result.created_at}>
+                            {new Date(result.created_at).toLocaleDateString()}
+                          </time>
                         </td>
                       </tr>
                     ))}
