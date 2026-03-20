@@ -1,5 +1,18 @@
 # PingDiff Improvement Log
 
+## 2026-03-20 — Accessibility: ARIA labels, table semantics, and skip navigation
+
+Comprehensive a11y pass across the dashboard, navbar, and secondary pages. The site had no named navigation landmark, no skip links on 3 of 4 pages, tables without column scope attributes, charts completely invisible to assistive technology, and stat cards that conveyed quality purely through color (WCAG 1.4.1 violation). All fixed without new dependencies.
+
+Dashboard: skip link + main-content anchor, role="region" on stats grid, aria-label on each stat card with text description, aria-hidden on decorative icons, role="img" + aria-label on both charts, aria-label on table element, scope="col" on all th elements, time element for timestamps, aria-label on ping/loss cells so quality is communicated in text not just color.
+
+Navbar: aria-label="Main navigation" on nav element, aria-haspopup on mobile toggle, role="menu" on mobile menu container.
+
+Community and Download pages: both were missing skip-to-content links and main-content anchor targets entirely.
+
+**Files changed:** `web/src/app/dashboard/page.tsx`, `web/src/components/Navbar.tsx`, `web/src/app/community/page.tsx`, `web/src/app/download/page.tsx`
+**Lines:** +64 / -30
+
 ## 2026-03-19 — Performance: Memoize dashboard derived state
 
 All derived values on the dashboard (filteredResults, avgPing, avgPacketLoss, avgJitter, regions, chartData, serverChartData) were being recomputed inline on every React render — including renders triggered by unrelated state changes like the loading flag toggling off. Wrapped each value in useMemo with the tightest possible dependency array, eliminating 5 O(n) reduce passes and 2 groupBy passes on every extraneous render. At current scale the savings are modest; at the 500-1000 result range the dashboard would hit without this change the difference is measurable. The memoized structure also makes data dependencies explicit and auditable at a glance.
