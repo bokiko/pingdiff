@@ -24,7 +24,7 @@ export function Navbar() {
   const isDownload = (href: string) => href === "/download";
 
   return (
-    <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm sticky top-0 z-50">
+    <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm sticky top-0 z-50" aria-label="Main navigation">
       <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2 focus-ring rounded-lg">
           <Activity className="w-7 h-7 md:w-8 md:h-8 text-blue-500" />
@@ -35,9 +35,10 @@ export function Navbar() {
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="md:hidden p-2 text-zinc-400 hover:text-white transition focus-ring rounded-lg"
-          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-menu"
+          aria-haspopup="true"
         >
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -60,6 +61,7 @@ export function Navbar() {
                 className={`transition focus-ring rounded-lg px-2 py-1 ${
                   isActive(href) ? "text-white font-medium" : "text-zinc-400 hover:text-white"
                 }`}
+                aria-current={isActive(href) ? "page" : undefined}
               >
                 {label}
               </Link>
@@ -72,6 +74,8 @@ export function Navbar() {
       {mobileMenuOpen && (
         <div
           id="mobile-menu"
+          role="menu"
+          aria-label="Navigation menu"
           className="md:hidden border-t border-zinc-800 bg-zinc-950 fade-in"
         >
           <div className="px-4 py-4 flex flex-col gap-4">
@@ -93,6 +97,7 @@ export function Navbar() {
                     isActive(href) ? "text-white font-medium" : "text-zinc-400 hover:text-white"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
+                  aria-current={isActive(href) ? "page" : undefined}
                 >
                   {label}
                 </Link>

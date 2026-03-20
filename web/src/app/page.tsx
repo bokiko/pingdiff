@@ -94,9 +94,9 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section className="bg-zinc-900/50 py-16 md:py-24">
+        <section className="bg-zinc-900/50 py-16 md:py-24" aria-labelledby="features-heading">
           <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-4">Why PingDiff?</h2>
+            <h2 id="features-heading" className="text-2xl md:text-3xl font-bold text-center mb-4">Why PingDiff?</h2>
             <p className="text-zinc-400 text-center mb-12 max-w-2xl mx-auto">
               Stop guessing. Start knowing. Get real data about your connection before every game.
             </p>
@@ -198,9 +198,9 @@ export default function Home() {
         </section>
 
         {/* How It Works */}
-        <section className="py-16 md:py-24">
+        <section className="py-16 md:py-24" aria-labelledby="how-it-works-heading">
           <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-4">How It Works</h2>
+            <h2 id="how-it-works-heading" className="text-2xl md:text-3xl font-bold text-center mb-4">How It Works</h2>
             <p className="text-zinc-400 text-center mb-12">
               Three simple steps to better gaming
             </p>
@@ -240,16 +240,16 @@ export default function Home() {
         </section>
 
         {/* Supported Games */}
-        <section className="bg-zinc-900/50 py-16 md:py-24">
+        <section className="bg-zinc-900/50 py-16 md:py-24" aria-labelledby="supported-games-heading">
           <div className="max-w-6xl mx-auto px-4 text-center">
-            <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-4">
+            <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-4" aria-hidden="true">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
               <span className="text-sm text-blue-400">9 games • 141 servers worldwide</span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Supported Games</h2>
+            <h2 id="supported-games-heading" className="text-2xl md:text-3xl font-bold mb-4">Supported Games</h2>
             <p className="text-zinc-400 mb-12">
               Test your connection to your favorite games. More coming soon.
             </p>
