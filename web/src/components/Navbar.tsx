@@ -24,11 +24,13 @@ export function Navbar() {
   const isDownload = (href: string) => href === "/download";
 
   return (
-    <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm sticky top-0 z-50" aria-label="Main navigation">
+    <nav className="border-b border-white/5 bg-[#0B0F19]/80 backdrop-blur-md sticky top-0 z-50" aria-label="Main navigation">
       <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2 focus-ring rounded-lg">
-          <Activity className="w-7 h-7 md:w-8 md:h-8 text-blue-500" />
-          <span className="text-lg md:text-xl font-bold">PingDiff</span>
+          <div className="w-8 h-8 bg-[#00F0FF] rounded-sm shadow-[0_0_20px_rgba(0,240,255,0.4)] flex items-center justify-center">
+            <Activity className="w-5 h-5 text-[#0B0F19]" />
+          </div>
+          <span className="text-lg md:text-xl font-bold tracking-tight">PingDiff</span>
         </Link>
 
         {/* Mobile menu button */}
