@@ -1,0 +1,2 @@
+web:build:cd /home/bokiko/projects/pingdiff/web && npm run build
+web:tsc:cd /home/bokiko/projects/pingdiff/web && npx tsc --noEmit
