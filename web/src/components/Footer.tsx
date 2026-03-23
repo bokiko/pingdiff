@@ -3,10 +3,10 @@ import { Activity } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-zinc-800 py-8 mt-16">
+    <footer className="border-t border-white/10 py-8 mt-16">
       <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="flex items-center gap-2">
-          <Activity className="w-5 h-5 text-blue-500" />
+          <Activity className="w-5 h-5 text-[#00F0FF]" />
           <span className="font-semibold">PingDiff</span>
           <span className="text-zinc-500 text-sm">© 2026</span>
         </div>

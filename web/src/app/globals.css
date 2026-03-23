@@ -2,7 +2,7 @@
 
 :root {
   /* Backgrounds */
-  --background: #0a0a0a;
+  --background: #0B0F19;
   --foreground: #ffffff;
 
   /* Cards & Surfaces */
@@ -10,13 +10,13 @@
   --card-hover: #1f1f23;
   --card-foreground: #ffffff;
 
-  /* Primary Blue Scale */
-  --primary-50: #eff6ff;
-  --primary-100: #dbeafe;
-  --primary-400: #60a5fa;
-  --primary-500: #3b82f6;
-  --primary-600: #2563eb;
-  --primary-700: #1d4ed8;
+  /* Primary Cyan/Neon Scale */
+  --primary-50: #ecfeff;
+  --primary-100: #cffafe;
+  --primary-400: #22d3ee;
+  --primary-500: #00F0FF;
+  --primary-600: #00d4e0;
+  --primary-700: #00b8c4;
 
   /* Semantic Colors */
   --success: #22c55e;
@@ -29,7 +29,7 @@
   /* Neutrals */
   --secondary: #27272a;
   --muted: #71717a;
-  --accent: #3b82f6;
+  --accent: #00F0FF;
 
   /* Typography Scale */
   --font-size-xs: 0.75rem;
@@ -57,7 +57,8 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.3);
+  --shadow-glow: 0 0 20px rgba(0, 240, 255, 0.3);
+  --shadow-glow-strong: 0 0 15px rgba(0, 240, 255, 0.5), 0 0 30px rgba(0, 240, 255, 0.3);
 
   /* Border Radius */
   --radius-sm: 0.375rem;
@@ -176,10 +177,10 @@ body {
 /* Pulse glow effect */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 5px var(--primary-500), 0 0 10px var(--primary-500);
+    box-shadow: 0 0 5px rgba(0, 240, 255, 0.4), 0 0 10px rgba(0, 240, 255, 0.2);
   }
   50% {
-    box-shadow: 0 0 20px var(--primary-500), 0 0 30px var(--primary-500);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.6), 0 0 30px rgba(0, 240, 255, 0.3);
   }
 }
 
@@ -262,14 +263,16 @@ body {
 
 /* Button styles */
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
-  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
-  transition: all 0.2s ease-out;
+  background: var(--primary-500);
+  color: #0B0F19;
+  font-weight: 700;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.5), 0 0 30px rgba(0, 240, 255, 0.3);
+  transition: all 0.3s ease-out;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.8), 0 0 40px rgba(0, 240, 255, 0.5);
 }
 
 .btn-primary:active {
@@ -293,25 +296,79 @@ body {
 
 .card-hover:hover {
   transform: translateY(-4px);
-  border-color: rgba(59, 130, 246, 0.5);
-  box-shadow: 0 10px 40px -10px rgba(59, 130, 246, 0.2);
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 10px 40px -10px rgba(0, 240, 255, 0.2);
 }
 
 /* Glassmorphism */
 .glass {
-  background: rgba(24, 24, 27, 0.7);
+  background: rgba(17, 24, 39, 0.6);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Neon border card */
+.neon-card {
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.neon-card:hover {
+  border-color: rgba(0, 240, 255, 0.8);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  transform: translateY(-4px);
 }
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, var(--primary-400) 0%, var(--primary-600) 100%);
+  background: linear-gradient(135deg, #00F0FF 0%, #00b8c4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* Hero ping display */
+.ping-display {
+  border: 1px solid #00F0FF;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+  background: rgba(17, 24, 39, 0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+.ping-display::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, transparent 100%);
+}
+
+/* Corner decorations for ping display */
+.corner-decoration {
+  position: absolute;
+  width: 2rem;
+  height: 2px;
+  background: rgba(0, 240, 255, 0.8);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 1);
+}
+
+.corner-decoration::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 2rem;
+  background: rgba(0, 240, 255, 0.8);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 1);
+}
+
+.corner-tl { top: 1rem; left: 1rem; }
+.corner-tl::after { top: 0; left: 0; }
+.corner-br { bottom: 1rem; right: 1rem; }
+.corner-br::after { bottom: 0; right: 0; }
 
 /* Focus styles for accessibility */
 .focus-ring {
