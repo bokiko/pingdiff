@@ -8,7 +8,6 @@ from tkinter import ttk, messagebox
 import threading
 import webbrowser
 import os
-import math
 from typing import List, Optional
 
 from config import COLORS, REGIONS, REGION_NAMES, APP_VERSION, GAMES

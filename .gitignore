@@ -41,5 +41,8 @@ coverage/
 .vercel
 .env*.local
 
+# Supabase CLI temp files
+supabase/.temp/
+
 # Local Claude instructions (not for GitHub)
 CLAUDE.md

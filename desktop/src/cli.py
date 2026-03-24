@@ -70,9 +70,7 @@ def format_ping(value: float) -> str:
     """Format ping value with color based on threshold."""
     if value == 0:
         return colorize("---", Colors.DIM)
-    if value < 30:
-        return colorize(f"{value:.0f}ms", Colors.GREEN)
-    elif value < 60:
+    if value < 60:
         return colorize(f"{value:.0f}ms", Colors.GREEN)
     elif value < 100:
         return colorize(f"{value:.0f}ms", Colors.YELLOW)

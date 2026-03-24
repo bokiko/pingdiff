@@ -184,31 +184,6 @@ body {
   }
 }
 
-.pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-/* Pulse ring effect */
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.9);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-.pulse-ring::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: inherit;
-  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  z-index: -1;
-}
 
 /* Shimmer loading effect */
 @keyframes shimmer {
@@ -218,17 +193,6 @@ body {
   100% {
     background-position: 200% 0;
   }
-}
-
-.shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--card) 25%,
-    #2a2a2e 50%,
-    var(--card) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
 }
 
 /* Spin animation */
@@ -323,6 +287,7 @@ body {
   transform: translateY(-4px);
 }
 
+
 /* Gradient text */
 .gradient-text {
   background: linear-gradient(135deg, #00F0FF 0%, #00b8c4 100%);
@@ -380,20 +345,6 @@ body {
   outline-offset: 2px;
 }
 
-/* Interactive element base */
-.interactive {
-  transition: all 0.2s ease-out;
-  cursor: pointer;
-}
-
-.interactive:hover {
-  transform: scale(1.02);
-}
-
-.interactive:active {
-  transform: scale(0.98);
-}
-
 /* ================== SKELETON LOADERS ================== */
 
 .skeleton {
@@ -415,45 +366,6 @@ body {
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-}
-
-.skeleton-text {
-  height: 1em;
-  border-radius: var(--radius-sm);
-}
-
-.skeleton-circle {
-  border-radius: 50%;
-}
-
-/* ================== CHART STYLES ================== */
-
-.chart-tooltip {
-  background: var(--card) !important;
-  border: 1px solid #3f3f46 !important;
-  border-radius: var(--radius-lg) !important;
-  padding: 12px !important;
-  box-shadow: var(--shadow-xl) !important;
-}
-
-.chart-tooltip .label {
-  color: white !important;
-  font-weight: 600 !important;
-  margin-bottom: 4px !important;
-}
-
-/* ================== RESPONSIVE HELPERS ================== */
-
-@media (max-width: 640px) {
-  .hide-mobile {
-    display: none !important;
-  }
-}
-
-@media (min-width: 641px) {
-  .show-mobile-only {
-    display: none !important;
-  }
 }
 
 /* Reduce motion for accessibility */

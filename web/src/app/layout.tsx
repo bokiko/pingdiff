@@ -47,9 +47,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  other: {
-    "google-site-verification": "", // Add your verification code when ready
-  },
 };
 
 // Structured data for the website

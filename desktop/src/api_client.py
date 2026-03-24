@@ -323,22 +323,6 @@ class APIClient:
             logger.error(f"Unexpected error submitting results: {e}")
             return {"success": False, "error": str(e)}
 
-    def get_recommendations(self, isp: str, region: str,
-                           game_slug: str = "overwatch-2") -> Dict:
-        """Get server recommendations based on ISP and region"""
-        try:
-            response = self.session.get(
-                f"{self.base_url}/api/recommendations",
-                params={"isp": isp, "region": region, "game": game_slug},
-                timeout=10
-            )
-            if response.status_code == 200:
-                return response.json()
-        except Exception as e:
-            logger.warning(f"Failed to get recommendations: {e}")
-
-        return {"best_server": None, "avg_ping": None, "players_tested": 0}
-
     @staticmethod
     def get_log_directory() -> Path:
         """Get the log directory path"""
