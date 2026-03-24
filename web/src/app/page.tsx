@@ -194,7 +194,7 @@ export default function Home() {
                 <div className="text-center md:text-left flex-1">
                   <h2 className="text-2xl md:text-3xl font-bold mb-3">Built in the Open</h2>
                   <p className="text-zinc-400 mb-4 max-w-2xl leading-relaxed">
-                    PingDiff is 100% open source. Every line of code is public on GitLab.
+                    PingDiff is 100% open source. Every line of code is public on GitHub.
                     No hidden trackers, no data harvesting, no premium tiers.
                     Built by gamers who were tired of sketchy &quot;ping tools&quot; that sell your data.
                   </p>
@@ -222,17 +222,6 @@ export default function Home() {
                   >
                     <Github className="w-5 h-5" />
                     GitHub
-                  </a>
-                  <a
-                    href="https://gitlab.com/bokiko/pingdiff"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition"
-                  >
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M23.955 13.587l-1.342-4.135-2.664-8.189a.455.455 0 00-.867 0L16.418 9.45H7.582L4.918 1.263a.455.455 0 00-.867 0L1.386 9.45.044 13.587a.924.924 0 00.331 1.023L12 23.054l11.625-8.443a.92.92 0 00.33-1.024"/>
-                    </svg>
-                    GitLab
                   </a>
                 </div>
               </div>

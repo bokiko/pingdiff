@@ -44,7 +44,7 @@ pingdiff/
 |----------|------------|---------|
 | **Desktop** | Python 3.11 | Core language |
 | | tkinter | GUI framework |
-| | pythonping | ICMP ping library |
+| | subprocess ping | ICMP ping (system) |
 | | PyInstaller | Exe packaging |
 | | Inno Setup | Windows installer |
 | **Web** | Next.js 16 | React framework |
@@ -57,8 +57,8 @@ pingdiff/
 | | GitHub Releases | Desktop downloads |
 | **CI/CD** | GitLab CI | Build automation |
 | **VCS** | Git | Version control |
-| | GitHub | Primary repo |
-| | GitLab | Mirror (for CI) |
+| | GitHub | Primary repo (issues, releases, stars) |
+| | GitLab | Mirror (CI builds only) |
 
 ## PROJECT
 
